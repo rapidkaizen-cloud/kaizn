@@ -55,7 +55,7 @@ One session runs one mode, in the order a repo owes them: Document, then Migrate
 
 1. **A1.** One subagent audits the repo against the installed plugin copy and returns an `AUDIT` block: `C1 platform residue`, `C2 agent files`, `C3 language split`, `C4 guard coverage`, `C5 documents`, `C6 lint floor`, `C7 rule coverage`. Six rows run; `C3 language split` prints `not run`, because it reads every name in the repo and rarely finds more than untidiness. Every row that ran reports, a clean one included. A norm in `CLAUDE.md` that the plugin prints is listed with the plugin line that prints it, and counts as a copy only where that line covers every case the file's line covers; one the plugin prints nowhere, or only for one mode or one layer, is counted apart, stays in the file, and is reported on the `For app-eval` row. Every skill and command name in the file is checked against the plugin's skills.
 2. **A2 and A3.** A table ranked by what breaks without anyone noticing, in three bands: a guarantee that does not hold, a rule that points somewhere wrong, drift that is merely untidy. You pick through a question: band 1 only, bands 1 and 2, everything, or nothing. A second question in the same call offers `C3`: audit the language split too, or skip it. With no finding in the first run, that question is asked alone. Picked, it is audited and its findings are put to you the same way.
-3. **A4.** One finding per commit, named paths. A build or run config gets one real run first; a lint floor is proven before its commit.
+3. **A4.** One finding per commit, named paths. A build or run config gets one real run first; a lint floor is proven before its commit. Where several findings you picked are destructive — renames, mostly — their `DESTRUCTIVE` blocks are shown at one stop before the first finding starts, and each one you approve still runs and commits on its own.
 4. **A5.** An `ALIGN` block: `Fixed`, `Dropped`, `Left`, `Not audited`, `Still silent`, `Verified`, `For app-eval`. An empty audit is a normal ending.
 
 ### Rework — R1 to R6
@@ -85,6 +85,7 @@ One session runs one mode, in the order a repo owes them: Document, then Migrate
 - **The reading.** After N1, D2 or R2, until you correct or confirm it.
 - **The summary.** N3, D4 and R4 are one message each. No file is written until you approve.
 - **Align's ranked table.** Until you pick, including "nothing".
+- **Align's destructive findings.** One [destructive stop](../concepts/gates.md) for all of them, before the first finding starts.
 
 ## What it never does
 

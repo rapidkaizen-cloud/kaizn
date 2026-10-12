@@ -64,6 +64,7 @@ Reversible : no — the rows are gone
 - **You approve the number, not the intent.** The number you approve goes into the statement's guard unchanged.
 - **The statement then runs wrapped in a guard**: it counts what it touched and aborts the whole transaction when the count is not the number you approved. Nothing is lost on a mismatch.
 - **Several operations one request needs share one stop** — deleting an order and its lines is two. You see one block per operation, each with its own number, and answer once; an operation your reply leaves out does not run. The approved ones run in one guarded block, so a count that misses on one aborts all of them.
+- **In `app-settle`'s Align, the destructive findings you picked are shown together the same way**, before the first one starts. There each runs in a guarded block and a commit of its own, so one finding can be reverted alone; a count that went stale because an earlier finding changed the data aborts that finding only, and nothing is lost.
 
 What `guard_destructive` refuses: a destructive statement that arrives without that guard — one `DO` block with a `RAISE EXCEPTION`, per statement.
 

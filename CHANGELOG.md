@@ -2,6 +2,18 @@
 
 All notable changes to the `raizen-norms` plugin, and to `raizen-hub` until 0.70.0 merged it in, newest first. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versions before these are in `git log`.
 
+## [raizen-norms 0.97.0] - 2026-10-12
+
+Align stops once for the destructive findings you picked. Each finding is its own commit, so each rename went through the destructive gate alone — and 0.96.0's one block for operations approved together left it unsaid whether findings join one. Read from the rule's text; no session has run Align with two destructive findings.
+
+### Changed
+
+- `app-settle`, Align, A4: several picked findings that are destructive are counted and shown at one stop, a `DESTRUCTIVE` block each, before the first finding starts. Each approved one still runs in a guarded block and a commit of its own.
+
+To act on:
+
+- Nothing.
+
 ## [raizen-norms 0.96.0] - 2026-10-12
 
 The destructive gate stops once for one request. `db-ops` described one `DESTRUCTIVE` block and one stop, and said nothing of a request that needs several operations — deleting a row and its children — so each could get a stop of its own. This is read from the rule's text, after the push gate showed the same shape: no session was seen stopping once per operation.

@@ -64,11 +64,12 @@ Nothing selected is a valid answer and a normal ending: close with the audit rep
 
 **One finding, one commit, named paths — never a batch**: a finding that turns out wrong is then one `git revert`, and the approved diff is the diff in the commit. Work in ranked order; a later finding that depends on an earlier one says so before the first is started.
 
-Four checks bind every commit:
+Five checks bind every commit:
 
 - **Anything touching build or run config gets one real run before the commit** — the build command, or the dev server reaching one page — because a config swap can type-check and not boot. It is the only check Align requires.
 - **A lint floor is proven before its commit, in the order `design-settle`'s `pass.md` gives under The lint floor** — the lint command over the whole app first, where every hit is either baselined or a pattern too wide to keep, then one planted violation per refusal seen refused, the scratch file deleted. A floor committed unrun is a C4 finding Align wrote itself.
 - **Anything touching the database is under `db-ops` unchanged** — the destructive gate, the mandatory order, the role test. A rename is destructive, however tidy.
+- **Several picked findings that are destructive share one STOP, before the first finding starts**: count them all, show a `DESTRUCTIVE` block per finding, and run only the ones the reply approves. Each still runs in its own guarded block and its own commit, never in the one block `db-ops` gives operations approved together, because a finding is reverted alone.
 - **A finding that turns out to need a decision is dropped, not decided** — the stack, a business rule absent from `docs/rules.md`, a prohibition nobody stated: stop on that line, leave the working tree as it stands, report it, and carry on with the next finding.
 
 **Scope is the selected lines and nothing else.** A path that changed outside them is reported, never committed along — the `raizen-norms` rule, unchanged.
