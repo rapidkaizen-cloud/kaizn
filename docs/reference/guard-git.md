@@ -43,6 +43,7 @@ How the four are read:
 - **The command must match.** Whitespace is collapsed, nothing else. Another branch is another command and needs its own message and reply.
 - **A push the call adds to is another command.** `cd app && git push origin dev`, a pipe to `tail` or a `2>&1` after it does not match a message naming `git push origin dev`. The hold tells the session to name the push and run it alone.
 - **One reply, one run.** A call of the command in either shell spends the reply once its result is in the transcript. Another message and reply grant one more run. A held attempt made before your reply spends nothing.
+- **Several commands, one message.** A message that puts a push and a `gh pr create`, each on a line of its own or in a fence of its own, lets each run once on the one reply, and the run of one spends nothing of the other. Two commands sharing one fence are neither of them put. Which of them your reply covered is read by the session, not by the hook.
 - **Things you did not type are ignored.** A tool result, a subagent's prompt or a note written by the host neither grants nor takes a reply back. On Antigravity only a step the user typed counts.
 - **A dialog pick is no reply.** `Run` picked on a question dialog does not count.
 - **A transcript that cannot be read holds the command.**

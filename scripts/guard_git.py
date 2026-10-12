@@ -17,7 +17,9 @@ Held until the user replies:
 
 A held command passes once the transcript shows the session's last message putting the
 exact command in backticks on a line of its own, a reply the user typed to it, nothing
-typed since, and no call of that command since - one reply, one run. What is enforced here is the stop, not
+typed since, and no call of that command since - one reply, one run. A message may put
+several held commands, each on a line of its own: the one reply then covers one run of
+each, so a push and its pull request need one stop. What is enforced here is the stop, not
 the yes: a hook cannot read what a reply means, so the session reads it and runs the
 command only on a yes. The reply is typed in chat rather than picked on a question
 dialog, because a dialog gets clicked before it is read. It is read from the transcript
@@ -212,11 +214,13 @@ def hold(payload: dict, cmd: str, what: str, wrapped: bool = False) -> None:
         f"HELD: {what} runs only on the user's yes in chat.{alone if wrapped else ''} End this "
         f"turn on a message that puts {'that' if wrapped else 'this exact'} command in backticks "
         "on a line of its own, lists under it every commit it publishes as `- ` bullets, short "
-        "hash and subject, and asks whether to run it. No question dialog - one gets clicked "
+        "hash and subject, and asks whether to run it. Another held command the request also "
+        "needs - the pull request after a push - goes in that message on a line of its own, and "
+        "the one reply is read for both. No question dialog - one gets clicked "
         "before it is read. Read the reply yourself: on a clear yes, in whatever words, "
         f"{'run the command as named' if wrapped else 'retry the same command unchanged'} before "
-        "anything else is typed - one reply covers one run. A question, a condition or another "
-        "instruction is not a yes. Never hand the command to the user to type."
+        "anything else is typed - one reply covers one run of each command named. A question, a "
+        "condition or another instruction is not a yes. Never hand the command to the user to type."
         + ("" if wrapped else f"\nCommand: {norm(cmd)}")
     )
 

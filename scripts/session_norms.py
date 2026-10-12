@@ -129,10 +129,11 @@ waiting on the user.
 `main` never receives a direct commit while `development` exists. A push or a pull
 request is a chat stop, never an AskUserQuestion - a dialog gets clicked before it is
 read. End the turn on a message with the exact command in backticks on a line of its
-own and, under it, every commit it publishes as `- ` bullets: short hash and subject. Run
-it only when the reply is a clear yes, in whatever words - a question, a condition or
-another instruction is not one. `guard_git` holds the command until that message has a
-reply, and one reply covers one run.
+own and, under it, every commit it publishes as `- ` bullets: short hash and subject. A
+push and a pull request asked for together go in one message, each on a line of its
+own. Run only what the reply clearly says yes to, in whatever words - a question, a
+condition or another instruction is not a yes. `guard_git` holds each command until
+that message has a reply, and one reply covers one run of each.
 
 """
 

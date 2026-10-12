@@ -25,15 +25,25 @@ Run it?
 - **Reply in chat, in any words.** A clear yes runs the command once.
 - **A question, a condition, or another instruction is not a yes.** The session answers or does what you said, and shows the command again before it publishes.
 - **There is no dialog to click.** A dialog gets clicked before it is read.
+- **A push and its pull request share one stop** when you asked for both. The message puts each command on a line of its own, the commits once, and one reply covers both. A reply that names one — `push only` — runs that one, and the other is shown again before it runs.
 
-What `guard_git` holds the command for, all four at once:
+```
+`git push origin development`
+- 4cc1af0 feat(orders): status filter on the order list
+
+`gh pr create --base main --head development --fill`
+
+Run both?
+```
+
+What `guard_git` holds each command for, all four at once:
 
 1. The session's last message puts the exact command in backticks on a line of its own. A command named inside a sentence — a closing report saying what it pushed — does not count.
 2. You typed a reply to that message.
 3. Nothing else has been typed since.
-4. The command has not already run on that reply — one reply, one run.
+4. The command has not already run on that reply — one reply, one run of each command the message puts.
 
-**The hook proves the stop, not the yes.** It cannot read what a reply means, so the session reads it. A session that misreads a no is not stopped by the hook.
+**The hook proves the stop, not the yes.** It cannot read what a reply means, so the session reads it — which of two commands a reply covers included. A session that misreads a no is not stopped by the hook.
 
 Refused outright, with no reply that lets them through: a bare force push (`--force`, `-f`, `+branch`) — `--force-with-lease` is the only force, and it is held like any push; a commit while on `main`, in a repo that has a `development` branch; `git add -A` and `git add .`.
 

@@ -2,6 +2,19 @@
 
 All notable changes to the `raizen-norms` plugin, and to `raizen-hub` until 0.70.0 merged it in, newest first. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versions before these are in `git log`.
 
+## [raizen-norms 0.95.0] - 2026-10-12
+
+A push and its pull request share one stop. Asked for both, a session stopped for the push, ran it on the yes, then stopped again for the pull request — the same question twice. `guard_git` already let two commands put in one message each run once on the one reply; the norms never said to put them together.
+
+### Changed
+
+- Session norms, `GIT`: where the request needs several held commands — a push, then its pull request — the session puts each in the one message on a line of its own, and runs only what the reply clearly says yes to. One reply covers one run of each.
+- `guard_git`: the held message says the same. What it holds and what it lets through are unchanged; its self-check now pins two commands in one message on both hosts.
+
+To act on:
+
+- Nothing.
+
 ## [raizen-norms 0.94.0] - 2026-10-10
 
 `audit_count.py` prints three rows more. The audit that ran with the script at 0.92.0 still wrote scans of its own in a real app — six commands, at 169k to 189k tokens of context — for the tokens nothing reads, the icon sizes and the label lengths. Run alone on that app, the script now prints what those scans had counted. No audit has run with the new rows, so the saving is not measured.

@@ -176,6 +176,20 @@ def demo() -> None:
         body = "gh pr create --title 'Orders' --body \"$(cat <<'EOF'\nStatus filter.\nEOF\n)\""
         assert run(body, transcript(showed(f"```bash\n{body}\n```\n- 4cc1af0 feat"), said("ok"))) == passed
 
+        # a push and its pull request put in one message: one reply covers one run of
+        # each, and the run of one spends nothing of the other
+        pair = [showed(f"`{push}`\n- 4cc1af0 feat\n\n`{pr}`\n\nRun both?"), said("ok")]
+        pushed = [*pair, called("t1", push), ran("t1")]
+        assert run(push, transcript(*pair)) == passed
+        assert run(pr, transcript(*pushed)) == passed
+        assert run(pr, transcript(*pushed, showed("Pushed."), called("t2", pr))) == passed
+        assert run(push, transcript(*pushed)) == held
+        assert run(pr, transcript(*pushed, called("t2", pr), ran("t2"))) == held
+        # ... a command that message did not put still waits for a stop of its own, and
+        # two commands sharing one fence are neither of them put
+        assert run("gh pr merge 12 --squash", transcript(*pair)) == held
+        assert run(push, transcript(showed(f"```\n{push}\n{pr}\n```"), said("ok"))) == held
+
     # a message that mentions a held or refused command is data, not a call
     assert run('git commit -m "docs: gh pr create and git push --force are held"') == passed
     assert run("git commit -F - <<'EOF'\nfeat: never git add -A, gh pr merge waits\nEOF\ngit log -1") == passed
@@ -324,6 +338,14 @@ def antigravity() -> None:
         # a planner step that names the command and calls a tool still names it
         both = {**planned("run_command", {"CommandLine": "git log --oneline -3"}), "content": gate["content"]}
         assert outcome(push, transcript(both, result(), typed("ok"))) == passed
+
+        # a push and its pull request put in one message: one reply, one run of each
+        pr = "gh pr create --fill"
+        pair = [told(f"`{push}`\n- 4cc1af0 feat\n\n`{pr}`\n\nRun both?"), typed("ok")]
+        opened = planned("run_command", {"CommandLine": pr})
+        assert outcome(pr, transcript(*pair, mine, result(), opened)) == passed
+        assert outcome(push, transcript(*pair, mine, result())) == held
+        assert outcome(pr, transcript(*pair, mine, result(), opened, result())) == held
 
         # no reply, an empty one, a message that does not name the command, other words
         # after the one that did, something typed after the reply
