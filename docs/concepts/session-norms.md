@@ -21,8 +21,6 @@ Where an app's `CLAUDE.md` and the norms disagree about a norm, the norms are th
 - **A clean tree means finished. A dirty tree means something is waiting on you.**
 - **`git add -A` and `git add .` are refused**, and the commit names its paths again (`git commit -- <paths>`), so a commit never carries a path nobody named — one staged before the session included. A path that changed outside the scope is reported, never committed along.
 - **A push is never a dialog.** The session ends its turn on the exact command and the commits it publishes, and runs it once when your reply is a clear yes. See [Gates](gates.md).
-- **After a commit, the session tells you to start the next item in a new session.** Every call re-reads the whole session, so the same step costs more late in a long one than at the start of a fresh one. It is advice: you may stay.
-
 ## Three forms
 
 The text follows the documents a repo has.

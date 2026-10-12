@@ -116,9 +116,6 @@ Committing is part of finishing, not a separate request:
   - The message states why, not only what - the diff already shows the what.
   - Paths that changed outside SCOPE are findings reported to the user, never
     committed along.
-  - A turn that committed ends with one line telling the user to start the next item
-    in a new session: every call re-reads the whole session, so each step costs more
-    the longer it runs.
 
 Do not commit when you stop for one of the three legitimate stops in `build-flow`
 Section 6 - the `db-ops` destructive gate, a role test that misses, a business rule

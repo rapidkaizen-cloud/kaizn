@@ -2,6 +2,18 @@
 
 All notable changes to the `raizen-norms` plugin, and to `raizen-hub` until 0.70.0 merged it in, newest first. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versions before these are in `git log`.
 
+## [raizen-norms 0.98.0] - 2026-10-12
+
+The new-session line is gone. Since 0.82.0 a turn that committed ended by telling you to start the next item in a new session. A session cannot read how full its context is, so it said so after every commit — in a session that had barely started as in a long one — and a line said every time says nothing.
+
+### Removed
+
+- Session norms, `GIT`: the line after a commit that told you to start the next item in a new session. `design-settle`'s two session breaks are unchanged.
+
+To act on:
+
+- Nothing.
+
 ## [raizen-norms 0.97.0] - 2026-10-12
 
 Align stops once for the destructive findings you picked. Each finding is its own commit, so each rename went through the destructive gate alone — and 0.96.0's one block for operations approved together left it unsaid whether findings join one. Read from the rule's text; no session has run Align with two destructive findings.
