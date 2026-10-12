@@ -70,6 +70,8 @@ Reversible : [yes/no — if no, name what is lost permanently]
 
 Then **STOP** and wait for the user's answer in this session. The user approves the **number**, not the intent. The approved number is what goes into the guard, with no adjustment of your own.
 
+**Several destructive operations one request needs share one STOP**: one block per operation, in the order they run, each with its own numbers. Run only the operations the reply approves.
+
 **Phase 3 — GUARDED EXECUTION.** Never sent bare. The hook will refuse it, and that refusal is correct.
 
 Row-destructive:
@@ -103,6 +105,8 @@ SELECT <query proving the resulting state>;
 ```
 
 The exception aborts the whole transaction, so the verifying SELECT never runs and zero data is lost.
+
+**Operations approved at one STOP run in one `DO` block, each with its own check against its own Expected**: one miss aborts them all, where a block each leaves the earlier ones committed.
 
 **Phase 4 — REPORT.** Actual versus Expected, plus the SELECT output as-is. Include integrity checks when relations are touched: orphaned FKs, `NOT NULL` now violated, rows that failed to cast.
 

@@ -34,7 +34,7 @@ A statement counts as guarded when it holds a `DO $` block with `RAISE EXCEPTION
 | `ALTER TYPE` | `ALTER TYPE` | The guard |
 | `UPDATE ... SET` with no `WHERE`, or a `WHERE` opening with `true` or `1 = 1` | `UPDATE without a narrow WHERE` | A narrower `WHERE`, or the guard |
 
-The message opens `REFUSED: a destructive operation (<label>) was sent without a guard.` and gives the order: count first and set the Expected number, show the `DESTRUCTIVE` block and stop for your answer, then run wrapped in a `DO` block with `RAISE EXCEPTION`, followed by a verifying `SELECT` in the same call.
+The message opens `REFUSED: a destructive operation (<label>) was sent without a guard.` and gives the order: count first and set the Expected number, show the `DESTRUCTIVE` block — one per operation where the request needs several — and stop once for your answer, then run wrapped in a `DO` block with `RAISE EXCEPTION`, followed by a verifying `SELECT` in the same call.
 
 A `WHERE` inside a subquery is not the statement's own `WHERE`: `UPDATE users SET name = (SELECT name FROM source WHERE source.id = 1);` is refused.
 
@@ -43,6 +43,7 @@ A `WHERE` inside a subquery is not the statement's own `WHERE`: `UPDATE users SE
 - **A `DELETE` narrowed to rows opening with `[CLAUDE]`.** These are the test rows the session made itself. The `WHERE` must read `LIKE '[CLAUDE]...'` or `= '[CLAUDE]...'`, and may be narrowed further with `AND`.
 - **The carve-out fails closed.** `OR`, `NOT` or `USING` outside parentheses, a comparison other than a lone `=` such as `!=`, a `'%[CLAUDE]%'` match, a prefix that appears only inside parentheses such as a subquery, and a `DELETE` with no `WHERE` all go back to needing a guard.
 - **The carve-out is `DELETE` only.** A `DROP` in the same payload, or on a table named `"[CLAUDE] tmp"`, is still refused.
+- **Several operations in one `DO` block.** Operations you approved at one stop arrive as one block with a check each, and the hook reads that block as one guarded statement.
 - **Narrow `UPDATE`, `SELECT`, `CREATE TABLE`.**
 - **An `ALTER TABLE` that drops no data**: a `CONSTRAINT`, a `DEFAULT`, `NOT NULL`, an `IDENTITY`, a generated `EXPRESSION`.
 - **Shell words that are not SQL.** `claude plugin update ...`, `apt update`, `truncate -s 0 logs/app.log`, a `truncate` class edited by `sed`, a commit message saying "delete from queue".

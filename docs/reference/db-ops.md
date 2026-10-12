@@ -31,8 +31,8 @@ Introspecting afterwards is mandatory even when the run looked successful. The r
 | Phase | What happens |
 |---|---|
 | PRE | A `SELECT COUNT` of the rows that will be hit, and the Expected number is set |
-| GATE | The `DESTRUCTIVE` block is shown and the session stops for your answer. You approve the number, not the intent |
-| GUARDED EXECUTION | The statement runs inside a `DO` block that raises an exception when the count differs from the approved number, aborting the transaction. It is never sent bare. A structure-destructive operation checks the count before it acts, inside the same block |
+| GATE | The `DESTRUCTIVE` block is shown and the session stops for your answer. You approve the number, not the intent. Several operations one request needs are shown at one stop, a block each with its own numbers, and only those your reply approves run |
+| GUARDED EXECUTION | The statement runs inside a `DO` block that raises an exception when the count differs from the approved number, aborting the transaction. It is never sent bare. A structure-destructive operation checks the count before it acts, inside the same block. Operations approved at one stop run in one block with a check each, so one miss aborts them all |
 | REPORT | Actual against Expected, the verifying `SELECT` as returned, and integrity checks where relations are touched: orphaned foreign keys, a `NOT NULL` that is violated, rows that failed to cast |
 
 A mismatch stops the session entirely and leaves the frontend untouched.
@@ -55,7 +55,7 @@ A mismatch stops the session entirely and leaves the frontend untouched.
 
 ## What you will see
 
-- **The `DESTRUCTIVE` block**, with `Operation`, `Affected`, `Expected` and `Reversible`. `Affected` is a real count, not an estimate. A `Reversible` of no names what is lost.
+- **The `DESTRUCTIVE` block**, with `Operation`, `Affected`, `Expected` and `Reversible`. `Affected` is a real count, not an estimate. A `Reversible` of no names what is lost. One block per operation, all at one stop, where a request needs several.
 - **A report per role:** role · UUID · rows visible · rows expected · match or not.
 - **Introspection output as returned**, after every migration and every destructive statement.
 - **A question about an untracked table**, in a repo that audits, before the migration runs.

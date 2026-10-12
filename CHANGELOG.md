@@ -2,6 +2,19 @@
 
 All notable changes to the `raizen-norms` plugin, and to `raizen-hub` until 0.70.0 merged it in, newest first. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versions before these are in `git log`.
 
+## [raizen-norms 0.96.0] - 2026-10-12
+
+The destructive gate stops once for one request. `db-ops` described one `DESTRUCTIVE` block and one stop, and said nothing of a request that needs several operations — deleting a row and its children — so each could get a stop of its own. This is read from the rule's text, after the push gate showed the same shape: no session was seen stopping once per operation.
+
+### Changed
+
+- `db-ops`, Destructive operations: several operations one request needs are shown at one stop, a block each with its own numbers, and the session runs only those your reply approves. They run in one `DO` block with a check each, so a count that misses on one aborts them all.
+- `guard_destructive`: the refusal names the one stop. What it refuses and lets through are unchanged; its self-check now pins several operations in one block.
+
+To act on:
+
+- Nothing.
+
 ## [raizen-norms 0.95.0] - 2026-10-12
 
 A push and its pull request share one stop. Asked for both, a session stopped for the push, ran it on the yes, then stopped again for the pull request — the same question twice. `guard_git` already let two commands put in one message each run once on the one reply; the norms never said to put them together.

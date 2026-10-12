@@ -90,6 +90,18 @@ def demo() -> None:
         "query": "DO $$ BEGIN RAISE EXCEPTION 'guard'; END $$; DELETE FROM t;"
     }) == 2
 
+    # operations approved at one stop arrive as one block with a check each, and pass
+    together = (
+        "DO $$ DECLARE n int; BEGIN "
+        "DELETE FROM order_items WHERE order_id = 7; GET DIAGNOSTICS n = ROW_COUNT; "
+        "IF n <> 12 THEN RAISE EXCEPTION 'Expected 12 rows, actual %.', n; END IF; "
+        "DELETE FROM orders WHERE id = 7; GET DIAGNOSTICS n = ROW_COUNT; "
+        "IF n <> 1 THEN RAISE EXCEPTION 'Expected 1 row, actual %.', n; END IF; "
+        "END $$; SELECT count(*) FROM orders WHERE id = 7;"
+    )
+    assert run("mcp__supabase__execute_sql", {"query": together}) == 0
+    assert run("Bash", {"command": f'psql "$DATABASE_URL" <<\'SQL\'\n{together}\nSQL'}) == 0
+
     # a subquery's WHERE must not count as the UPDATE's own WHERE
     assert run("mcp__supabase__execute_sql", {
         "query": "UPDATE users SET name = (SELECT name FROM source WHERE source.id = 1);"
