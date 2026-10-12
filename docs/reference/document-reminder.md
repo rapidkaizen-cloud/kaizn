@@ -59,6 +59,7 @@ On Antigravity the reminder also needs the conversation's own last tool call to 
 ## Related
 
 - [Documents](../concepts/documents.md) — what an app repo keeps, and what gets it written
+- [context-reminder](context-reminder.md) — the note on the session's size that rides in this hook's process
 - [session-start](session-start.md) — the script that carries the reminder on Antigravity
 - [docs-format](docs-format.md) — the rule that a commit carries its own correction
 - [Hosts](../concepts/hosts.md) — what differs between Claude Code and Antigravity

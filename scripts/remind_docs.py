@@ -10,6 +10,9 @@ be met by an amend, and takes "none" for an answer.
 Silent unless all hold: the project keeps documents (`docs/PRD.md`, or a root `PRD.md`),
 the session's own command just ran a `git commit`, HEAD is that commit, and nothing it
 changed is a document.
+
+The same commit carries `remind_context`'s note, in any repo, when the session's context
+has passed a milestone.
 """
 import json
 import re
@@ -20,6 +23,7 @@ from pathlib import Path
 
 import guard_git
 import host
+import remind_context
 
 # Documents kept at the root, in either form; everything under `docs/` is one too.
 DOCUMENTS = ("PRD.md", "QUEUE.md", "DESIGN.md", "README.md")
@@ -142,10 +146,14 @@ def unasked(transcript: str) -> str:
 
 
 def main() -> None:
-    tool_input = host.read_payload().get("tool_input")
+    payload = host.read_payload()
+    tool_input = payload.get("tool_input")
     if not isinstance(tool_input, dict) or not committed(str(tool_input.get("command") or "")):
         sys.exit(0)
-    text = reminder()
+    # The context note rides here: a commit is where an item ends, and this process is
+    # already running.
+    size = remind_context.note(str(payload.get("transcript_path") or ""))
+    text = "\n\n".join(part for part in (reminder(), size) if part)
     if text:
         # Plain stdout from this event goes to a debug log; only this shape reaches the model.
         json.dump({"hookSpecificOutput": {"hookEventName": "PostToolUse", "additionalContext": text}}, sys.stdout)

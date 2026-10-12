@@ -50,6 +50,7 @@ Proven before 0.70.0 only, registered by path: an interactive session, and the h
 - A held push passing on a chat reply: run end to end on Antigravity only. On Claude Code it is replayed against one real transcript, and no session has pushed on a chat reply there.
 - A push and its pull request in one stop (0.95.0): the hook's self-check lets each run once on the one reply, on both hosts. No session has put both commands in one message.
 - Several destructive operations at one stop (0.96.0): the hook's self-check passes them in one guarded block. No session has shown two `DESTRUCTIVE` blocks at one stop, and none was seen stopping once per operation before the rule said so.
+- The context reminder (0.99.0): its self-check passes, and read against one real transcript of 259k tokens it named the 200k milestone. No session has run with it installed, so the line a session then tells the user has not been seen.
 - Align's destructive findings at one stop (0.97.0): no session has run Align with two destructive findings picked, before or after the rule.
 - `norms-help`: no session has loaded it from an installed copy, on either host.
 - On Antigravity: `design-settle` in Full and where UI exists — its audit subagent, its gate; `app-settle` and `logic-settle`; a question asked through `ask_question` in an interactive session; the IDE and Antigravity 2.0. `design-settle`'s `Material loaded:` line is self-reported there, and one run listed a file its transcript shows it never read. Gemini CLI is not ported.

@@ -2,6 +2,18 @@
 
 All notable changes to the `raizen-norms` plugin, and to `raizen-hub` until 0.70.0 merged it in, newest first. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versions before these are in `git log`.
 
+## [raizen-norms 0.99.0] - 2026-10-12
+
+A session tells you it has grown large when it has, measured. The line 0.98.0 removed was said after every commit because a session cannot read its own size; a hook can, from the usage the transcript records. The milestones are a judgement from the cost of a call — a fresh session starts near 80k tokens — not a measured saving.
+
+### Added
+
+- `remind_context.py`, carried by the document reminder's hook on Claude Code: at the first commit after the context passes 200k, 500k or 800k tokens, the session is handed the size and tells you in one line that the next item costs less in a new session. Once per milestone, silent in between, and nothing on Antigravity.
+
+To act on:
+
+- Nothing.
+
 ## [raizen-norms 0.98.0] - 2026-10-12
 
 The new-session line is gone. Since 0.82.0 a turn that committed ended by telling you to start the next item in a new session. A session cannot read how full its context is, so it said so after every commit — in a session that had barely started as in a long one — and a line said every time says nothing.
