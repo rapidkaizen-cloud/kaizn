@@ -70,4 +70,3 @@ A repo can turn the hook off with a file at `.claude/destructive-gate.off` in th
 
 - [Gates](../concepts/gates.md) — the destructive stop as you meet it
 - [db-ops](db-ops.md) — the rule behind it
-- [guard-project-ref](guard-project-ref.md) — the hook that pins Supabase calls to one project

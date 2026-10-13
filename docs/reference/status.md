@@ -45,7 +45,7 @@ Proven before 0.70.0 only, registered by path: an interactive session, and the h
 - The `docs/` form has never been bootstrapped in a real app.
 - `app-settle`'s migrate mode and its align mode have never run in an app. Run migrate on a copy of a legacy app before a real one.
 - Whether a cloud session installs this marketplace; until then, cloud sessions do frontend work only.
-- The account-wide Supabase MCP endpoint end to end: its first-use login, and `project_id` as `guard_project_ref.py` expects.
+- The account-wide Supabase MCP endpoint end to end: its first-use login.
 - The document reminder after a commit: received on Antigravity only. On Claude Code no session has received it — whether a plugin's `PostToolUse` text reaches the model on an SDK host is unobserved. Both sessions that received it answered `Docs: none`, in an app with no UI; none has answered by writing a document.
 - A held push passing on a chat reply: run end to end on Antigravity only. On Claude Code it is replayed against one real transcript, and no session has pushed on a chat reply there.
 - A push and its pull request in one stop (0.95.0): the hook's self-check lets each run once on the one reply, on both hosts. No session has put both commands in one message.

@@ -22,7 +22,7 @@ The primary working directory is not this repo → **STOP** and say so. The `rai
 
 **Nothing in the app repo is written, moved, or deleted.** Fixing the app and fixing the toolkit are separate jobs, and the second may never quietly do the first. A defect worth fixing in the app is reported as a finding, and `app-settle`'s align mode is what acts on it — in the app repo, in another session.
 
-`guard_project_ref.py` does not fire here, so the app's Supabase project is not pinned. Name the project ref explicitly before any database read, and read only.
+No hook pins a Supabase call to the app's project. Name the project ref explicitly before any database read, and read only.
 
 ## 1 — The input is mandatory
 

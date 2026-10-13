@@ -11,11 +11,10 @@
 | `CLAUDE.md` | Both | **Thin**, written to the shape below |
 | `AGENTS.md` | Both | **Thinner**, written to its own shape below — for the agents that never see the plugin |
 | `.claude/settings.json` | Both | `{"enabledPlugins": {"raizen-norms@raizen": true}}` — that key and nothing else; a repo that already has the file keeps the rest of it |
-| `supabase/config.toml` | Both | Only when the database is Supabase Cloud — a self-hosted instance has no project ref (The database connection). **Written here, not copied** — one line, `project_id = "<ref>"`, an identifier and not a secret. The `guard_project_ref` hook pins every Supabase MCP call to this value, so a repo that skips it is a repo the guard stays silent in. **Which ref goes in** follows Question 7 — staging exists → the staging project, never production. **A project the user has yet to create has no ref: the file waits for N6** |
 | Host rewrite rule | Bootstrap | Only when the framework is a **static SPA**, and written for the host chosen at Question 4 — `vercel.json` on Vercel, `netlify.toml` on Netlify, a `try_files` line on an own server. Next.js, Nuxt, SvelteKit, and Astro carry their own server layer — do not write one |
 | CI workflow | Bootstrap | Only when the user asks for migrations through CI — the session never raises it (N6). Written for the host and migration tool actually chosen: one written for the wrong runner is worse than none |
 
-**No `.mcp.json` is written — ever.** Database MCP servers are connected **user scope**, once per machine, never per repo; for Supabase the exact `claude mcp add -s user` one-liner is printed at N6. Project pinning does not come from server config: `supabase/config.toml` declares the repo's project, and the `guard_project_ref` hook in `raizen-norms` blocks any Supabase MCP call aimed at a different one. A database whose official MCP server exists follows the same pattern; a database with no server → say so rather than leaving the gap silent.
+**No `.mcp.json` is written — ever.** Database MCP servers are connected **user scope**, once per machine, never per repo; for Supabase the exact `claude mcp add -s user` one-liner is printed at N6. A database whose official MCP server exists follows the same pattern; a database with no server → say so rather than leaving the gap silent.
 
 **Bootstrap, after the files:** `git init` — skipped where the init command already made the repo — `git branch -M main`, and commit the new files there, paths named — the one commit `main` ever takes directly. Then create `development` from `main` and switch to it.
 
@@ -67,7 +66,7 @@ Where the database chosen at Question 6 has a Claude connector or an MCP server,
 
 ### The database connection
 
-**Supabase Cloud** — the **project ref** goes into `supabase/config.toml`, and, only on a machine not yet set up, the MCP server is connected user-scope, the browser login approved on first use:
+**Supabase Cloud** — only on a machine not yet set up, the MCP server is connected user-scope, the browser login approved on first use:
 
 ```
 claude mcp add -s user --transport http supabase "https://mcp.supabase.com/mcp"
@@ -75,15 +74,14 @@ claude mcp add -s user --transport http supabase "https://mcp.supabase.com/mcp"
 
 The URL must stay **bare** — Supabase's OAuth rejects any query string, so adding `?features=` or `?project_ref=` breaks the login itself.
 
-**Self-hosted Supabase gets neither the ref nor that line.** Write its route on `CLAUDE.md`'s Database row — `psql` inside the database container over `ssh <host alias>`, the alias and never a credential — and hand the user the permission rule that `ssh` command needs. `guard_destructive` covers that route; `guard_project_ref` stays silent, having no ref to pin. Studio's own MCP endpoint is the alternative, reached only through an `ssh` tunnel because it carries no authentication.
+**Self-hosted Supabase does not get that line.** Write its route on `CLAUDE.md`'s Database row — `psql` inside the database container over `ssh <host alias>`, the alias and never a credential — and hand the user the permission rule that `ssh` command needs. `guard_destructive` covers that route. Studio's own MCP endpoint is the alternative, reached only through an `ssh` tunnel because it carries no authentication.
 
-Both are once per machine and account, never per repo, so a machine already set up needs nothing beyond the ref. Another database → whatever its own equivalent is.
+Both are once per machine and account, never per repo, so a machine already set up needs nothing. Another database → whatever its own equivalent is.
 
 ## N6 — Close — bootstrap
 
 Report one block: the files created, then what the **user must do by hand right now** — create the database project chosen at Question 6, plus its staging counterpart if Question 7 asked for one, and connect it as The database connection states, its one-liner printed.
 
-- **Supabase Cloud — the ref the user replies with is written into `supabase/config.toml` and committed then.** No reply before the session closes → the block names the file as owed: until it exists, `guard_project_ref` pins nothing.
 - **Pointed at production because there is no staging → say that plainly**: from then on every guarded destructive statement lands on live data.
 - **Say that without a live database there is no migration and no role test, so not a single page can be built.**
 - **Do not mention the hosting connection, production environment variables, or the CI migration workflow.** None is needed to build a page locally; `build-flow` raises them once the app is ready to ship.

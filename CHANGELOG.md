@@ -2,6 +2,20 @@
 
 All notable changes to the `raizen-norms` plugin, and to `raizen-hub` until 0.70.0 merged it in, newest first. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versions before these are in `git log`.
 
+## [raizen-norms 0.100.0] - 2026-10-13
+
+The project pin is gone. `guard_project_ref` refused a Supabase MCP call aimed at a project other than the one `supabase/config.toml` declared. The account-wide Supabase MCP server it existed for is no longer in use where this toolkit is developed, and in the transcripts on hand it had refused no call in an app.
+
+### Removed
+
+- `guard_project_ref`, its self-check and its page: no hook reads `supabase/config.toml` any more, on either host.
+- `app-settle`, bootstrap and document modes: `supabase/config.toml` is no longer written, and the close no longer asks for the project ref.
+- `app-settle`, audit, C4: a `project_id` that is not a hosted project ref is no longer a finding.
+
+To act on:
+
+- An app on Supabase Cloud: after this update nothing pins a Supabase MCP call to the repo's project — a call reaches whichever project it names. `supabase/config.toml` may stay; nothing reads it.
+
 ## [raizen-norms 0.99.0] - 2026-10-12
 
 A session tells you it has grown large when it has, measured. The line 0.98.0 removed was said after every commit because a session cannot read its own size; a hook can, from the usage the transcript records. The milestones are a judgement from the cost of a call — a fresh session starts near 80k tokens — not a measured saving.

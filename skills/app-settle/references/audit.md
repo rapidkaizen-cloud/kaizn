@@ -35,7 +35,7 @@ C7 rule coverage    : [N rule topics · N quoted by a test title · runner — <
 
 **C3 — language split.** `raizen-norms` puts identifiers, file names, routes, API paths, and every database name in English, whatever language the UI speaks. Count what deviates and name where.
 
-**C4 — guard coverage.** Find every norm that cannot apply here. Two known shapes: a `supabase/config.toml` whose `project_id` is not a hosted project ref, which makes `guard_project_ref` declare nothing and stay silent; and a `.claude/destructive-gate.off` marker nobody remembers setting. Per silent norm, say **which guarantee does not hold**, not merely that a file looks odd.
+**C4 — guard coverage.** Find every norm that cannot apply here. One known shape: a `.claude/destructive-gate.off` marker nobody remembers setting. Per silent norm, say **which guarantee does not hold**, not merely that a file looks odd.
 
 **C5 — the documents.** The repo carries `docs-format`'s closed list, in the form it is on. Anything else that reads as a norm or a record — `ARCHITECTURE.md`, `DECISIONS.md`, a committed audit report — is a stray. `CLAUDE.md` and `AGENTS.md` are never strays: they instruct agents rather than record the app. **A legacy repo is audited as legacy** — its root `PRD.md` and `QUEUE.md` are its list, its frontmatter-only `DESIGN.md` is not a stray, and an absent `docs/` is never a finding.
 

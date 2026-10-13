@@ -45,8 +45,6 @@ Then the rows `scaffold.md` marks Both:
 - **`README.md` at the root** — already present → **do not overwrite**; report it untouched.
 - **A file already at a path this mode writes under `docs/`** → do not overwrite it; report it and ask where it goes before writing.
 - **`.claude/settings.json`** enabling `raizen-norms`. Already present with other plugins → add the key, keep the rest.
-- **`supabase/config.toml`** only when the database is Supabase Cloud **and** the file is missing; self-hosted follows `scaffold.md`'s The database connection. Present already → leave it alone.
-
 **No scaffold, no `git init` on an existing repo, no host config, no CI workflow** — they already exist or the user decided against them.
 
 Commit the new files, paths named.
