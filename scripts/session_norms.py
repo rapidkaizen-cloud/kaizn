@@ -123,14 +123,15 @@ absent from the PRD. Leave the working tree dirty and report the stop instead. S
 the end of a session: a clean tree means finished, a dirty tree means something is
 waiting on the user.
 
-`main` never receives a direct commit while `development` exists. A push or a pull
-request is a chat stop, never an AskUserQuestion - a dialog gets clicked before it is
-read. End the turn on a message with the exact command in backticks on a line of its
-own and, under it, every commit it publishes as `- ` bullets: short hash and subject. A
-push and a pull request asked for together go in one message, each on a line of its
-own. Run only what the reply clearly says yes to, in whatever words - a question, a
-condition or another instruction is not a yes. `guard_git` holds each command until
-that message has a reply, and one reply covers one run of each.
+`main` never receives a direct commit while `development` exists. A push, or the merge
+of a pull request, is a chat stop, never an AskUserQuestion - a dialog gets clicked
+before it is read. End the turn on a message with the exact command in backticks on a
+line of its own and, under it, every commit it publishes as `- ` bullets: short hash
+and subject. Run it only on a clear yes, in whatever words - a question, a condition or
+another instruction is not a yes. Answer a question and wait: a push stays open for the
+yes that follows, a merge is put again in the answer. `guard_git` holds both until the
+stop has a reply, and one stop covers one run. Open a pull request only when asked; it
+needs no stop.
 
 """
 

@@ -2,6 +2,24 @@
 
 All notable changes to the `raizen-norms` plugin, and to `raizen-hub` until 0.70.0 merged it in, newest first. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versions before these are in `git log`.
 
+## [raizen-norms 0.101.0] - 2026-10-13
+
+The publishing stop is a gate, not a lock. In a real app a question typed between the stop and the yes brought the whole stop a second time: `guard_git` counted only a reply to the very message that named the command, and the session's answer to the question did not name it again. The hook now proves that the stop happened and leaves the reading to the session, as the gate was meant since 0.74.0. The price: a push that was shown and never run stays open, so telling a yes for it from a yes for something else is the session's.
+
+### Changed
+
+- `guard_git`, `git push`: a push passes once the session ended a turn on the command and you replied, whatever is typed after — a question, its answer, then your yes are one stop. Still one run per stop.
+- `guard_git`, `gh pr merge`: held as before, and now the only command held to the reply itself — it is what reaches production, so a question in between needs the command put again.
+- Session norms, `GIT`, and the hold's message: say what a question leaves open, a push, and what it does not, a merge.
+
+### Removed
+
+- `guard_git`: the hold on `gh pr create`. Opening a pull request publishes nothing a push has not, `gh` with no prompt to answer stops on a branch that is not pushed, and the hold caught `gh pr create --help`. The norms keep the rule: a pull request is opened only when asked.
+
+To act on:
+
+- Nothing. From this version a session opens a pull request you asked for without a stop; it still stops for the push before it.
+
 ## [raizen-norms 0.100.0] - 2026-10-13
 
 The project pin is gone. `guard_project_ref` refused a Supabase MCP call aimed at a project other than the one `supabase/config.toml` declared. The account-wide Supabase MCP server it existed for is no longer in use where this toolkit is developed, and in the transcripts on hand it had refused no call in an app.

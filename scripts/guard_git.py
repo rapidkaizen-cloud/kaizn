@@ -13,15 +13,19 @@ Refused, and fixed by the agent itself:
 
 Held until the user replies:
   - git push, --force-with-lease included
-  - gh pr create / gh pr merge
+  - gh pr merge
 
-A held command passes once the transcript shows the session's last message putting the
-exact command in backticks on a line of its own, a reply the user typed to it, nothing
-typed since, and no call of that command since - one reply, one run. A message may put
-several held commands, each on a line of its own: the one reply then covers one run of
-each, so a push and its pull request need one stop. What is enforced here is the stop, not
-the yes: a hook cannot read what a reply means, so the session reads it and runs the
-command only on a yes. The reply is typed in chat rather than picked on a question
+A push passes once the transcript shows a turn the session ended on the exact command,
+in backticks on a line of its own, something the user typed after it, and no call of
+that command since - one stop, one run. What the user typed, and how many messages
+later the yes came, is the session's to read: a question answered first and a yes after
+it is still one stop. A merge is held to more, because it is what reaches production:
+the reply is the one to the session's last message, with nothing typed since. A message
+may put several held commands, each on a line of its own: the one reply then covers one
+run of each. `gh pr create` is not held: it publishes nothing a push has not, and with no
+prompt to answer it stops on a branch that is not pushed. What is enforced here is the
+stop, not the yes: a hook cannot read what a reply means, so the session reads it and
+runs the command only on a yes. The reply is typed in chat rather than picked on a question
 dialog, because a dialog gets clicked before it is read. It is read from the transcript
 rather than asked for with a permission prompt, because an SDK host never shows that
 prompt: "ask" there is a silent refusal that leaves the user typing the command by hand.
@@ -108,7 +112,7 @@ def names(text: str, want: str) -> bool:
     )
 
 
-def approved_antigravity(payload: dict, cmd: str) -> bool:
+def approved_antigravity(payload: dict, cmd: str, strict: bool) -> bool:
     """`approved`, read from Antigravity's transcript: one step per line, a planner step
     carrying `tool_calls` and the step after it carrying their result."""
     # ponytail: the result is paired to its call by position, which holds while a planner
@@ -135,23 +139,25 @@ def approved_antigravity(payload: dict, cmd: str) -> bool:
         elif step.get("type") == "USER_INPUT" and step.get("source") == "USER_EXPLICIT":
             request = REQUEST.search(content)
             if (request.group(1) if request else content).strip():
-                granted, named = named, False
+                granted, named = named or (granted and not strict), False
         if step.get("type") == "PLANNER_RESPONSE" and content:
             named = names(content, want)
     return granted
 
 
-def approved(payload: dict, cmd: str) -> bool:
-    """True when the user's last message replies to one naming `cmd`, and no run of it has spent that.
+def approved(payload: dict, cmd: str, strict: bool = False) -> bool:
+    """True when the user replied to a message naming `cmd`, and no run of it has spent that.
 
     The message is the session's last before the reply: a command named earlier in the
-    turn, with other text after it, was never put to the user as a stop. The reply is the
-    user's last: anything typed after it is about something else, and takes the grant
-    back. A call of the command counts as spent once its tool_result is in the transcript,
-    so the call being checked right now - written, not yet answered - never spends it.
+    turn, with other text after it, was never put to the user as a stop. What is typed
+    after the reply leaves the grant standing - the yes may follow a question - unless
+    `strict`: there the reply is the user's last, and anything typed after it takes the
+    grant back. A call of the command counts as spent once its tool_result is in the
+    transcript, so the call being checked right now - written, not yet answered - never
+    spends it.
     """
     if payload.get("host") == host.ANTIGRAVITY:
-        return approved_antigravity(payload, cmd)
+        return approved_antigravity(payload, cmd, strict)
     want = norm(cmd)
     granted = named = False
     pending = set()
@@ -185,9 +191,9 @@ def approved(payload: dict, cmd: str) -> bool:
         if entry.get("type") == "assistant":
             named = any(names(text, want) for text in said)
         elif entry.get("type") == "user":
-            granted, named = named, False
-            if granted:
+            if named:
                 pending.clear()
+            granted, named = named or (granted and not strict), False
     return granted
 
 
@@ -202,25 +208,33 @@ def block(msg: str) -> None:
 WRAPPED = re.compile(r"&&|\|\||[;|\n]|\d?>")
 
 
-def hold(payload: dict, cmd: str, what: str, wrapped: bool = False) -> None:
-    if approved(payload, cmd):
+def hold(payload: dict, cmd: str, what: str, wrapped: bool = False, strict: bool = False) -> None:
+    if approved(payload, cmd, strict):
         sys.exit(0)
     alone = (
         " This call adds other commands to it, and a reply covers the command the message "
         "names and no other: name it and run it alone - no `cd`, no `&&`, no pipe, no "
         "redirection."
     )
+    run = "run the command as named" if wrapped else "retry the same command unchanged"
+    # What a question in between costs: nothing for a push, the stop for a merge.
+    after = (
+        f"{run} before anything else is typed. A question, a condition or another instruction "
+        "is not a yes: answer it in a message that puts the command again, since this one is "
+        "held to the reply itself."
+        if strict
+        else f"{run}. A question, a condition or another instruction is not a yes: answer it "
+        "and wait - the stop stays open, and the yes may come in a later message."
+    )
     block(
         f"HELD: {what} runs only on the user's yes in chat.{alone if wrapped else ''} End this "
         f"turn on a message that puts {'that' if wrapped else 'this exact'} command in backticks "
         "on a line of its own, lists under it every commit it publishes as `- ` bullets, short "
         "hash and subject, and asks whether to run it. Another held command the request also "
-        "needs - the pull request after a push - goes in that message on a line of its own, and "
-        "the one reply is read for both. No question dialog - one gets clicked "
-        "before it is read. Read the reply yourself: on a clear yes, in whatever words, "
-        f"{'run the command as named' if wrapped else 'retry the same command unchanged'} before "
-        "anything else is typed - one reply covers one run of each command named. A question, a "
-        "condition or another instruction is not a yes. Never hand the command to the user to type."
+        "needs goes in that message on a line of its own, and the one reply is read for both. "
+        "No question dialog - one gets clicked before it is read. Read the reply yourself: on a "
+        f"clear yes, in whatever words, {after} One stop covers one run of each command named. "
+        "Never hand the command to the user to type."
         + ("" if wrapped else f"\nCommand: {norm(cmd)}")
     )
 
@@ -260,8 +274,8 @@ def main() -> None:
             )
 
     wrapped = WRAPPED.search(code) is not None
-    if re.search(r"\bgh\s+pr\s+(create|merge)\b", code):
-        hold(payload, cmd, "opening or merging a pull request", wrapped)
+    if re.search(r"\bgh\s+pr\s+merge\b", code):
+        hold(payload, cmd, "merging a pull request", wrapped, strict=True)
 
     if re.search(GIT + r"push\b", code):
         hold(payload, cmd, "a push", wrapped)

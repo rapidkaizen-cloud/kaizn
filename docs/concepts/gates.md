@@ -4,13 +4,13 @@ A session decides most things with you through a question. Two actions are diffe
 
 | | Publishing | Destructive SQL |
 |---|---|---|
-| Covers | `git push`, `gh pr create`, `gh pr merge` | `DROP`, `TRUNCATE`, `DELETE`, a rename, `ALTER TYPE`, `ALTER ... DROP COLUMN`, an `UPDATE` with no narrow `WHERE` |
+| Covers | `git push`, `gh pr merge` | `DROP`, `TRUNCATE`, `DELETE`, a rename, `ALTER TYPE`, `ALTER ... DROP COLUMN`, an `UPDATE` with no narrow `WHERE` |
 | You see | The exact command and the commits it publishes | The `DESTRUCTIVE` block, with a real row count |
 | You answer | In chat, in your own words | In chat: you approve the number |
 | The hook checks | That the stop happened and you replied | That the statement carries its own guard |
 | The hook does not check | What your reply means | Whether you agreed |
 
-## Publishing — push and pull requests
+## Publishing — push and merge
 
 The session ends its turn on a message like this, and does nothing until you reply:
 
@@ -23,27 +23,19 @@ Run it?
 ```
 
 - **Reply in chat, in any words.** A clear yes runs the command once.
-- **A question, a condition, or another instruction is not a yes.** The session answers or does what you said, and shows the command again before it publishes.
+- **A question, a condition, or another instruction is not a yes.** The session answers or does what you said. A push stays open: your yes after the answer runs it, with no second stop. A merge is shown again with the answer, and runs on your reply to that.
 - **There is no dialog to click.** A dialog gets clicked before it is read.
-- **A push and its pull request share one stop** when you asked for both. The message puts each command on a line of its own, the commits once, and one reply covers both. A reply that names one — `push only` — runs that one, and the other is shown again before it runs.
+- **Opening a pull request is not a stop.** The session opens one only when you ask, and `gh pr create` runs without a reply: it publishes nothing the push before it has not. Asked for a push and its pull request, you get the one stop for the push.
 
-```
-`git push origin development`
-- 4cc1af0 feat(orders): status filter on the order list
+What `guard_git` holds a push for, all three at once:
 
-`gh pr create --base main --head development --fill`
-
-Run both?
-```
-
-What `guard_git` holds each command for, all four at once:
-
-1. The session's last message puts the exact command in backticks on a line of its own. A command named inside a sentence — a closing report saying what it pushed — does not count.
+1. The session ended a turn on a message that puts the exact command in backticks on a line of its own. A command named inside a sentence — a closing report saying what it pushed — does not count.
 2. You typed a reply to that message.
-3. Nothing else has been typed since.
-4. The command has not already run on that reply — one reply, one run of each command the message puts.
+3. The command has not run since — one stop, one run.
 
-**The hook proves the stop, not the yes.** It cannot read what a reply means, so the session reads it — which of two commands a reply covers included. A session that misreads a no is not stopped by the hook.
+A merge is held to one more, because it is what reaches production: nothing else has been typed since your reply.
+
+**The hook proves the stop, not the yes.** It cannot read what a reply means, so the session reads it — which message was the yes included. A session that misreads a no is not stopped by the hook, and a push that was shown and never run stays open: telling a yes for it from a yes for something else, an hour later, is the session's.
 
 Refused outright, with no reply that lets them through: a bare force push (`--force`, `-f`, `+branch`) — `--force-with-lease` is the only force, and it is held like any push; a commit while on `main`, in a repo that has a `development` branch; `git add -A` and `git add .`.
 

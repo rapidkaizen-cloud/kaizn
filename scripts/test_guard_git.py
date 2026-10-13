@@ -81,8 +81,12 @@ def demo() -> None:
 
     # held without a reply
     assert run("git push origin development") == held
-    assert run("gh pr create --fill") == held
     assert run("gh pr merge 12 --squash") == held
+
+    # opening a pull request is not held: it publishes nothing a push has not
+    assert run("gh pr create --fill") == passed
+    assert run("gh pr create --base main --head development --title 'Orders' --body-file pr.md") == passed
+    assert run("gh pr create --help") == passed
 
     with tempfile.TemporaryDirectory() as tmp:
         def transcript(*lines) -> str:
@@ -149,9 +153,24 @@ def demo() -> None:
         assert run(push, transcript(showed(f"Published with `{push}`: 4cc1af0 and e2bd00d."), said("ok"))) == held
         assert run(push, transcript(showed(f"- **Publish with `{push}`**: done"), said("next page"))) == held
 
-        # typed after the reply: about something else, and the grant is gone
-        assert run(push, transcript(gate, said("ok"), showed("Tagging first."), said("and the changelog"))) == held
-        assert run(push, transcript(gate, said("wait"), said("now"))) == held
+        # typed after the reply: the stop stays open. A question answered first and the
+        # yes after it is one stop, and the session reads which message was the yes
+        answered = [gate, said("did you pull main first?"), showed("Yes: 0 behind, 81 ahead."), said("ok")]
+        assert run(push, transcript(*answered)) == passed
+        assert run(push, transcript(gate, said("wait"), said("now"))) == passed
+        assert run(push, transcript(gate, said("ok"), showed("Tagging first."), said("and the changelog"))) == passed
+        # ... for one run: the stop is spent as any other, and what is typed after is no new one
+        assert run(push, transcript(*answered, called("t1", push), ran("t1"))) == held
+        assert run(push, transcript(*answered, called("t1", push), ran("t1"), said("again"))) == held
+
+        # a merge is what reaches production, and is held to the reply itself: a question
+        # in between takes the stop back until the answer puts the command again
+        merge = "gh pr merge 12 --squash"
+        merge_gate = showed(f"`{merge}`\n- 4cc1af0 feat: push waits for a reply\n\nMerge it?")
+        assert run(merge, transcript(merge_gate, said("ok"))) == passed
+        assert run(merge, transcript(merge_gate, said("is CI green?"), showed("Yes."), said("ok"))) == held
+        assert run(merge, transcript(merge_gate, said("wait"), said("now"))) == held
+        assert run(merge, transcript(merge_gate, said("is CI green?"), showed(f"Yes.\n\n`{merge}`"), said("ok"))) == passed
 
         # user entries nobody typed neither grant nor take a grant back: a subagent's
         # prompt, a host-written note, a tool's result with a note beside it
@@ -165,19 +184,19 @@ def demo() -> None:
         assert run(push, transcript(gate, asked(f"Run `{push}`?", ["Run"]))) == held
         assert run(push, str(Path(tmp) / "missing.jsonl")) == held
 
-        # the lease and pull requests go through the same reply; a bare force never does
+        # the lease goes through the same reply; a bare force never does
         lease = "git push --force-with-lease=master:90aa7fc origin master"
         assert run(lease, transcript(showed(f"Force push:\n`{lease}`"), said("ok"))) == passed
         bare = "git push --force origin master"
         assert run(bare, transcript(showed(f"`{bare}`"), said("ok"))) == refused
-        pr = "gh pr create --fill"
-        assert run(pr, transcript(showed(f"Open it:\n\n  `{pr}`\n- 4cc1af0 feat"), said("ok"))) == passed
+        assert run(merge, transcript(showed(f"Merge it:\n\n  `{merge}`\n- 4cc1af0 feat"), said("ok"))) == passed
         # a command of several lines can only be put in a fence
-        body = "gh pr create --title 'Orders' --body \"$(cat <<'EOF'\nStatus filter.\nEOF\n)\""
+        body = "gh pr merge 12 --squash --body \"$(cat <<'EOF'\nStatus filter.\nEOF\n)\""
         assert run(body, transcript(showed(f"```bash\n{body}\n```\n- 4cc1af0 feat"), said("ok"))) == passed
 
-        # a push and its pull request put in one message: one reply covers one run of
-        # each, and the run of one spends nothing of the other
+        # a push and a merge put in one message: one reply covers one run of each, and
+        # the run of one spends nothing of the other
+        pr = merge
         pair = [showed(f"`{push}`\n- 4cc1af0 feat\n\n`{pr}`\n\nRun both?"), said("ok")]
         pushed = [*pair, called("t1", push), ran("t1")]
         assert run(push, transcript(*pair)) == passed
@@ -187,7 +206,7 @@ def demo() -> None:
         assert run(pr, transcript(*pushed, called("t2", pr), ran("t2"))) == held
         # ... a command that message did not put still waits for a stop of its own, and
         # two commands sharing one fence are neither of them put
-        assert run("gh pr merge 12 --squash", transcript(*pair)) == held
+        assert run("gh pr merge 13 --squash", transcript(*pair)) == held
         assert run(push, transcript(showed(f"```\n{push}\n{pr}\n```"), said("ok"))) == held
 
     # a message that mentions a held or refused command is data, not a call
@@ -217,7 +236,8 @@ def demo() -> None:
         assert run(everything) == refused, everything
 
     # a held command the call adds to is told to run alone, and is handed no compound to
-    # name; the bare one is handed its own text
+    # name; the bare one is handed its own text. A push is told the stop stays open through
+    # a question, a merge that the answer puts the command again
     def message(command: str) -> str:
         payload = {"tool_name": "Bash", "tool_input": {"command": command}}
         return subprocess.run([PYTHON, str(GUARD)], input=json.dumps(payload), capture_output=True, text=True).stderr
@@ -226,11 +246,13 @@ def demo() -> None:
         'cd "D:/Codes/my app" && git push origin dev 2>&1 | tail -5',
         "git push origin dev 2>&1",
         "git push origin dev; git status",
-        "gh pr create --fill | cat",
+        "gh pr merge 12 --squash | cat",
     ):
         assert "run it alone" in message(wrapped) and "Command:" not in message(wrapped), wrapped
-    for bare in ("git push origin dev", "gh pr create --title 'a | b; c > d' --fill"):
+    for bare in ("git push origin dev", "gh pr merge 12 --squash --subject 'a | b; c > d'"):
         assert "run it alone" not in message(bare) and f"Command: {bare}" in message(bare), bare
+    assert "stays open" in message("git push origin dev") and "puts the command again" not in message("git push origin dev")
+    assert "puts the command again" in message("gh pr merge 12") and "stays open" not in message("gh pr merge 12")
 
     # a force flag belongs to the push it follows: one on a later command is not a force
     assert run("git push origin dev && rm -f x") == held
@@ -339,8 +361,11 @@ def antigravity() -> None:
         both = {**planned("run_command", {"CommandLine": "git log --oneline -3"}), "content": gate["content"]}
         assert outcome(push, transcript(both, result(), typed("ok"))) == passed
 
-        # a push and its pull request put in one message: one reply, one run of each
-        pr = "gh pr create --fill"
+        # opening a pull request is not held
+        assert outcome("gh pr create --fill") == passed
+
+        # a push and a merge put in one message: one reply, one run of each
+        pr = "gh pr merge 12 --squash"
         pair = [told(f"`{push}`\n- 4cc1af0 feat\n\n`{pr}`\n\nRun both?"), typed("ok")]
         opened = planned("run_command", {"CommandLine": pr})
         assert outcome(pr, transcript(*pair, mine, result(), opened)) == passed
@@ -355,7 +380,15 @@ def antigravity() -> None:
         assert outcome(push, transcript(gate, told("Anything else?"), typed("ok"))) == held
         # named inside a sentence of a closing report: mentioned, not put to the user
         assert outcome(push, transcript(told(f"- **Publish with `{push}`**: done"), typed("next page"))) == held
-        assert outcome(push, transcript(*yes, told("Tagging first."), typed("and the changelog"))) == held
+        # typed after the reply: a push stays open through it - a question answered, then
+        # the yes - and a merge does not
+        assert outcome(push, transcript(*yes, told("Tagging first."), typed("and the changelog"))) == passed
+        assert outcome(push, transcript(gate, typed("did you pull main?"), told("Yes."), typed("ok"))) == passed
+        assert outcome(push, transcript(gate, typed("did you pull main?"), told("Yes."), typed("ok"), mine, result())) == held
+        merge_gate = told(f"`{pr}`\n- 4cc1af0 feat\n\nMerge it?")
+        assert outcome(pr, transcript(merge_gate, typed("ok"))) == passed
+        assert outcome(pr, transcript(merge_gate, typed("is CI green?"), told("Yes."), typed("ok"))) == held
+        assert outcome(pr, transcript(merge_gate, typed("is CI green?"), told(f"Yes.\n\n`{pr}`"), typed("ok"))) == passed
 
         # a step the user never typed neither grants nor takes a grant back
         injected = typed("SESSION NORMS", "SYSTEM_SDK")

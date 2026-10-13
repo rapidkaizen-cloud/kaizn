@@ -37,7 +37,7 @@ The long version: [Bring in an existing app](../guide/existing-app.md).
 
 - **It starts already knowing the norms.** Language, scope, git, asking and decisions are printed before your first message. See [Session norms](../concepts/session-norms.md).
 - **It commits by itself.** A finished scope item is committed in the same turn, with named paths.
-- **It does not publish by itself.** A push or a pull request waits for your reply in chat.
+- **It does not publish by itself.** A push, and the merge of a pull request, wait for your reply in chat; a pull request is opened only when you ask.
 - **It does not destroy data by itself.** Destructive SQL waits for a number you approve.
 
 The last two are the [gates](../concepts/gates.md).

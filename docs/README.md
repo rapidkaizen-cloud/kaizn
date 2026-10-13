@@ -53,7 +53,7 @@ New here: [Overview](start/overview.md), then [Install](start/install.md), then 
 | Page | Holds |
 |---|---|
 | [session-start](reference/session-start.md) | What a session is handed when it starts: the norms, the documents, the listings, the hand-over |
-| [guard-git](reference/guard-git.md) | What is refused and what is held around commits, pushes and pull requests |
+| [guard-git](reference/guard-git.md) | What is refused and what is held around commits, pushes and merges |
 | [guard-destructive](reference/guard-destructive.md) | Destructive SQL sent without its guard |
 | [document-reminder](reference/document-reminder.md) | The three questions a session is handed after a commit that touched no document |
 | [context-reminder](reference/context-reminder.md) | The one line you are told when a session's context passes 200k, 500k or 800k tokens |

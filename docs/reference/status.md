@@ -47,8 +47,8 @@ Proven before 0.70.0 only, registered by path: an interactive session, and the h
 - Whether a cloud session installs this marketplace; until then, cloud sessions do frontend work only.
 - The account-wide Supabase MCP endpoint end to end: its first-use login.
 - The document reminder after a commit: received on Antigravity only. On Claude Code no session has received it — whether a plugin's `PostToolUse` text reaches the model on an SDK host is unobserved. Both sessions that received it answered `Docs: none`, in an app with no UI; none has answered by writing a document.
-- A held push passing on a chat reply: run end to end on Antigravity only. On Claude Code it is replayed against one real transcript, and no session has pushed on a chat reply there.
-- A push and its pull request in one stop (0.95.0): the hook's self-check lets each run once on the one reply, on both hosts. No session has put both commands in one message.
+- A held push passing on a chat reply: run end to end on Antigravity. On Claude Code one session in a real app at 0.99.0 pushed and opened its pull request on one reply; a question typed between the stop and the yes brought a second stop there.
+- The publishing stop of 0.101.0 — a push passing on a yes that follows an answered question, `gh pr create` unheld, a merge still held to the reply itself: the hook's self-check replays the conversation that showed the second stop, on both hosts. No session has run with it installed.
 - Several destructive operations at one stop (0.96.0): the hook's self-check passes them in one guarded block. No session has shown two `DESTRUCTIVE` blocks at one stop, and none was seen stopping once per operation before the rule said so.
 - The context reminder (0.99.0): its self-check passes, and read against one real transcript of 259k tokens it named the 200k milestone. No session has run with it installed, so the line a session then tells the user has not been seen.
 - Align's destructive findings at one stop (0.97.0): no session has run Align with two destructive findings picked, before or after the rule.

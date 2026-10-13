@@ -18,7 +18,7 @@ Each host reads its own manifest and its own hook file. `.claude-plugin/` and `h
 
 ## What is the same
 
-- **A held push or pull request.** The session ends its turn on the command and its commits, and runs it once when the reply typed in chat is a yes. The guard holds the command until that reply exists; reading it as a yes is the session's.
+- **A held push or merge.** The session ends its turn on the command and its commits, and runs it once when a reply typed in chat is a yes. The guard holds the command until a reply exists; reading it as a yes is the session's.
 - **A refusal.** A guard that refuses stops the tool on both hosts.
 - **The skills.** They are written in Claude Code's vocabulary; on Antigravity the `HOST` block is the one place the tool names are mapped.
 
