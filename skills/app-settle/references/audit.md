@@ -4,7 +4,7 @@ You audit an app repo against the conventions the installed plugin states, for a
 
 ## What you report back
 
-Only this block, filled. **Run the rows your brief names under `Rows`, and print all seven**: a row you ran prints its result, a clean one included; a row not named prints `not run` — a reader cannot tell *audited and clean* from *never audited* without the line. Under each row that is not clean, list what it counts — a path with its line, a name, a topic — one per line. No file contents, no narration, no fix.
+Only this block, filled. **Run the rows your brief names under `Rows`, and print all eight**: a row you ran prints its result, a clean one included; a row not named prints `not run` — a reader cannot tell *audited and clean* from *never audited* without the line. Under each row that is not clean, list what it counts — a path with its line, a name, a topic — one per line. No file contents, no narration, no fix.
 
 ```
 AUDIT
@@ -20,6 +20,7 @@ C6 lint floor       : [UI — absent · N of 4 refusals written]  or  [n/a — n
                       [logic — absent · N of 5 refusals written · Data layer row present / missing · N files calling the database outside the folder]
                       [N inline disables of floor rules · N floor rules lowered to a warning]  or  [clean]
 C7 rule coverage    : [N rule topics · N quoted by a test title · runner — <name> / none]  or  [n/a — no rules]
+C8 page specs       : [N pages reading data · N with a spec · Playwright — installed / none]  or  [n/a — no page reads data / not the web]
 ```
 
 ## How each row is read
@@ -53,3 +54,5 @@ C7 rule coverage    : [N rule topics · N quoted by a test title · runner — <
 - **Then the two ways a floor is hollowed out from inside**: inline disables of its rules, and rules lowered to a warning.
 
 **C7 — rule coverage.** `logic-build` Section 10 has every implemented rule leave a test whose title quotes its topic as `docs/rules.md` writes it, so coverage is a search: list the topics, search the test files for each. Report the count and name the uncovered topics. No runner in the repo → say so in the row.
+
+**C8 — page specs.** `build-flow`'s `references/backend.md` has every wired page leave a Playwright spec, so coverage is a search: list the route pages that read data — through the data layer folder, or the database client where there is none — and search the spec files for each route. Report the count and name the pages with none. No Playwright in the repo → say so in the row. A Proof profile that is not the web → `n/a`.

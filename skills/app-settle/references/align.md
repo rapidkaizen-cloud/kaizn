@@ -10,19 +10,19 @@ Mechanical work: change **code and agent files that already exist**, and only wh
 
 **A document that disagrees with the code is corrected only where it states what exists** — a path, a name, something the code has never done: the code wins, and that one line changes. A mismatch about what ought to be — a rule, a role's limit, a prohibition — is never settled here in either direction: list it under `Dropped`, because Rework is where the user says which side is right. In doubt → the second. Never edit a frozen record.
 
-**The findings live in the session and the commits** — no audit report, migration plan, or checklist as a file. Align creates only files that record nothing about the app: `AGENTS.md` under C2, `docs/queue.md` under C5 and C7, and under C6 the linter's config and its suppression baseline.
+**The findings live in the session and the commits** — no audit report, migration plan, or checklist as a file. Align creates only files that record nothing about the app: `AGENTS.md` under C2, `docs/queue.md` under C5, C7 and C8, and under C6 the linter's config and its suppression baseline.
 
 **An empty audit is a normal ending.** Close having changed nothing and say so; manufacture no finding.
 
 ## A1 — Audit, before asking anything
 
-**Run the audit in one subagent on a cheaper model than the session's** (`sonnet` on Claude Code) **whose whole brief is `audit.md`**: hand it that path, the repo root, the installed plugin path, every `NOTE` line the session start printed, and `Rows: C1 C2 C4 C5 C6 C7`, and never read that file here. No subagent → say so and run the audit here from that file. No model choice → the session's model.
+**Run the audit in one subagent on a cheaper model than the session's** (`sonnet` on Claude Code) **whose whole brief is `audit.md`**: hand it that path, the repo root, the installed plugin path, every `NOTE` line the session start printed, and `Rows: C1 C2 C4 C5 C6 C7 C8`, and never read that file here. No subagent → say so and run the audit here from that file. No model choice → the session's model.
 
 **C3 is never run unasked**: it reads every identifier, route and database name in the repo, and what it finds is band 3 unless a rename is cheap. A3 offers it.
 
 **The installed plugin copy is the standard, not the toolkit repo's `master`** — an unreleased fix reaches no app. Read a rule's exact text from the installed plugin. A rule that looks wrong is a finding for `app-eval`, in the toolkit repo, in another session.
 
-**It returns only the `AUDIT` block — seven rows, C1 to C7, a clean one included and C3 as `not run` — with what each row counts listed under it.** Print it as returned.
+**It returns only the `AUDIT` block — eight rows, C1 to C8, a clean one included and C3 as `not run` — with what each row counts listed under it.** Print it as returned.
 
 Each row's cost if left, and the fix Align allows:
 
@@ -35,6 +35,7 @@ Each row's cost if left, and the fix Align allows:
   - **UI half, only where `DESIGN.md` exists** — without it there is nothing to derive a floor from, and `design-settle` writes both. With no floor, each session, and each agent that never loads `ui-build`, re-decides the design system by judgement. **The fix is `design-settle`'s lint floor, unchanged** (its `pass.md`, The lint floor), derived from this app's shared set and styling files, **existing hits baselined, not fixed**: repairing them is `design-settle`'s fix-the-drift path, a diff the user has not approved here. No linter in the repo → its install is one line inside the finding's cost-to-fix: a dev dependency, not the stack.
   - **Logic half, owed by every app with a database or a remote API** — with no `Data layer` row in `CLAUDE.md`, the first refusal has no path to scope to and the session-start listing prints nothing. **The fix is `logic-settle` Step 7's floor (`references/floor.md`), unchanged**: the folder named as that skill's Step 2 derives it, as found and never renamed; the five refusals derived from this app; everything already standing baselined. **Never move old call sites into the folder**: that is a migration priced in files, and `logic-settle` is where the user approves one.
 - **C7 rule coverage** — an uncovered topic is a rule the next session, or another agent, can change while every page still renders. **Never write the test here**: a rule test attacks an enforcement point and a failing one is a bug, both build work. Write one `docs/queue.md` line per uncovered topic, `Prove: <topic>`, in `build-flow`'s shape, creating the file with its header where a finished app no longer has one. No runner → never ask here whether to install one: the build session that reaches the first line asks, under `logic-build`.
+- **C8 page specs** — a page with no spec has its flow and its `failed` and `empty` states checked by nobody once its walk is over. Fix it as C7: one `docs/queue.md` line per page, `Prove: <page> spec`, and no install question here — the build session that reaches the first line asks, under `build-flow`.
 
 ## A2 — Rank, with the cost of leaving each one
 
@@ -47,7 +48,7 @@ One table, worst first, ordered by **what breaks without anyone noticing**, neve
 Three bands, in this order:
 
 1. **A guarantee that does not hold** — C4, a C6 floor that is absent or hollowed out, a C7 topic carrying money or permissions with no test, a missing `AGENTS.md` where the user named another agent working here, and any C1 row that can break an install or a build on a machine that has not run one yet. Silent until it is expensive.
-2. **A rule that points somewhere wrong** — C2 stale names and an `AGENTS.md` path that does not resolve, a missing `AGENTS.md` where no other agent is in use yet, the remaining C7 topics, C5 documents — competing, stale, or edited after freezing. Costs the next session, every session.
+2. **A rule that points somewhere wrong** — C2 stale names and an `AGENTS.md` path that does not resolve, a missing `AGENTS.md` where no other agent is in use yet, the remaining C7 topics, C8 pages with no spec, C5 documents — competing, stale, or edited after freezing. Costs the next session, every session.
 3. **Drift that is merely untidy** — C3 renames whose blast radius exceeds their benefit, leftover files nobody reads.
 
 **A fix whose cost exceeds what it buys is still listed**, in band 3, with the recommendation *leave it* — a column renamed for tidiness states its C3 cost rather than dropping the row.
