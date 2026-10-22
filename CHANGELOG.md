@@ -2,6 +2,19 @@
 
 All notable changes to the `raizen-norms` plugin, and to `raizen-hub` until 0.70.0 merged it in, newest first. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versions before these are in `git log`.
 
+## [raizen-norms 0.102.0] - 2026-10-22
+
+Every page a backend batch wires now leaves a Playwright spec. A walk through Chrome DevTools is paid for in model calls every time it runs, and once a page reads a database holding real rows its `failed` and `empty` states cannot be reached by hand. A spec replays the walk at no model cost and answers the page's reads with an error or with no rows through `page.route`. Chrome DevTools stays the browser a session drives itself.
+
+### Added
+
+- `build-flow`, backend batch: a step after the walk, `e2e/<page>.spec.ts` with the flow, `failed` and `empty`. A read rendered on the server is marked `test.fixme`. Chrome is launched headless on Playwright's own temporary profile with `channel: 'chrome'`, never attached to the user's Chrome; sign-in comes from environment variables; a write lands on a `[CLAUDE]` row the test deletes, and a write that sends anything out — an e-mail, a webhook, a message — is always answered by `page.route`. The whole suite runs once before the session's last commit, a todo entry of its own. A repo without Playwright is asked once, with the page's other questions, whether to install `@playwright/test` or to record `Prove: <page> spec` lines.
+- `app-settle`, Align: audit row `C8 page specs`, counting the pages that read data and those with a spec. A page with none becomes a `Prove: <page> spec` line in `docs/queue.md`.
+
+To act on:
+
+- Nothing to rename. The next backend page in a repo without Playwright asks to install it, and an Align run lists the pages that have no spec.
+
 ## [raizen-norms 0.101.0] - 2026-10-13
 
 The publishing stop is a gate, not a lock. In a real app a question typed between the stop and the yes brought the whole stop a second time: `guard_git` counted only a reply to the very message that named the command, and the session's answer to the question did not name it again. The hook now proves that the stop happened and leaves the reading to the session, as the gate was meant since 0.74.0. The price: a push that was shown and never run stays open, so telling a yes for it from a yes for something else is the session's.

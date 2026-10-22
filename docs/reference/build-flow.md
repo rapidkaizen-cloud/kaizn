@@ -20,7 +20,7 @@ A repo with a root `PRD.md` is read through the legacy map in [docs-format](docs
 
 | Batch | What one page carries | Pages per session |
 |---|---|---|
-| Backend | migration · RLS · role test · types · query · wiring | One |
+| Backend | migration · RLS · role test · types · query · wiring · spec | One |
 | UI | contract · fixtures · the page and its states | As many as fit |
 
 Where a session takes several pages, the ones that set a pattern come first: the shell and navigation, one table page, one form page.
@@ -52,7 +52,8 @@ UI batch      contract → fixtures (six cases) → page with loading, empty, fa
               → walk the six cases → `bulk` screenshot at both widths, beside the proving page
               → page copy count → lint
 Backend batch rules → migration + RLS → role test → types → query returning the contract type
-              → one rule test per rule → wire the page → walk the flow → lint → documents
+              → one rule test per rule → wire the page → walk the flow → Playwright spec → lint
+              → documents
 ```
 
 - **Backend first inside one page**, never across the whole app.
@@ -63,6 +64,8 @@ Backend batch rules → migration + RLS → role test → types → query return
 **A UI batch is proven against a contract** (`references/contract.md`). `src/contracts/<page>.ts` holds types, `src/contracts/<page>.fixtures.ts` the six cases: `loading`, `empty`, `single`, `bulk`, `messy`, `failed`. A page is not accepted until all six render without the layout breaking. Fixtures are copied from the document the app replaces, with every name, phone number, e-mail, address and free-text value replaced by an invented one of the same shape; figures, dates, codes and statuses stay as they are. Two switches pick the case and the role: `?fixture=messy` and `?role=approver` on the web, the **Cases** line of the Proof profile elsewhere. No file under `src/pages` imports the database client or the generated database types; one grep at the close checks it.
 
 **A backend batch wires, never patches** (`references/backend.md`). The query returns the contract type, with no `as any` and no `as unknown as`. A query that cannot satisfy the contract changes the contract, and the page returns to the queue. The mocked session is replaced.
+
+**A wired page leaves a Playwright spec** (`references/backend.md`). `e2e/<page>.spec.ts` replays the flow the session walked, then the page's `failed` and `empty` states, with its reads answered by `page.route` so no real row is emptied or broken. It runs before the commit, and afterwards with `npx playwright test` at no model cost. A read made on the server cannot be answered that way, so those two tests are marked `test.fixme` and show as open in every run. The browser is your installed Chrome, started headless on a temporary profile of its own: your Chrome, its tabs and its sign-ins are not touched. The spec signs in through environment variables, and a write it makes lands on a `[CLAUDE]` row it deletes. A write that would send anything out — an e-mail, a webhook, a message — is always answered by `page.route`, so no run sends one. Before the session's last commit the whole suite runs once: a failure the session caused is fixed then, any other becomes a queue line. An app that is not on the web writes no spec.
 
 **Closing** (Section 8). The session reports the closing block the session start prints, commits the page, and the commit carries a `docs/changelog.md` entry where the app's behaviour changed, the sentence of `docs/architecture.md` or `docs/runbook.md` the change made false, a glossary row for each term the page puts on screen, and — in an app that keeps help for its users — the guide page of every task the page serves. A UI batch on fixtures writes no changelog entry and no guide page. A commit that carries no document is reported `Docs: none` with its reason. See [Documents](../concepts/documents.md).
 
@@ -79,6 +82,7 @@ Next       : Approval inbox — Approver
 
 - **The proposal question**, with `keep all` as its recommended first option.
 - **The whole queue**, before the file is written.
+- **One question at the first backend page of a repo with no Playwright**, bundled with the page's other questions: install `@playwright/test` as a dev dependency (recommended; it downloads no browser) or carry on unproven, with one `Prove: <page> spec` line per page in `docs/queue.md`.
 - **The page copy count**, in a UI batch, longest and median in words per class — `Action`, `Name`, `Explanation`:
 
 ```
