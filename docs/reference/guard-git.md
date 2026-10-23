@@ -69,6 +69,16 @@ How they are read:
 - **On Antigravity a result is paired to its call by position,** which holds while a step carries one call.
 - **Only the shell tools are read.** The hook is wired to `Bash` and `PowerShell` on Claude Code and to `run_command` on Antigravity.
 
+## Switching it
+
+Set `guard_git` in `/config`, or ask [norms-config](norms-config.md). It holds in every repo.
+
+- **`on`**, the default: as above.
+- **`advice`**: nothing is refused or held. The command runs, and the session is handed what the hook would have said, beside the command's result, with an order to tell you in one line.
+- **`off`**: the hook does nothing.
+
+It switches apart from the `GIT` block of the norms: turning one off leaves the other as it is. On Antigravity it is always `on`.
+
 ## Related
 
 - [Gates](../concepts/gates.md) — the publishing stop as you meet it

@@ -12,7 +12,7 @@ the session's own command just ran a `git commit`, HEAD is that commit, and noth
 changed is a document.
 
 The same commit carries `remind_context`'s note, in any repo, when the session's context
-has passed a milestone.
+has passed a milestone. Each of the two is silent when the user switched it `off`.
 """
 import json
 import re
@@ -24,6 +24,7 @@ from pathlib import Path
 import guard_git
 import host
 import remind_context
+import switches
 
 # Documents kept at the root, in either form; everything under `docs/` is one too.
 DOCUMENTS = ("PRD.md", "QUEUE.md", "DESIGN.md", "README.md")
@@ -84,6 +85,8 @@ def committed(cmd: str) -> bool:
 
 def reminder() -> str:
     """The text for HEAD, or an empty string when HEAD owes no question."""
+    if switches.mode("remind_docs") == switches.OFF:
+        return ""
     asks = questions()
     if not asks:
         return ""  # never settled: no document here to keep true

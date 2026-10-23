@@ -6,6 +6,7 @@ asserted on both the exit code and the word that opens stderr.
 Run directly: python3 test_guard_git.py
 """
 import json
+import os
 import subprocess
 import tempfile
 from pathlib import Path
@@ -420,6 +421,40 @@ def antigravity() -> None:
     print("ok antigravity")
 
 
+def switched() -> None:
+    """The user's switch: `advice` lets every call through and hands the model what the
+    hook would have said, `off` does nothing, and a value it does not know is `on`."""
+
+    def call(command: str, mode: str) -> tuple:
+        payload = {"tool_name": "Bash", "tool_input": {"command": command}}
+        env = {**os.environ, "CLAUDE_PLUGIN_OPTION_GUARD_GIT": mode}
+        result = subprocess.run([PYTHON, str(GUARD)], input=json.dumps(payload), capture_output=True, text=True, env=env)
+        told = json.loads(result.stdout)["hookSpecificOutput"] if result.stdout else {}
+        return result.returncode, result.stderr, told
+
+    # must pass, and say nothing: what passes under `on` passes silent under every mode
+    for mode in ("on", "advice", "off"):
+        assert call("git status", mode) == (0, "", {})
+        assert call("git commit -m 'x' -- src/a.ts", mode) == (0, "", {})
+    for command in ("git add -A", "git push --force origin dev", "git push origin development", "gh pr merge 12"):
+        assert call(command, "off") == (0, "", {}), command
+
+    # advice: let through, the refusal or the hold handed over as context, never as stderr
+    for command, word in (("git add -A", "REFUSED: git add -A"), ("git push origin development", "HELD: a push")):
+        code, err, told = call(command, "advice")
+        assert code == 0 and err == "" and told["hookEventName"] == "PreToolUse", command
+        assert told["additionalContext"].startswith("ADVICE - the user switched guard_git to advice"), command
+        assert word in told["additionalContext"] and "permissionDecision" not in told, command
+
+    # refused as before: `on` spelled out, or a value nobody offered
+    for mode in ("on", " ON ", "maybe", ""):
+        code, err, told = call("git add -A", mode)
+        assert code == 2 and err.startswith("REFUSED:") and told == {}, mode
+
+    print("ok switched")
+
+
 if __name__ == "__main__":
     demo()
     antigravity()
+    switched()

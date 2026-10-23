@@ -241,5 +241,44 @@ def demo() -> None:
     print("ok")
 
 
+def switched() -> None:
+    """The user's switch: `advice` lets the SQL through and hands the model the refusal,
+    `off` does nothing, a value it does not know is `on`, and the repo's marker still holds."""
+    import os
+    import tempfile
+
+    def call(query: str, mode: str, cwd: str | None = None) -> tuple:
+        payload = json.dumps({"tool_name": "mcp__supabase__execute_sql", "tool_input": {"query": query}})
+        env = {**os.environ, "CLAUDE_PLUGIN_OPTION_GUARD_DESTRUCTIVE": mode}
+        result = subprocess.run([PYTHON, str(GUARD)], input=payload, capture_output=True, text=True, env=env, cwd=cwd)
+        told = json.loads(result.stdout)["hookSpecificOutput"] if result.stdout else {}
+        return result.returncode, result.stderr, told
+
+    # must pass, and say nothing, under every mode
+    for mode in ("on", "advice", "off"):
+        assert call("SELECT count(*) FROM orders;", mode) == (0, "", {})
+        assert call("DELETE FROM notes WHERE title LIKE '[CLAUDE]%';", mode) == (0, "", {})
+    assert call("DROP TABLE foo;", "off") == (0, "", {})
+
+    code, err, told = call("DROP TABLE foo;", "advice")
+    assert code == 0 and err == "" and told["hookEventName"] == "PreToolUse"
+    assert told["additionalContext"].startswith("ADVICE - the user switched guard_destructive to advice")
+    assert "REFUSED: a destructive operation (DROP)" in told["additionalContext"]
+
+    for mode in ("on", "maybe"):
+        code, err, told = call("DROP TABLE foo;", mode)
+        assert code == 2 and err.startswith("REFUSED:") and told == {}, mode
+
+    # the repo's marker turns it off there whatever the switch says
+    with tempfile.TemporaryDirectory() as td:
+        (Path(td) / ".claude").mkdir()
+        (Path(td) / ".claude" / "destructive-gate.off").write_text("why\n")
+        assert call("DROP TABLE foo;", "on", td) == (0, "", {})
+        assert call("DROP TABLE foo;", "advice", td) == (0, "", {})
+
+    print("ok switched")
+
+
 if __name__ == "__main__":
     demo()
+    switched()

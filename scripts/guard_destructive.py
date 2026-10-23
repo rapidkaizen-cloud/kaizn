@@ -15,9 +15,10 @@ One carve-out: a DELETE narrowed to the `[CLAUDE]` prefix — the test rows the
 agent created itself — passes unguarded, because its blast radius is already
 fixed to rows the agent owns. See claude_test_delete for what disqualifies it.
 
-One off switch, per repo and never per plugin: a marker file at
-`.claude/destructive-gate.off` in the project directory disables this guard for
-that repo alone. The file's presence is the decision; its content is free text
+Two off switches. The user's `guard_destructive` switch (`switches.py`) sets the
+guard for every repo: `advice` warns instead of refusing, `off` does nothing. And a
+marker file at `.claude/destructive-gate.off` in the project directory disables it
+for that repo alone. The file's presence is the decision; its content is free text
 naming why. This exists because the plugin's hooks load into every app repo at
 once — an app that legitimately needs the gate gone (heavy schema iteration,
 bulk re-imports) must not take the gate away from the apps holding production
@@ -30,6 +31,7 @@ import re
 import sys
 
 import host
+import switches
 
 GATE_OFF_MARKER = os.path.join(".claude", "destructive-gate.off")
 
@@ -203,7 +205,8 @@ def bare_update(stmt: str, flags: int) -> bool:
 
 
 def block(op: str) -> None:
-    sys.stderr.write(
+    switches.refuse(
+        "guard_destructive",
         "REFUSED: a destructive operation ({op}) was sent without a guard.\n\n"
         "The order is:\n"
         "  1. SELECT COUNT first, and set the Expected number.\n"
@@ -213,13 +216,14 @@ def block(op: str) -> None:
         "  3. Execute wrapped in a DO block: RAISE EXCEPTION when the row count misses "
         "Expected, followed by a verifying SELECT in the same call.\n\n"
         "The exception aborts the whole transaction, so zero data is lost when the "
-        "number does not match.\n".format(op=op)
+        "number does not match.\n".format(op=op),
     )
-    sys.exit(2)
 
 
 def main() -> None:
     text, shell = read_sql()
+    if switches.mode("guard_destructive") == switches.OFF:
+        sys.exit(0)
 
     # Reading the payload leaves the project directory as cwd on either host, so this
     # scopes to one repo.

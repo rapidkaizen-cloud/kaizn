@@ -1,6 +1,6 @@
 # Commands
 
-What to run in which situation. Four skills have a command; the rest load by themselves.
+What to run in which situation. Five skills have a command; the rest load by themselves.
 
 | Situation | Run |
 |---|---|
@@ -8,6 +8,7 @@ What to run in which situation. Four skills have a command; the rest load by the
 | Running app | `/raizen-norms:app-settle` — it reads the repo and runs the one mode it owes next: documents it, migrates a root `PRD.md` to `docs/`, then audits the code against the rules and fixes what you pick, one finding per commit. Ask it for a change and it reworks the decisions instead. Then the other two |
 | Only the look or the logic layer | `/raizen-norms:design-settle` or `/raizen-norms:logic-settle` alone |
 | Which command to run, what version this is, what changed | `/raizen-norms:norms-help`, or ask in your own words |
+| A norm, a guard or a reminder turned off, to advice only, or back on | `/raizen-norms:norms-config`, or ask in your own words |
 
 `design-settle` asks Fast or Full with its first question, on a new app and a redesign alike. Fast answers every design dialog with its recommendation in one block you cancel line by line; the frames, the pick, the gate and every check run as in Full. `/raizen-norms:design-settle fast` skips the question.
 

@@ -47,6 +47,7 @@ New here: [Overview](start/overview.md), then [Install](start/install.md), then 
 | [db-ops](reference/db-ops.md) | Introspection, migrations, RLS and role testing, destructive operations |
 | [logic-build](reference/logic-build.md) | Keys, where a rule lives, validation, transactions, error shape, the data layer |
 | [norms-help](reference/norms-help.md) | Asking a session for help: the card it prints — version, commands, pages, last change |
+| [norms-config](reference/norms-config.md) | Each block of the norms, each guard and each reminder switched on, to advice, or off, for every repo |
 
 ## Reference: hooks
 

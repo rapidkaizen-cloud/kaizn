@@ -9,6 +9,7 @@ Run directly: python3 test_session_norms.py
 """
 import importlib.util
 import json
+import os
 import subprocess
 import tempfile
 from pathlib import Path
@@ -23,13 +24,18 @@ DATA_MARK = "Data layer of this repo"
 PYTHON = "python3"
 
 
-def run(root: Path) -> str:
+def run(root: Path, **options: str) -> str:
+    # The user's switches come from the environment, so none is inherited: every case
+    # below sets its own, and the rest are on.
+    env = {k: v for k, v in os.environ.items() if not k.startswith(("CLAUDE_PLUGIN_OPTION_NORM_", "CLAUDE_PLUGIN_OPTION_GUARD_", "CLAUDE_PLUGIN_OPTION_REMIND_"))}
+    env.update({f"CLAUDE_PLUGIN_OPTION_{key.upper()}": mode for key, mode in options.items()})
     result = subprocess.run(
         [PYTHON, str(SCRIPT)],
         input=json.dumps({"cwd": str(root)}),
         capture_output=True,
         text=True,
         encoding="utf-8",
+        env=env,
     )
     assert result.returncode == 0, result.stderr
     return result.stdout
@@ -453,6 +459,76 @@ def antigravity() -> None:
     print("ok antigravity")
 
 
+def switched() -> None:
+    """The user's switches: a block on is printed as before, `advice` is printed with one
+    line under its heading, `off` is not printed, and one line names what moved."""
+    spec = importlib.util.spec_from_file_location("session_norms", SCRIPT)
+    norms = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(norms)
+
+    # every switch on, the blocks are each form's text exactly: each replacement lies in one block
+    assert norms.norms(norms.BLOCKS) == norms.NORMS
+    assert norms.norms(norms.BLOCKS, norms.DOCS_FORM) == norms.docs_norms()
+    assert norms.norms(norms.UNSETTLED_BLOCKS, norms.DOCS_FORM, norms.UNSETTLED_FORM) == norms.unsettled_norms()
+    every = {key: "on" for key in norms.switches.RULES}
+
+    with tempfile.TemporaryDirectory() as tmp:
+        root = Path(tmp)
+        write(root, "PRD.md", "# PRD - Demo\n")
+        plain = run(root)
+
+        # unchanged: every switch spelled `on`, or set to a value nobody offered
+        assert run(root, **every) == plain and run(root, norm_git="maybe", guard_git="") == plain
+        assert "SWITCHED" not in plain
+
+        # off: the block is gone, the others and the documents stay, and the line says why
+        out = run(root, norm_git="off", norm_closing="off")
+        assert "\nGIT\n" not in out and "CLOSING THE SESSION" not in out and "git commit -- <paths>" not in out
+        assert "\nLANGUAGE\n" in out and "\nSCOPE\n" in out and "\nOUTPUT\n" in out and "# PRD - Demo" in out
+        assert out.startswith(norms.HEAD + "SWITCHED by the user, on purpose: norm_git off, norm_closing off.\n\nLANGUAGE\n")
+
+        # advice: the block whole, one line under its heading
+        out = run(root, norm_language="advice", norm_output="advice")
+        assert "\nLANGUAGE\n" + norms.ADVICE + "The user's language and" in out
+        assert "\nOUTPUT\n" + norms.ADVICE + "A file made for the user" in out
+        assert out.replace(norms.ADVICE, "").replace(
+            "SWITCHED by the user, on purpose: norm_language advice, norm_output advice.\n\n", ""
+        ) == plain
+
+        # a guard or a reminder moved away from on: every block printed, and the line names it
+        out = run(root, guard_git="advice", remind_docs="off")
+        assert "SWITCHED by the user, on purpose: guard_git advice, remind_docs off.\n" in out
+        assert out.replace("SWITCHED by the user, on purpose: guard_git advice, remind_docs off.\n\n", "") == plain
+
+        # the output block and the pointers, in each form that prints them
+        assert "\nOUTPUT\n" not in run(root, norm_output="off")
+        assert "\nPOINTERS - read before touching\n" not in run(root, norm_pointers="off")
+
+    with tempfile.TemporaryDirectory() as tmp:
+        root = Path(tmp)
+        write(root, "docs/PRD.md", "# PRD - Frozen\n")
+        write(root, "docs/product.md", "# Product\n")
+        write(root, "docs/README.md", "# Index\n")
+        out = run(root, norm_scope="off", norm_decisions="advice")
+        assert "\nSCOPE\n" not in out and "closed list in `docs-format`" not in out
+        assert "\nDECISIONS\n" + norms.ADVICE in out and "# Product" in out
+
+    # unsettled: `norm_pointers` covers the NOT SETTLED block that stands in its place
+    with tempfile.TemporaryDirectory() as tmp:
+        root = Path(tmp)
+        assert "\nNOT SETTLED\n" in run(root)
+        out = run(root, norm_pointers="off")
+        assert "NOT SETTLED" not in out and "\nSCOPE\n" in out
+        assert "\nNOT SETTLED\n" + norms.ADVICE in run(root, norm_pointers="advice")
+        # everything off: the heading and the line remain, and the output stays well formed
+        out = run(root, **{key: "off" for key in every})
+        assert out.startswith(norms.HEAD + "SWITCHED by the user, on purpose: norm_language off")
+        assert "\nLANGUAGE\n" not in out and "\nOUTPUT\n" not in out and "\n\n\n" not in out
+
+    print("ok switched")
+
+
 if __name__ == "__main__":
     demo()
     antigravity()
+    switched()

@@ -25,6 +25,7 @@ Order: the norms, the documents and their notes, the two listings, the hand-over
 | Block or listing | When it appears | What it holds |
 |---|---|---|
 | `SESSION NORMS (raizen-norms)` | Always | The heading, and that the norms hold where they and the app's `CLAUDE.md` disagree about a norm |
+| `SWITCHED by the user, on purpose:` | A switch is away from `on` | One line naming each switch you moved and its mode; see [Switches](#switches) |
 | `LANGUAGE` | Always | Your language for chat, documents, commit messages, pull requests and on-screen strings; English for comments, identifiers, file names, URL routes, API paths and every database name; enum values decided per case |
 | `POINTERS` | A repo with `PRD.md` or `docs/PRD.md` | Which skill to read before which work: `build-flow`, `docs-format`, `ui-build`, `db-ops`, `logic-build` — and `norms-help` for which command to run, the version and what changed |
 | `NOT SETTLED` | A repo with neither, in place of `POINTERS` | That `app-settle` has not run: `build-flow` and `docs-format` do not apply, UI is built only from the components and tokens the repo has, the session says once at the end that `app-settle` has not run, and `norms-help` answers which command to run |
@@ -38,6 +39,27 @@ Order: the norms, the documents and their notes, the two listings, the hand-over
 | Components listing | A `components` or `widgets` folder holds components | Opens `--- Components already in this repo`: what to reuse before writing a component |
 | Data layer listing | `CLAUDE.md` has a `Data layer` row naming a folder that exists and has files | Opens `--- Data layer of this repo (<folder>)`: what to call before writing a query |
 | Hand-over | See below | What the other host's last session knew |
+
+### Switches
+
+Each block from `LANGUAGE` to `OUTPUT` has a switch of its own, set in `/config` or with [norms-config](norms-config.md); the heading and `HOST - Antigravity` have none. The table above is what every switch at `on` prints.
+
+| Switch | Block |
+|---|---|
+| `norm_language` | `LANGUAGE` |
+| `norm_pointers` | `POINTERS`, or `NOT SETTLED` in its place |
+| `norm_scope` | `SCOPE` |
+| `norm_git` | `GIT` |
+| `norm_asking` | `ASKING` |
+| `norm_decisions` | `DECISIONS` |
+| `norm_closing` | `CLOSING THE SESSION` |
+| `norm_output` | `OUTPUT` |
+
+- **`advice`** prints the block whole, with `Advice only: the user has not made this block binding - weigh it.` under its heading.
+- **`off`** leaves the block out. The documents, the notes, the listings and the hand-over are printed as before.
+- **The `SWITCHED` line** follows the heading whenever any switch — a block's, a guard's or a reminder's — is away from `on`, so a session reads a missing block as your choice.
+- **A block's switch reaches nothing else.** `norm_git` off leaves `guard_git` holding pushes, and `norm_output` off leaves `guard_output` refusing.
+- **On Antigravity** every switch is `on`: that host has no plugin settings.
 
 ### The documents, by repo form
 

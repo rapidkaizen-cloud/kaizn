@@ -2,7 +2,8 @@
 """Guard git operations: block what must never happen, hold publishing for the user's reply.
 
 Reads the hook payload from stdin.
-Exit 0 = pass, exit 2 = block (the agent reads stderr).
+Exit 0 = pass, exit 2 = block (the agent reads stderr). The user's `guard_git` switch
+(`switches.py`) can make it warn instead of refusing or holding, or do nothing.
 
 Refused, and fixed by the agent itself:
   - commit while HEAD is on main, in a repo that has a development branch
@@ -38,6 +39,7 @@ import subprocess
 import sys
 
 import host
+import switches
 
 # Global options are allowed to sit between `git` and its subcommand: `git -c k=v push`,
 # `git -C dir commit`, `git --no-pager add`. Anchoring on `git push` alone reads only the
@@ -198,8 +200,7 @@ def approved(payload: dict, cmd: str, strict: bool = False) -> bool:
 
 
 def block(msg: str) -> None:
-    sys.stderr.write(msg + "\n")
-    sys.exit(2)
+    switches.refuse("guard_git", msg)
 
 
 # A held command the call adds anything to: chained, piped or redirected. A reply covers
@@ -241,6 +242,8 @@ def hold(payload: dict, cmd: str, what: str, wrapped: bool = False, strict: bool
 
 def main() -> None:
     payload = host.read_payload()
+    if switches.mode("guard_git") == switches.OFF:
+        sys.exit(0)
     cmd = (payload.get("tool_input") or {}).get("command") or ""
     code = QUOTED.sub("''", HEREDOC.sub(r"\1", cmd))
     # A command continued over lines is one command to every rule below.

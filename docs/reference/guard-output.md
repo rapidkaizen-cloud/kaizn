@@ -51,6 +51,16 @@ The message opens `REFUSED: ... is not this session's output folder.`, names the
 - **The same two names elsewhere.** The output folder is recognised by its last two names, such as `Downloads/Claude`, so it is found whichever way a path writes the home folder — and a folder with the same two names under another parent counts too.
 - **On Antigravity, the tools that write a file.** Only `run_command` and `call_mcp_tool` are wired.
 
+## Switching it
+
+Set `guard_output` in `/config`, or ask [norms-config](norms-config.md). It holds in every repo.
+
+- **`on`**, the default: as above.
+- **`advice`**: nothing is refused. The call runs, and the session is handed what the hook would have said, beside the call's result, with an order to tell you in one line.
+- **`off`**: the hook does nothing.
+
+It switches apart from the `OUTPUT` block of the norms: turning one off leaves the other as it is. On Antigravity it is always `on`.
+
 ## Related
 
 - [session-start](session-start.md) — the `OUTPUT` block that tells a session its folder

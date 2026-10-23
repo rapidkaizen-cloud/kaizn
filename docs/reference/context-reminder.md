@@ -38,6 +38,10 @@ It stays silent when any of these holds:
 - **Antigravity.** A hook there cannot hand the model text after a tool has run.
 - **What a new session saves.** The milestones are a judgement from the cost of a call, not a measured saving.
 
+## Switching it
+
+Set `remind_context` in `/config`, or ask [norms-config](norms-config.md): `on`, the default, or `off`, which leaves every milestone unsaid, in every repo. Switching the [document reminder](document-reminder.md) off leaves this one as it is.
+
 ## Related
 
 - [document-reminder](document-reminder.md) — the hook whose process carries it

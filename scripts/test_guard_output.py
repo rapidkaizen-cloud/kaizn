@@ -104,6 +104,26 @@ def demo() -> None:
         check("Write", {"file_path": "E:\\Hasil\\Out\\_general\\laporan.xlsx", "content": "x"}, plain, 0, custom)
         check("Write", {"file_path": f"{R}\\laporan.xlsx", "content": "x"}, plain, 0, custom)
 
+        # --- the user's switch: `advice` lets the file through and hands the model the
+        # refusal, `off` does nothing, a value it does not know is `on` ---
+        def switched(file_path: str, mode: str) -> tuple:
+            payload = {"tool_name": "Write", "tool_input": {"file_path": file_path, "content": "x"}, "cwd": str(plain)}
+            env = {**os.environ, "CLAUDE_PLUGIN_OPTION_OUTPUT_DIR": str(out), "CLAUDE_PLUGIN_OPTION_GUARD_OUTPUT": mode}
+            result = subprocess.run([PYTHON, str(GUARD)], input=json.dumps(payload), capture_output=True, text=True, env=env)
+            told = json.loads(result.stdout)["hookSpecificOutput"] if result.stdout else {}
+            return result.returncode, result.stderr, told
+
+        for mode in ("on", "advice", "off"):
+            assert switched(f"{R}\\_general\\catatan.md", mode) == (0, "", {}), mode
+        assert switched(f"{R}\\laporan.xlsx", "off") == (0, "", {})
+        code, err, told = switched(f"{R}\\laporan.xlsx", "advice")
+        assert code == 0 and err == "" and told["hookEventName"] == "PreToolUse"
+        assert told["additionalContext"].startswith("ADVICE - the user switched guard_output to advice")
+        assert "is not this session's output folder" in told["additionalContext"]
+        for mode in ("on", "maybe"):
+            code, err, told = switched(f"{R}\\laporan.xlsx", mode)
+            assert code == 2 and err.startswith("REFUSED:") and told == {}, mode
+
     print("ok")
 
 

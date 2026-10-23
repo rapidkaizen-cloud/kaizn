@@ -56,6 +56,10 @@ On Antigravity the reminder also needs the conversation's own last tool call to 
 - **Which commits owe a document.** It asks each commit that passes the conditions above; the answer is the session's.
 - **A way to hold a commit.** It exits 0 in every case, so a commit is never held up.
 
+## Switching it
+
+Set `remind_docs` in `/config`, or ask [norms-config](norms-config.md): `on`, the default, or `off`, which leaves every commit unasked, in every repo. It switches apart from the [context reminder](context-reminder.md) that rides in its process. On Antigravity it is always `on`.
+
 ## Related
 
 - [Documents](../concepts/documents.md) — what an app repo keeps, and what gets it written

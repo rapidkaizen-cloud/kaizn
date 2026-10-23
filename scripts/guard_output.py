@@ -15,7 +15,8 @@ The session norms print the folder; this hook refuses a tool call naming a folde
 root that neither exists nor is the session's own, and, from a worktree, a name inside its
 repo's folder that does not exist yet. Reading what is already there passes.
 
-Exit 0 = pass, exit 2 = block.
+Exit 0 = pass, exit 2 = block. The user's `guard_output` switch (`switches.py`) can make
+it warn instead of refusing, or do nothing.
 """
 import os
 import re
@@ -24,6 +25,7 @@ import sys
 from pathlib import Path
 
 import host
+import switches
 
 OPTION = "CLAUDE_PLUGIN_OPTION_OUTPUT_DIR"
 NO_REPO = "_general"
@@ -133,21 +135,23 @@ def refused(tool_input, cwd: str) -> list[str]:
 
 def main() -> None:
     payload = host.read_payload()
+    if switches.mode("guard_output") == switches.OFF:
+        sys.exit(0)
     cwd = payload.get("cwd") or os.getcwd()
     bad = refused(payload.get("tool_input"), cwd)
     if not bad:
         sys.exit(0)
     root = base()
     there = sorted(entries(root, dirs_only=True))
-    sys.stderr.write(
+    switches.refuse(
+        "guard_output",
         f"REFUSED: `{'`, `'.join(dict.fromkeys(bad))}` in `{root}` is not this session's output folder.\n\n"
         f"Write the file to `{folder(cwd)}`. A worktree has its own folder beside its repo's, never\n"
         f"one inside it; a session outside a repo writes to `{NO_REPO}`.\n"
         f"Folders already there: {', '.join(there) or '(none yet)'}.\n"
         "Send it again with that path. A path built at runtime to get past this is the same\n"
-        "mistake, unseen.\n"
+        "mistake, unseen.\n",
     )
-    sys.exit(2)
 
 
 if __name__ == "__main__":

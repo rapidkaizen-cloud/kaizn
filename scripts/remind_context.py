@@ -14,6 +14,8 @@ milestone is passed, once per milestone, silent in between.
 import json
 import re
 
+import switches
+
 # A fresh session starts near 80k, so at the first a call costs about two and a half
 # times a fresh one's. The steps after it are the user's choice.
 MILESTONES = (200_000, 500_000, 800_000)
@@ -61,6 +63,8 @@ def read(transcript: str) -> tuple:
 
 def note(transcript: str) -> str:
     """The note for the milestone this session just passed, or an empty string."""
+    if switches.mode("remind_context") == switches.OFF:
+        return ""
     first, last, said = read(transcript)
     passed = max((m for m in MILESTONES if last >= m), default=0)
     # A milestone below one already named stays silent: after a compaction the context

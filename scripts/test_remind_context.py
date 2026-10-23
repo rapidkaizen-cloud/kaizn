@@ -6,6 +6,7 @@ It never blocks, so every case exits 0; what differs is whether stdout carries t
 Run directly: python3 test_remind_context.py
 """
 import json
+import os
 import subprocess
 import tempfile
 from pathlib import Path
@@ -18,12 +19,13 @@ PYTHON = "python3"
 COMMIT = "git commit -m 'add page' -- src/page.tsx"
 
 
-def run(repo: Path, transcript: str = "", command: str = COMMIT) -> str:
+def run(repo: Path, transcript: str = "", command: str = COMMIT, **options: str) -> str:
     payload = {"tool_name": "Bash", "tool_input": {"command": command}, "cwd": str(repo)}
     if transcript:
         payload["transcript_path"] = transcript
     result = subprocess.run(
-        [PYTHON, str(HOOK)], input=json.dumps(payload), capture_output=True, text=True, cwd=repo
+        [PYTHON, str(HOOK)], input=json.dumps(payload), capture_output=True, text=True, cwd=repo,
+        env={**os.environ, **{f"CLAUDE_PLUGIN_OPTION_{key.upper()}": mode for key, mode in options.items()}},
     )
     assert result.returncode == 0, result.stderr
     if not result.stdout:
@@ -66,6 +68,9 @@ def demo() -> None:
         said = run(repo, transcript(*long))
         assert said.startswith("CONTEXT CHECK - past 200k: this session's context holds 220k tokens")
         assert "about 3 times what its first call read" in said and "new session" in said
+        # the user switched it off: silent at the same milestone; the document reminder's switch is another
+        assert run(repo, transcript(*long), remind_context="off") == ""
+        assert run(repo, transcript(*long), remind_docs="off") == said
 
         # ... once: the host recorded the note, and the next commit says nothing
         assert run(repo, transcript(*long, told(said), called(40, cached=260_000))) == ""
@@ -100,6 +105,8 @@ def demo() -> None:
             )
         both = run(repo, transcript(*long))
         assert both.startswith("DOCS CHECK - commit ") and "\n\nCONTEXT CHECK - past 200k" in both
+        assert run(repo, transcript(*long), remind_context="off").startswith("DOCS CHECK - commit ")
+        assert run(repo, transcript(*long), remind_docs="off").startswith("CONTEXT CHECK - past 200k")
 
     print("ok")
 

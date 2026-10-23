@@ -22,6 +22,16 @@ Where an app's `CLAUDE.md` and the norms disagree about a norm, the norms are th
 - **A clean tree means finished. A dirty tree means something is waiting on you.**
 - **`git add -A` and `git add .` are refused**, and the commit names its paths again (`git commit -- <paths>`), so a commit never carries a path nobody named — one staged before the session included. A path that changed outside the scope is reported, never committed along.
 - **A push is never a dialog.** The session ends its turn on the exact command and the commits it publishes, and runs it once when your reply is a clear yes. See [Gates](gates.md).
+
+## Switching a block
+
+Each block above is `on` until you switch it, for every repo at once, in `/config` or with [norms-config](../reference/norms-config.md):
+
+- **`advice`**: the block is still printed, marked as advice you have not made binding. The session weighs it.
+- **`off`**: the block is not printed, and the session does not follow it.
+- **The session is told.** The norms open with one line naming every switch you moved, so a missing block reads as your choice, not a fault.
+- **A hook is switched on its own.** Turning the `GIT` block off leaves [guard-git](../reference/guard-git.md) holding pushes, and turning the `OUTPUT` block off leaves [guard-output](../reference/guard-output.md) refusing.
+
 ## Three forms
 
 The text follows the documents a repo has.

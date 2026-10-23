@@ -11,6 +11,10 @@ update instead of an edit in N repositories. An app's CLAUDE.md keeps only what 
 plugin cannot know: its stack, its locale, the rules that belong to that app alone,
 and the two gates that must survive the plugin being absent.
 
+Each block prints as the user's switch for it says (`switches.py`): whole, marked as
+advice, or not at all. The norms then open with one line naming every rule the user moved
+away from `on`, so that a missing block reads as their choice rather than a fault.
+
 The documents are injected rather than pointed at. A pointer is obeyed by judgement,
 and the sessions that skip it are exactly the narrow ones where its prohibitions still
 apply. A repo with a root `PRD.md` is on the legacy form and gets `QUEUE.md` and the
@@ -48,6 +52,7 @@ import guard_output
 import handoff
 import host
 import remind_docs
+import switches
 
 HEAD = """\
 SESSION NORMS (raizen-norms)
@@ -174,7 +179,19 @@ is flagged. Then this block, always, even where the answer is "none":
 A missing block is ambiguous between "none" and "forgot".
 """
 
-NORMS = HEAD + LANGUAGE + POINTERS + SCOPE + GIT + ASKING + DECISIONS + CLOSING
+# The blocks in the order they print, each under the switch the user sets for it.
+BLOCKS = [
+    ("norm_language", LANGUAGE),
+    ("norm_pointers", POINTERS),
+    ("norm_scope", SCOPE),
+    ("norm_git", GIT),
+    ("norm_asking", ASKING),
+    ("norm_decisions", DECISIONS),
+    ("norm_closing", CLOSING),
+]
+
+# Every block on: what a session gets where the user switched nothing.
+NORMS = HEAD + "".join(text for _, text in BLOCKS)
 
 # Printed after the norms in every form and on every host, with the folder worked out for
 # this session, because the session is the one place that knows its checkout.
@@ -314,6 +331,52 @@ def unsettled_norms() -> str:
     for old, new in UNSETTLED_FORM:
         text = text.replace(old, new)
     return text.rstrip("\n") + "\n"
+
+
+UNSETTLED_BLOCKS = [
+    (key, NOT_SETTLED if key == "norm_pointers" else text) for key, text in BLOCKS if key != "norm_closing"
+]
+
+# Printed under the heading of a block the user switched to `advice`.
+ADVICE = "Advice only: the user has not made this block binding - weigh it.\n"
+
+
+def switched_block(key: str, text: str) -> str:
+    """A block as the user's switch for it says: whole, marked as advice, or nothing."""
+    mode = switches.mode(key)
+    if mode == switches.OFF:
+        return ""
+    if mode == switches.ADVICE:
+        lead = len(text) - len(text.lstrip("\n"))
+        heading, _, body = text[lead:].partition("\n")
+        return text[:lead] + heading + "\n" + ADVICE + body
+    return text
+
+
+def switched_line() -> str:
+    """One line naming every rule the user moved away from `on`, so that a missing block or
+    a quiet hook reads as their choice rather than a fault. Nothing when none moved."""
+    moved = switches.switched()
+    if not moved:
+        return ""
+    return (
+        "SWITCHED by the user, on purpose: "
+        + ", ".join(f"{key} {mode}" for key, mode in moved.items())
+        + ".\n\n"
+    )
+
+
+def norms(blocks: list, *forms: list) -> str:
+    """The norms as this session gets them: each block worded for the repo's form, then
+    printed as its switch says. Every switch on, this is `NORMS`, `docs_norms()` or
+    `unsettled_norms()` exactly - each replacement lies inside one block."""
+    out = HEAD + switched_line()
+    for key, text in blocks:
+        for form in forms:
+            for old, new in form:
+                text = text.replace(old, new)
+        out += switched_block(key, text)
+    return out.rstrip("\n") + "\n"
 
 
 # Sections that used to be rendered into an app's CLAUDE.md and are now owned by this
@@ -723,9 +786,9 @@ def emit(root: Path, payload: dict) -> None:
     queue = "what is not built yet"
     notes = ""
     if (root / "PRD.md").is_file():
-        norms, files = NORMS, [("PRD.md", "intent and prohibitions"), ("QUEUE.md", queue)]
+        text, files = norms(BLOCKS), [("PRD.md", "intent and prohibitions"), ("QUEUE.md", queue)]
     elif (root / "docs" / "PRD.md").is_file():
-        norms, files = docs_norms(), list(LIVING)
+        text, files = norms(BLOCKS, DOCS_FORM), list(LIVING)
         for rel in ("docs/README.md", "docs/product.md"):
             if not (root / rel).is_file():
                 notes += f"\nNOTE: {rel} is missing. `app-settle` seeds it from docs/PRD.md - tell the user.\n"
@@ -733,16 +796,16 @@ def emit(root: Path, payload: dict) -> None:
     else:
         # No PRD in either form: an empty directory, an app not documented yet, or a repo
         # that is not an app. Its queue is still printed, from the root or from `docs/`.
-        norms, files = unsettled_norms(), [("QUEUE.md", queue), ("docs/queue.md", queue)]
+        text, files = norms(UNSETTLED_BLOCKS, DOCS_FORM, UNSETTLED_FORM), [("QUEUE.md", queue), ("docs/queue.md", queue)]
     notes += captured(stale_note, root)
-    norms += OUTPUT.format(folder=guard_output.folder(str(root)))
+    text += switched_block("norm_output", OUTPUT.format(folder=guard_output.folder(str(root))))
     # Antigravity takes the text as an injected step, which no such cap cuts.
     room = float("inf") if on_antigravity else BUDGET
     if on_antigravity:
-        norms += HOST_ANTIGRAVITY
+        text += HOST_ANTIGRAVITY
         files.append(("CLAUDE.md", "what is true of this app alone"))
-    out = norms
-    room -= size(norms) + size(notes)
+    out = text
+    room -= size(text) + size(notes)
     for rel, what in files:
         text = document(root, rel, what, room)
         out += text

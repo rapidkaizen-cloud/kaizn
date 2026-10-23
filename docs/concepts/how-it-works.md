@@ -21,6 +21,8 @@ A settle skill runs only when you invoke it. Each answer you give is written int
 | Rule skills | `build-flow`, `docs-format`, `ui-build`, `db-ops` and `logic-build` load by their descriptions when the work touches what they govern |
 | Hooks | Stand in front of the commands that cannot be taken back, and refuse or hold them whatever the session intends. See [Gates](gates.md) |
 
+Each block of the norms, each guard and each reminder can be switched to advice or off, for every repo at once: see [norms-config](../reference/norms-config.md).
+
 ## What loads when
 
 | Part | Loaded |
@@ -28,6 +30,7 @@ A settle skill runs only when you invoke it. Each answer you give is written int
 | `app-settle`, `logic-settle`, `design-settle` | When invoked |
 | `build-flow`, `docs-format`, `ui-build`, `db-ops`, `logic-build` | By their descriptions |
 | `norms-help` | When asked for help, which command to run, the version, or what changed |
+| `norms-config` | When asked to switch a norm, a guard or a reminder on, to advice, or off |
 | Session norms, guard hooks | Every session where the plugin is enabled — installed at user scope, that is every folder on the machine. `app-settle` writes the `enabledPlugins` line into each app repo |
 
 ## A repo that was never settled

@@ -2,6 +2,28 @@
 
 All notable changes to the `raizen-norms` plugin, and to `raizen-hub` until 0.70.0 merged it in, newest first. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versions before these are in `git log`.
 
+## [raizen-norms 0.104.0] - 2026-10-23
+
+Every block of the session norms, every guard and every reminder can now be switched by the user: until this version each one bound everyone who installed the plugin, and the only way out was a per-repo marker for the destructive gate. A switch is global — one plugin setting for every repo — and starts at `on`, so a machine that switches nothing gets exactly what it got before.
+
+### Added
+
+- Thirteen plugin settings, rows in `/config` and in the dialog when the plugin is enabled: `norm_language`, `norm_pointers`, `norm_scope`, `norm_git`, `norm_asking`, `norm_decisions`, `norm_closing`, `norm_output`, `guard_git`, `guard_destructive`, `guard_output` — each `on`, `advice` or `off` — and `remind_docs`, `remind_context` — each `on` or `off`.
+- Skill `norms-config`: shows each switch, its mode and what it does, asks which to change, and writes the answers into `pluginConfigs` of `~/.claude/settings.json` itself, leaving every other key as it was. A change applies to sessions started after it.
+- Session norms: one line under the heading naming every switch away from `on`, so a missing block reads as the user's choice.
+
+### Changed
+
+- Session norms: a block switched to `advice` is printed with one line under its heading saying it is not binding; one switched `off` is not printed. `norm_pointers` covers `NOT SETTLED` where it stands in place of `POINTERS`.
+- `guard_git`, `guard_destructive`, `guard_output`: under `advice` a call is let through and the session is handed what the hook would have said; under `off` the hook does nothing. `.claude/destructive-gate.off` still turns `guard_destructive` off in its repo alone.
+- `remind_docs` and `remind_context`: silent under `off`, each apart from the other.
+- A block and its guard switch apart: `norm_git` off leaves `guard_git` holding pushes, and the like.
+
+To act on:
+
+- Claude Code 2.1.271 or later: a plugin whose settings carry a picker does not load on an earlier version. Update Claude Code before this version arrives.
+- Nothing to rename. Antigravity has no plugin settings, so every rule there stays `on`.
+
 ## [raizen-norms 0.103.0] - 2026-10-23
 
 Every session writes the files it makes for you to one output folder, in a folder of its own per repo and per worktree. Before the rule, one machine's output folder had collected some 210 loose files from every repo at its root, each sorted back by hand from session transcripts, and a report written into a repo dirtied its `git status`.
