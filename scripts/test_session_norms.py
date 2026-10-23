@@ -45,9 +45,9 @@ def demo() -> None:
     with tempfile.TemporaryDirectory() as tmp:
         root = Path(tmp)
 
-        # quiet: an empty repo gets the norms and nothing else
+        # quiet: an empty repo gets the norms and nothing else, its output folder among them
         out = run(root)
-        assert "SESSION NORMS" in out
+        assert "SESSION NORMS" in out and "\nOUTPUT\n" in out and "`guard_output` refuses" in out
         assert MARK not in out
 
         # quiet: a repo with code but no components folder
@@ -274,7 +274,8 @@ def limit() -> None:
         assert norms.MORE_COMPONENTS in out
 
         # a queue sized to leave less room than the listing's own heading takes
-        room = norms.BUDGET - sized(norms.unsettled_norms())
+        output = norms.OUTPUT.format(folder=norms.guard_output.folder(str(root)))
+        room = norms.BUDGET - sized(norms.unsettled_norms() + output)
         write(root, "docs/queue.md", "- A line of the queue\n" * ((room - 150) // 23))
         out = run(root)
         assert sized(out) <= norms.LIMIT, sized(out)

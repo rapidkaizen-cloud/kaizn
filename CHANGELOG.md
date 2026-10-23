@@ -2,6 +2,20 @@
 
 All notable changes to the `raizen-norms` plugin, and to `raizen-hub` until 0.70.0 merged it in, newest first. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versions before these are in `git log`.
 
+## [raizen-norms 0.103.0] - 2026-10-23
+
+Every session writes the files it makes for you to one output folder, in a folder of its own per repo and per worktree. Before the rule, one machine's output folder had collected some 210 loose files from every repo at its root, each sorted back by hand from session transcripts, and a report written into a repo dirtied its `git status`.
+
+### Added
+
+- Plugin setting **Output folder** (`output_dir`), asked when the plugin is enabled and changed in `/config`. Left empty, it is `Downloads/Claude` in the home folder; Antigravity, with no plugin settings, always uses that.
+- Session norms, `OUTPUT`: the full path this session writes to — `<repo>` for a main checkout, `<repo>-<worktree>` for a linked worktree, beside the repo's folder and never inside it, `_general` outside any repo — with working files left where the work is, no date in a name, and `-v2` where a name is taken.
+- `guard_output`: refuses a tool call naming a folder of the output folder that does not exist and is not the session's own, and, from a worktree, a new name inside its repo's folder. On Antigravity it is wired to `run_command` and `call_mcp_tool` only.
+
+To act on:
+
+- Nothing to rename. A machine that kept an output rule of its own in `~/.claude/CLAUDE.md` or a user-level hook drops it once this version runs, so the rule lives in one place.
+
 ## [raizen-norms 0.102.0] - 2026-10-22
 
 Every page a backend batch wires now leaves a Playwright spec. A walk through Chrome DevTools is paid for in model calls every time it runs, and once a page reads a database holding real rows its `failed` and `empty` states cannot be reached by hand. A spec replays the walk at no model cost and answers the page's reads with an error or with no rows through `page.route`. Chrome DevTools stays the browser a session drives itself.

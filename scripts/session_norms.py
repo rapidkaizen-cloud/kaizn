@@ -44,6 +44,7 @@ import re
 import sys
 from pathlib import Path
 
+import guard_output
 import handoff
 import host
 import remind_docs
@@ -174,6 +175,20 @@ A missing block is ambiguous between "none" and "forgot".
 """
 
 NORMS = HEAD + LANGUAGE + POINTERS + SCOPE + GIT + ASKING + DECISIONS + CLOSING
+
+# Printed after the norms in every form and on every host, with the folder worked out for
+# this session, because the session is the one place that knows its checkout.
+OUTPUT = """\
+
+OUTPUT
+A file made for the user to open or pass on - a report, a spreadsheet, a CSV, a PDF -
+goes to this session's own folder, never into the repo, a scratchpad or the root of the
+output folder:
+  {folder}
+Working files - scripts, raw data, screenshots - stay where the work is. Name a file for
+what it holds, with no date, and never overwrite one: a name already taken gets `-v2`,
+`-v3`. Give the user the full path. `guard_output` refuses any other folder there.
+"""
 
 # The block above is the legacy form's, printed byte for byte where a root `PRD.md`
 # exists. The `docs/` form differs only where the block names a document.
@@ -720,6 +735,7 @@ def emit(root: Path, payload: dict) -> None:
         # that is not an app. Its queue is still printed, from the root or from `docs/`.
         norms, files = unsettled_norms(), [("QUEUE.md", queue), ("docs/queue.md", queue)]
     notes += captured(stale_note, root)
+    norms += OUTPUT.format(folder=guard_output.folder(str(root)))
     # Antigravity takes the text as an injected step, which no such cap cuts.
     room = float("inf") if on_antigravity else BUDGET
     if on_antigravity:

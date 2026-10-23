@@ -33,6 +33,7 @@ Order: the norms, the documents and their notes, the two listings, the hand-over
 | `ASKING` | Always | A decision that is yours is asked, or answered in chat at a hard stop; the session never hands you a command to type. A block or a table a skill orders printed is printed whole, whatever brevity mode another plugin sets |
 | `DECISIONS` | Always | An answer with two or more decisions closes with one table: question, options, recommendation and its trade-off |
 | `CLOSING THE SESSION` | A repo with `PRD.md` or `docs/PRD.md` | The report per scope item, then a block written even when the answer is "none" |
+| `OUTPUT` | Always, after the blocks above | The full path of the folder this session writes your files to, worked out from its checkout — see [guard-output](guard-output.md) — and that working files stay where the work is, a name carries no date, and nothing is overwritten |
 | `HOST - Antigravity` | Antigravity only | See below |
 | Components listing | A `components` or `widgets` folder holds components | Opens `--- Components already in this repo`: what to reuse before writing a component |
 | Data layer listing | `CLAUDE.md` has a `Data layer` row naming a folder that exists and has files | Opens `--- Data layer of this repo (<folder>)`: what to call before writing a query |

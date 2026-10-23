@@ -15,6 +15,7 @@ Where an app's `CLAUDE.md` and the norms disagree about a norm, the norms are th
 | `ASKING` | Asks you what is yours to decide, then runs it itself. Never hands you a command to type — only what needs your own hands: a browser login, a dashboard, a key rotation, a payment. Prints a block or a table a skill orders whole, whatever brevity mode another plugin sets |
 | `DECISIONS` | Closes an answer that carries two or more decisions with one table: question, options, recommendation. The recommendation names its trade-off, and the table comes before the work |
 | `CLOSING THE SESSION` | Ends on a report per scope item, then a fixed block: the page usable now and its route, pages touched by spread, defaults it decided itself, unfinished steps as queue lines, what you must do by hand, the branch and the commits, and the documents it changed |
+| `OUTPUT` | Writes a file it makes for you — a report, a spreadsheet, a PDF — to its own folder in the output folder you chose, one per repo and per worktree, and gives you the full path. Never into the repo, never with a date in the name, never over a file already there. See [guard-output](../reference/guard-output.md) |
 
 ## What the git block means for you
 
