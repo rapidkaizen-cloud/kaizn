@@ -1,6 +1,6 @@
 ---
 name: app-eval
-description: Evaluate an app that was built under these skills in order to find defects in the toolkit itself — traces what the user finds wrong in the result back to the rule that produced it, and reports findings rather than fixing anything. Runs in the raizen-toolkit repo with the app repo added as a working directory, and never modifies the app. Use when the user is dissatisfied with something an app under these skills produced, or wants a toolkit-improvement pass over a finished batch.
+description: Evaluate an app that was built under these skills in order to find defects in the toolkit itself — traces what the user finds wrong in the result back to the rule that produced it, and reports findings rather than fixing anything. Runs in the kaizn repo with the app repo added as a working directory, and never modifies the app. Use when the user is dissatisfied with something an app under these skills produced, or wants a toolkit-improvement pass over a finished batch.
 ---
 
 # app-eval — the app is the evidence, the toolkit is the defendant
@@ -15,10 +15,10 @@ This skill is the only thing that looks at the finished result and asks whether 
 
 Two reasons, and the second is the one that matters:
 
-- **The installed plugin copy drifts from this repo.** `raizen-norms` needs a version bump and `/plugin update` before a change reaches a machine, so a session in an app repo reads rules that may already be fixed here. A trace against the wrong text is a void trace.
-- **An agent inside a ruleset is the worst judge of that ruleset.** A session in an app repo has the `raizen-norms` block printed and the guards live: it is being *governed* by the thing under review, and it reads every constraint as the definition of correct. Here the skills are text under review instead. That posture is the whole method — without it this skill reproduces, one level up, exactly the self-referential bar described above.
+- **The installed plugin copy drifts from this repo.** `kaizn` needs a version bump and `/plugin update` before a change reaches a machine, so a session in an app repo reads rules that may already be fixed here. A trace against the wrong text is a void trace.
+- **An agent inside a ruleset is the worst judge of that ruleset.** A session in an app repo has the `kaizn` block printed and the guards live: it is being *governed* by the thing under review, and it reads every constraint as the definition of correct. Here the skills are text under review instead. That posture is the whole method — without it this skill reproduces, one level up, exactly the self-referential bar described above.
 
-The primary working directory is not this repo → **STOP** and say so. The `raizen-norms` session block is no signal either way — its hook is installed globally and prints in every session, this one included.
+The primary working directory is not this repo → **STOP** and say so. The `kaizn` session block is no signal either way — its hook is installed globally and prints in every session, this one included.
 
 **Nothing in the app repo is written, moved, or deleted.** Fixing the app and fixing the toolkit are separate jobs, and the second may never quietly do the first. A defect worth fixing in the app is reported as a finding, and `app-settle`'s align mode is what acts on it — in the app repo, in another session.
 
@@ -118,7 +118,7 @@ Shape: findings first, decidable in one read; raw evidence in an appendix behind
 Delivered twice, one job each:
 
 - **Inline, in full** — this is what gets read and decided here
-- **`~/.claude/raizen-evals/<app>-<YYYY-MM-DD>/`** — `report.md` plus the screenshots, which have to be files. Outside both repos: the app repo keeps only `docs-format`'s closed list, and this repo does not need a second copy of a decision its commit messages already record
+- **`~/.claude/kaizn-evals/<app>-<YYYY-MM-DD>/`** — `report.md` plus the screenshots, which have to be files. Outside both repos: the app repo keeps only `docs-format`'s closed list, and this repo does not need a second copy of a decision its commit messages already record
 
 ## 7 — This skill does not patch the toolkit
 

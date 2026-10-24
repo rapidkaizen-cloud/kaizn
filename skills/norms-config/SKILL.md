@@ -1,6 +1,6 @@
 ---
 name: norms-config
-description: Switch the raizen-norms session-norm blocks, guards and reminders on, to advice, or off for every repo on this machine — shows each rule, its mode now and what it does, asks which to change, and writes the answers itself. Use when the user wants a norm, a guard or a reminder of these skills turned off, made advisory or back on, or asks which ones are switched.
+description: Switch the kaizn session-norm blocks, guards and reminders on, to advice, or off for every repo on this machine — shows each rule, its mode now and what it does, asks which to change, and writes the answers itself. Use when the user wants a norm, a guard or a reminder of these skills turned off, made advisory or back on, or asks which ones are switched.
 ---
 
 # norms-config — the switches of the norms and the hooks

@@ -1,4 +1,4 @@
-# CLAUDE.md — repo raizen-toolkit
+# CLAUDE.md — repo kaizn
 
 This repo is not an application. Its root is the plugin that governs other repos, so a mistake here spreads to every app.
 
@@ -16,7 +16,7 @@ Keep every rule short. One rule is one imperative sentence. Give its reason in o
 
 Change a rule only for a finding seen in two sessions or in a real app, because one session's miss is as often the session as the rule; a finding seen once is a line of `docs/reference/status.md`.
 
-Do not add a skill to `raizen-norms` without naming what would be lost if it did not exist. Every skill pays a context cost in every session through its description, including the sessions that never use it.
+Do not add a skill to `kaizn` without naming what would be lost if it did not exist. Every skill pays a context cost in every session through its description, including the sessions that never use it.
 
 Hooks block without being able to ask. A new hook must first be tested against the cases that **should pass**, not only the ones that must be refused. A hook that is too strict costs more than no hook.
 

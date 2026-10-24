@@ -50,10 +50,10 @@ def demo() -> None:
     assert run("PowerShell", {"command": 'psql -c "TRUNCATE foo;"'}) == 2
 
     # shell vocabulary is not SQL: `update` without SET, coreutils truncate -> pass
-    assert run("Bash", {"command": 'claude plugin update "raizen-hub@raizen"'}) == 0
+    assert run("Bash", {"command": 'claude plugin update "kaizn@kaizn"'}) == 0
     assert run("Bash", {"command": "sudo apt update && sudo apt upgrade -y"}) == 0
     assert run("Bash", {"command": "truncate -s 0 logs/app.log"}) == 0
-    assert run("PowerShell", {"command": "claude plugin update raizen-norms@raizen"}) == 0
+    assert run("PowerShell", {"command": "claude plugin update kaizn@kaizn"}) == 0
     # but SQL arriving through a shell still blocks
     assert run("Bash", {"command": 'psql -c "UPDATE users SET active = false;"'}) == 2
 
@@ -272,7 +272,7 @@ def switched() -> None:
     # refused, ending on the one sentence that offers its switch
     offer = (
         "This guard is switchable: if it is in the user's way, tell them once that "
-        "`/raizen-norms:norms-config` sets `guard_destructive` to `advice` or `off`, and never recommend turning it off.\n"
+        "`/kaizn:norms-config` sets `guard_destructive` to `advice` or `off`, and never recommend turning it off.\n"
     )
     for mode in ("on", "maybe"):
         code, err, told = call("DROP TABLE foo;", mode)

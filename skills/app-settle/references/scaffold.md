@@ -10,7 +10,7 @@
 |---|---|---|
 | `CLAUDE.md` | Both | **Thin**, written to the shape below |
 | `AGENTS.md` | Both | **Thinner**, written to its own shape below — for the agents that never see the plugin |
-| `.claude/settings.json` | Both | `{"enabledPlugins": {"raizen-norms@raizen": true}}` — that key and nothing else; a repo that already has the file keeps the rest of it |
+| `.claude/settings.json` | Both | `{"enabledPlugins": {"kaizn@kaizn": true}}` — that key and nothing else; a repo that already has the file keeps the rest of it |
 | Host rewrite rule | Bootstrap | Only when the framework is a **static SPA**, and written for the host chosen at Question 4 — `vercel.json` on Vercel, `netlify.toml` on Netlify, a `try_files` line on an own server. Next.js, Nuxt, SvelteKit, and Astro carry their own server layer — do not write one |
 | CI workflow | Bootstrap | Only when the user asks for migrations through CI — the session never raises it (N6). Written for the host and migration tool actually chosen: one written for the wrong runner is worse than none |
 
@@ -26,7 +26,7 @@ Six parts, nothing else. A rule that would hold in another app belongs in the pl
 
 | Part | Holds |
 |---|---|
-| Opening line | That this file holds what is true of this app alone, and that norms are printed by `raizen-norms` every session — a norm living in two places is a norm that will disagree with itself |
+| Opening line | That this file holds what is true of this app alone, and that norms are printed by `kaizn` every session — a norm living in two places is a norm that will disagree with itself |
 | `## Locale` | On screen · in the code · dates · numbers. The first two rows stay separate: a UI language is never a licence for an identifier, a route, or a database name written in it |
 | `## Stack` | One row per N2 answer — platform, frontend, hosting, database, auth, component library, environments, migrations — the component library row reading `not decided — design-settle` until that skill writes it, and left out where no screen exists — and the line stating this app's stack is locked, its reasons in `docs/decisions/`, re-opened only through `app-settle` rework mode |
 | `## Ground truth` | Code and the live database are ground truth for **facts**; the living documents `docs/README.md` lists for **intent and prohibitions**, `DESIGN.md` for the design system; `docs/PRD.md` and `docs/changes/` are history, never current truth |
@@ -38,9 +38,9 @@ Six parts, nothing else. A rule that would hold in another app belongs in the pl
 
 ### The shape of `AGENTS.md`
 
-**Written for the agents that never see the plugin.** Claude Code reads `CLAUDE.md`, is handed the norms and the living documents by `raizen-norms` at every session start, and never loads this file. Codex, Cursor, Copilot, and whatever comes next read `AGENTS.md` and nothing else here — no norms, no injected documents, no guard behind any command — and build from their own defaults: unable to know a shared set exists, they write a second design system first.
+**Written for the agents that never see the plugin.** Claude Code reads `CLAUDE.md`, is handed the norms and the living documents by `kaizn` at every session start, and never loads this file. Codex, Cursor, Copilot, and whatever comes next read `AGENTS.md` and nothing else here — no norms, no injected documents, no guard behind any command — and build from their own defaults: unable to know a shared set exists, they write a second design system first.
 
-**This file may restate a norm, which `CLAUDE.md` must never do**: no agent holds both — except Antigravity, which loads this file and, where `raizen-norms` is installed, is handed the norms too; their `HOST` block says the norms hold. A restatement still goes stale, so keep the file short and pointing at the repo — the documents, the shared set, the lint command — never paraphrasing a skill.
+**This file may restate a norm, which `CLAUDE.md` must never do**: no agent holds both — except Antigravity, which loads this file and, where `kaizn` is installed, is handed the norms too; their `HOST` block says the norms hold. A restatement still goes stale, so keep the file short and pointing at the repo — the documents, the shared set, the lint command — never paraphrasing a skill.
 
 English prose, five parts, nothing else:
 
@@ -104,4 +104,4 @@ Until design-settle is done, any session will refuse to write UI components.
 
 Say what follows them: building runs under `build-flow`, which writes `docs/queue.md` on its first run and sets the size of one session — a new app builds its screens first, a UI batch with every page against a hand-written contract and no database behind it, then wires them in a backend batch.
 
-Close by reminding the user that `raizen-norms` only becomes active once the next session starts in this repo.
+Close by reminding the user that `kaizn` only becomes active once the next session starts in this repo.

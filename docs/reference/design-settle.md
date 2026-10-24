@@ -5,7 +5,7 @@ Running it settles how the app looks — a direction picked on screen from 2–4
 | | |
 |---|---|
 | Kind | Settle skill — run by name; a session that finds no `DESIGN.md` points you to it instead of writing UI |
-| Run | `/raizen-norms:design-settle`; name `fast` or `full` at invocation (`/raizen-norms:design-settle fast`) to skip the Fast or Full question |
+| Run | `/kaizn:design-settle`; name `fast` or `full` at invocation (`/kaizn:design-settle fast`) to skip the Fast or Full question |
 | Run it when | Before the first UI component of a repo is written, and whenever you want to redesign, restyle or overhaul an app that already has a look |
 | Needs first | A product with UI; not on `main`. `impeccable`, `frontend-design` and `ui-ux-pro-max` are Required: when one is absent you are asked to continue without it or stop to install. Missing documents do not stop it |
 | Writes | `DESIGN.md`, `docs/decisions/` records, `CLAUDE.md`'s Component library row, the `## UI` part of `AGENTS.md`, styling and theme files, the `/design-system` route, the lint floor in the linter's config with its baseline, plus one local plugin file where the linter has no rule for a refusal, a whole `AGENTS.md` where none exists, `src/design-canvas/`, `.design-audit/`, the promoted pages, `docs/queue.md` lines and the file itself where the repo has none, the `docs/README.md` lines for `DESIGN.md` and `docs/decisions/`, the `docs/guide/` pages quoting a label the pass changed, the dependency and lock files through an approved install |

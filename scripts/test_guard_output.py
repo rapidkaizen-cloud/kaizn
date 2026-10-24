@@ -127,7 +127,7 @@ def demo() -> None:
         # refused, ending on the one sentence that offers its switch - never on Antigravity
         offer = (
             "This guard is switchable: if it is in the user's way, tell them once that "
-            "`/raizen-norms:norms-config` sets `guard_output` to `advice` or `off`, and never recommend turning it off.\n"
+            "`/kaizn:norms-config` sets `guard_output` to `advice` or `off`, and never recommend turning it off.\n"
         )
         for mode in ("on", "maybe"):
             code, err, told = switched(f"{R}\\laporan.xlsx", mode)

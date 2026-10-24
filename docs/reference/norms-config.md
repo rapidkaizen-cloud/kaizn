@@ -5,7 +5,7 @@ Switch each block of the session norms, each guard and each reminder on, to advi
 | | |
 |---|---|
 | Kind | Settings skill — runs when you ask |
-| Run | `/raizen-norms:norms-config`, or ask in your own words: turn the git guard off, make the scope norm advice only, which rules are switched |
+| Run | `/kaizn:norms-config`, or ask in your own words: turn the git guard off, make the scope norm advice only, which rules are switched |
 | Changes | `switches.json` in the plugin's data folder, `~/.claude/plugins/data/<id>/`, and nothing else |
 | Source | `skills/norms-config/SKILL.md`, `scripts/norms_config.py`, `scripts/switches.py` |
 | Self-check | `scripts/test_norms_config.py` |

@@ -13,7 +13,7 @@ fi
 # that entry to whoever asks what changed.
 if git diff --cached -U0 -- "$m" | grep -q '^+[[:space:]]*"version"'; then
   v=$(git show ":$m" | sed -n 's/.*"version"[^"]*"\([^"]*\)".*/\1/p')
-  if ! git show ":CHANGELOG.md" | grep -qF "## [raizen-norms $v]"; then
+  if ! git show ":CHANGELOG.md" | grep -qF "## [kaizn $v]"; then
     echo "pre-commit: version $v has no entry in CHANGELOG.md." >&2
     exit 1
   fi

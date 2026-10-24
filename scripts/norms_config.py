@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Show and set the user's switches for the norms and hooks of raizen-norms.
+"""Show and set the user's switches for the norms and hooks of kaizn.
 
 The `norms-config` skill runs this. The switches sit in `switches.json` in the plugin's
 data folder, one file for every repo on the machine. A shell command gets no

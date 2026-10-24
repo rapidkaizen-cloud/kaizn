@@ -14,6 +14,6 @@
 **After one real repo ships on a Pioneer platform, offer the promotion**: a row in the rubric of `stack-questions.md`. **Not ready** or **Pioneer** becomes **Ready** only once two things exist:
 
 1. **A named migration or deploy path**, written out once in a real repo, precise enough for the session that chooses this row to follow. Not a template — this plugin ships none for any stack, and no file is copied anywhere.
-2. **A statement of guard coverage.** The `raizen-norms` destructive guard matches SQL syntax in the `query`, `command`, `sql`, and `statement` fields. It survives any SQL database and **does not apply** to non-SQL storage — and a hook that finds nothing does not report, it stays quiet. A stack outside the guard's reach must bring a replacement, or make the guard announce its own inapplicability once at session start.
+2. **A statement of guard coverage.** The `kaizn` destructive guard matches SQL syntax in the `query`, `command`, `sql`, and `statement` fields. It survives any SQL database and **does not apply** to non-SQL storage — and a hook that finds nothing does not report, it stays quiet. A stack outside the guard's reach must bring a replacement, or make the guard announce its own inapplicability once at session start.
 
 Without item 2, do not raise the status: a repo that looks protected while it is not is more dangerous than one that is plainly unprotected.

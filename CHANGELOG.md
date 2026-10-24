@@ -1,6 +1,25 @@
 # Changelog
 
-All notable changes to the `raizen-norms` plugin, and to `raizen-hub` until 0.70.0 merged it in, newest first. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versions before these are in `git log`.
+All notable changes to the `kaizn` plugin — named `raizen-norms` until 0.106.0, and `raizen-hub` until 0.70.0 merged it in — newest first. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versions before these are in `git log`.
+
+## [kaizn 0.106.0] - 2026-10-24
+
+`raizen-norms` is now `kaizn`, and its marketplace and repo take the same name, so the plugin is named for what it does rather than for who wrote it. The name is *kaizen* without its `e`: `kaizen` itself is already a Claude Code plugin with the same scope.
+
+### Changed
+
+- The plugin `raizen-norms` is renamed `kaizn`: every skill is now `/kaizn:<skill>`, and the session norms open with `SESSION NORMS (kaizn)`. The `renames` map in `marketplace.json` carries `raizen-norms` to `kaizn`.
+- The marketplace `raizen` is renamed `kaizn`, so the install is `/plugin install kaizn@kaizn`.
+- The repo moves to `rapidkaizen-cloud/kaizn` and the docs site to `https://rapidkaizen-cloud.github.io/kaizn/`; GitHub redirects the old URLs.
+- `app-settle` writes `kaizn@kaizn` into a new app's `.claude/settings.json`.
+- Changelog headings read `## [kaizn x.y.z]`; the entries below this one keep the old name.
+
+To act on:
+
+- Claude Code: remove the marketplace `raizen`, add `rapidkaizen-cloud/kaizn`, install `kaizn@kaizn`, and turn `autoUpdate` on for `kaizn` — the steps are in `docs/guide/update.md`. An update in place is not enough: the machine keeps the marketplace under `raizen`, and the `renames` map then rewrites `raizen-norms@raizen` to `kaizn@raizen` in user and project settings, a key no new install shares.
+- Every app repo whose `.claude/settings.json` names `raizen-norms@raizen`: change the key to `kaizn@kaizn` and commit it.
+- Antigravity: `agy plugin uninstall raizen-norms`, then install from `https://github.com/rapidkaizen-cloud/kaizn`.
+- Anything written outside the plugin that invokes a skill — notes, aliases, scripts — changes `/raizen-norms:` to `/kaizn:`.
 
 ## [raizen-norms 0.105.0] - 2026-10-24
 

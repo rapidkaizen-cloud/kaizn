@@ -4,13 +4,13 @@ What to run in which situation. Five skills have a command; the rest load by the
 
 | Situation | Run |
 |---|---|
-| New app, empty directory | `/raizen-norms:app-settle`, then in the new repo `/raizen-norms:logic-settle` and `/raizen-norms:design-settle` |
-| Running app | `/raizen-norms:app-settle` — it reads the repo and runs the one mode it owes next: documents it, migrates a root `PRD.md` to `docs/`, then audits the code against the rules and fixes what you pick, one finding per commit. Ask it for a change and it reworks the decisions instead. Then the other two |
-| Only the look or the logic layer | `/raizen-norms:design-settle` or `/raizen-norms:logic-settle` alone |
-| Which command to run, what version this is, what changed | `/raizen-norms:norms-help`, or ask in your own words |
-| A norm, a guard or a reminder turned off, to advice only, or back on | `/raizen-norms:norms-config`, or ask in your own words |
+| New app, empty directory | `/kaizn:app-settle`, then in the new repo `/kaizn:logic-settle` and `/kaizn:design-settle` |
+| Running app | `/kaizn:app-settle` — it reads the repo and runs the one mode it owes next: documents it, migrates a root `PRD.md` to `docs/`, then audits the code against the rules and fixes what you pick, one finding per commit. Ask it for a change and it reworks the decisions instead. Then the other two |
+| Only the look or the logic layer | `/kaizn:design-settle` or `/kaizn:logic-settle` alone |
+| Which command to run, what version this is, what changed | `/kaizn:norms-help`, or ask in your own words |
+| A norm, a guard or a reminder turned off, to advice only, or back on | `/kaizn:norms-config`, or ask in your own words |
 
-`design-settle` asks Fast or Full with its first question, on a new app and a redesign alike. Fast answers every design dialog with its recommendation in one block you cancel line by line; the frames, the pick, the gate and every check run as in Full. `/raizen-norms:design-settle fast` skips the question.
+`design-settle` asks Fast or Full with its first question, on a new app and a redesign alike. Fast answers every design dialog with its recommendation in one block you cancel line by line; the frames, the pick, the gate and every check run as in Full. `/kaizn:design-settle fast` skips the question.
 
 ## No command needed
 

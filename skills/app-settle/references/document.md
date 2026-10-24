@@ -44,7 +44,7 @@ Then the rows `scaffold.md` marks Both:
 - **`AGENTS.md`** to its shape. The `## UI` and `## Logic` parts hold their bootstrap lines — no `DESIGN.md` exists here and no data layer folder has been named; `design-settle` and `logic-settle` each fill their own part. Already present → **do not overwrite**; add the parts it lacks under their own headings and report what was left alone.
 - **`README.md` at the root** — already present → **do not overwrite**; report it untouched.
 - **A file already at a path this mode writes under `docs/`** → do not overwrite it; report it and ask where it goes before writing.
-- **`.claude/settings.json`** enabling `raizen-norms`. Already present with other plugins → add the key, keep the rest.
+- **`.claude/settings.json`** enabling `kaizn`. Already present with other plugins → add the key, keep the rest.
 **No scaffold, no `git init` on an existing repo, no host config, no CI workflow** — they already exist or the user decided against them.
 
 Commit the new files, paths named.
@@ -94,4 +94,4 @@ Until DESIGN.md exists, any session will refuse to write a UI component.
 
 `logic-settle` runs first because the promoted pages carry loading, empty, and failed states, and those belong to the data layer.
 
-Do not run any of them now. Close by reminding the user that `raizen-norms` becomes active only once the next session starts in this repo.
+Do not run any of them now. Close by reminding the user that `kaizn` becomes active only once the next session starts in this repo.

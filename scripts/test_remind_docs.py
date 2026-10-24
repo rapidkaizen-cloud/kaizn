@@ -136,7 +136,7 @@ def demo() -> None:
         assert run(docs, "git commit --amend --no-edit") == ""
 
         # Antigravity: the conversation's transcript says whether its last tool call committed
-        norms = {"type": "USER_INPUT", "source": "SYSTEM_SDK", "content": "SESSION NORMS (raizen-norms)"}
+        norms = {"type": "USER_INPUT", "source": "SYSTEM_SDK", "content": "SESSION NORMS (kaizn)"}
         ran = {"type": "PLANNER_RESPONSE", "tool_calls": [{"name": "run_command", "args": {"CommandLine": 'git add src/page.tsx; git commit -m "page"'}}]}
         looked = {"type": "PLANNER_RESPONSE", "tool_calls": [{"name": "run_command", "args": {"CommandLine": "git status"}}]}
         done = {"type": "GENERIC", "content": "The command exited with code 0."}

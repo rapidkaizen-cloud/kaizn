@@ -150,7 +150,7 @@ Once the last page of the session has been walked, offer the audit in one multi-
 
 **A pass ticked → hand the ticked passes to one subagent on a cheaper model than the session's** (`sonnet` on Claude Code) **whose whole brief is `references/audit.md`**: give it that path, the pass names, this session's commit range, the routes it built, and the dev server's address where one runs — and never read that file here, because the audit runs when the session is at its largest. No subagent → say so and run the passes here from that file.
 
-- **Fix a finding inside the pages this session built now, and commit the fix** by the git norms `raizen-norms` prints. Everything else becomes a `docs/queue.md` line.
+- **Fix a finding inside the pages this session built now, and commit the fix** by the git norms `kaizn` prints. Everything else becomes a `docs/queue.md` line.
 - **After a fix that changes how a page looks, screenshot its `bulk` case again at the two Section 4 widths**, and judge the result rather than the intention.
 
 ## 6 — Do not stop; the list of legitimate stops is closed
@@ -179,9 +179,9 @@ Splitting is always allowed; only **where** is constrained:
 
 ## 8 — Closing the session
 
-Report the closing block `raizen-norms` prints at session start under `CLOSING THE SESSION`, as written there. Two of its lines rest on this skill: the page usable now **with its route**, and every unfinished step as a `docs/queue.md` line, never as a sentence.
+Report the closing block `kaizn` prints at session start under `CLOSING THE SESSION`, as written there. Two of its lines rest on this skill: the page usable now **with its route**, and every unfinished step as a `docs/queue.md` line, never as a sentence.
 
-Commit the page as part of finishing it, by the git norms `raizen-norms` prints. **The commit carries the documents its change made false or incomplete** (`docs-format`, same commit), never a later one:
+Commit the page as part of finishing it, by the git norms `kaizn` prints. **The commit carries the documents its change made false or incomplete** (`docs-format`, same commit), never a later one:
 
 - **A `docs/changelog.md` entry** for a commit that changes how the app behaves — mandatory, in the batch that makes the page usable. A UI batch on fixtures changes no behaviour and writes none.
 - **The sentence of `docs/architecture.md` or `docs/runbook.md` the change made false** — a part added or moved, a step of the deploy changed.

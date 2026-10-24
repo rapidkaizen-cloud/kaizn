@@ -73,7 +73,7 @@ Five checks bind every commit:
 - **Several picked findings that are destructive share one STOP, before the first finding starts**: count them all, show a `DESTRUCTIVE` block per finding, and run only the ones the reply approves. Each still runs in its own guarded block and its own commit, never in the one block `db-ops` gives operations approved together, because a finding is reverted alone.
 - **A finding that turns out to need a decision is dropped, not decided** — the stack, a business rule absent from `docs/rules.md`, a prohibition nobody stated: stop on that line, leave the working tree as it stands, report it, and carry on with the next finding.
 
-**Scope is the selected lines and nothing else.** A path that changed outside them is reported, never committed along — the `raizen-norms` rule, unchanged.
+**Scope is the selected lines and nothing else.** A path that changed outside them is reported, never committed along — the `kaizn` rule, unchanged.
 
 ## A5 — Close
 

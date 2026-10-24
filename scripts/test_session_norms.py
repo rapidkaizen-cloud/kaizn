@@ -436,7 +436,7 @@ def antigravity() -> None:
 
         # quiet: a later turn of a conversation that was already handed the norms
         seen = Path(tmp) / "seen.jsonl"
-        seen.write_text(json.dumps({"type": "USER_INPUT", "content": "SESSION NORMS (raizen-norms)\n..."}) + "\n", encoding="utf-8")
+        seen.write_text(json.dumps({"type": "USER_INPUT", "content": "SESSION NORMS (kaizn)\n..."}) + "\n", encoding="utf-8")
         assert call(root, 0, str(seen)) == ""
 
         # the first call: one injected user-role step, and nothing else on stdout
@@ -550,9 +550,9 @@ def first() -> None:
         # no data folder handed over: what every session got before
         assert run(root, data="") == plain
 
-        data = Path(tmp) / "plugins" / "data" / "raizen-norms-raizen"
+        data = Path(tmp) / "plugins" / "data" / "kaizn-kaizn"
         out = run(root, data=data)
-        assert out.count("\nFIRST SESSION ON THIS MACHINE\n") == 1 and "`/raizen-norms:norms-config`" in out
+        assert out.count("\nFIRST SESSION ON THIS MACHINE\n") == 1 and "`/kaizn:norms-config`" in out
         assert out.replace(norms.FIRST, "") == plain and (data / "onboarded").is_file()
         # once: the next session on the machine is not told again
         assert run(root, data=data) == plain

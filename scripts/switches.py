@@ -86,7 +86,7 @@ def refuse(key: str, message: str, payload: dict) -> None:
         # The user meets a rule here, so here is where its switch is offered - never up front.
         message += (
             f"\nThis guard is switchable: if it is in the user's way, tell them once that "
-            f"`/raizen-norms:norms-config` sets `{key}` to `advice` or `off`, and never recommend turning it off."
+            f"`/kaizn:norms-config` sets `{key}` to `advice` or `off`, and never recommend turning it off."
         )
     sys.stderr.write(message + "\n")
     sys.exit(2)

@@ -457,7 +457,7 @@ def switched() -> None:
     # every refusal and hold ends on the one sentence that offers its switch, on Claude Code
     offer = (
         "This guard is switchable: if it is in the user's way, tell them once that "
-        "`/raizen-norms:norms-config` sets `guard_git` to `advice` or `off`, and never recommend turning it off.\n"
+        "`/kaizn:norms-config` sets `guard_git` to `advice` or `off`, and never recommend turning it off.\n"
     )
     for command in ("git add -A", "git push --force origin dev", "git push origin development", "gh pr merge 12",
                     "git push origin dev && git status"):

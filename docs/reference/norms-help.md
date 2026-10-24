@@ -5,7 +5,7 @@ Ask any session for help with these skills, and get one card: the version, the c
 | | |
 |---|---|
 | Kind | Help skill — runs when you ask |
-| Run | `/raizen-norms:norms-help`, or ask in your own words: which command to run, what version this is, what changed |
+| Run | `/kaizn:norms-help`, or ask in your own words: which command to run, what version this is, what changed |
 | Changes | Nothing |
 | Source | `skills/norms-help/SKILL.md`, `scripts/norms_help.py` |
 

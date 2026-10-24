@@ -5,7 +5,7 @@ Running it decides what sits between the database and the UI — fetching, valid
 | | |
 |---|---|
 | Kind | Settle skill — runs only when you invoke it |
-| Run | `/raizen-norms:logic-settle` |
+| Run | `/kaizn:logic-settle` |
 | Run it when | After `app-settle` and before `design-settle` on a repo started from scratch; or when a repo grows handwritten data fetching or validation and you ask what to adopt |
 | Needs first | `docs/PRD.md`, or a root `PRD.md` read through the legacy map. Not on `main`. A clean working tree is advised, not required |
 | Writes | `docs/decisions/` records (and a `docs/README.md` line where `docs/decisions/` is created), `CLAUDE.md`'s Stack table and its `Data layer` row, the `## Logic` part of `AGENTS.md`, the lint floor config; installs only what the Step 5 block lists |

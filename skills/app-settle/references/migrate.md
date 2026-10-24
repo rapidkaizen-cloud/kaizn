@@ -125,4 +125,4 @@ Verified    : [each check above, as run]
 Commit      : [hash]
 ```
 
-Say what the repo owes next, and run none of it: `/raizen-norms:app-settle` again audits it for align, where the guide pages it owes are listed.
+Say what the repo owes next, and run none of it: `/kaizn:app-settle` again audits it for align, where the guide pages it owes are listed.

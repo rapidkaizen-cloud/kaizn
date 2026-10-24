@@ -24,7 +24,7 @@ Order: the norms, the documents and their notes, the two listings, the hand-over
 
 | Block or listing | When it appears | What it holds |
 |---|---|---|
-| `SESSION NORMS (raizen-norms)` | Always | The heading, and that the norms hold where they and the app's `CLAUDE.md` disagree about a norm |
+| `SESSION NORMS (kaizn)` | Always | The heading, and that the norms hold where they and the app's `CLAUDE.md` disagree about a norm |
 | `SWITCHED by the user, on purpose:` | A switch is away from `on` | One line naming each switch you moved and its mode; see [Switches](#switches) |
 | `LANGUAGE` | Always | Your language for chat, documents, commit messages, pull requests and on-screen strings; English for comments, identifiers, file names, URL routes, API paths and every database name; enum values decided per case |
 | `POINTERS` | A repo with `PRD.md` or `docs/PRD.md` | Which skill to read before which work: `build-flow`, `docs-format`, `ui-build`, `db-ops`, `logic-build` — and `norms-help` for which command to run, the version and what changed |
@@ -35,7 +35,7 @@ Order: the norms, the documents and their notes, the two listings, the hand-over
 | `DECISIONS` | Always | An answer with two or more decisions closes with one table: question, options, recommendation and its trade-off |
 | `CLOSING THE SESSION` | A repo with `PRD.md` or `docs/PRD.md` | The report per scope item, then a block written even when the answer is "none" |
 | `OUTPUT` | Always, after the blocks above | The full path of the folder this session writes your files to, worked out from its checkout — see [guard-output](guard-output.md) — and that working files stay where the work is, a name carries no date, and nothing is overwritten |
-| `FIRST SESSION ON THIS MACHINE` | Claude Code, the first session on the machine | That the session ends its first answer, once your task is done, with one line in your language saying these rules can be adjusted with `/raizen-norms:norms-config` — never a stop or a question before the task. See [First session](#first-session) |
+| `FIRST SESSION ON THIS MACHINE` | Claude Code, the first session on the machine | That the session ends its first answer, once your task is done, with one line in your language saying these rules can be adjusted with `/kaizn:norms-config` — never a stop or a question before the task. See [First session](#first-session) |
 | `HOST - Antigravity` | Antigravity only | See below |
 | Components listing | A `components` or `widgets` folder holds components | Opens `--- Components already in this repo`: what to reuse before writing a component |
 | Data layer listing | `CLAUDE.md` has a `Data layer` row naming a folder that exists and has files | Opens `--- Data layer of this repo (<folder>)`: what to call before writing a query |
@@ -119,7 +119,7 @@ It holds the last request, the last 12 answers you gave as question and answer, 
 
 ## On Antigravity
 
-- **There is no start event,** so the script runs before every model call. On the first call of a turn it looks for `SESSION NORMS (raizen-norms)` in the transcript and, finding none, hands the text over as a message that stays in the conversation. Where the transcript cannot be read, it hands it over again.
+- **There is no start event,** so the script runs before every model call. On the first call of a turn it looks for `SESSION NORMS (kaizn)` in the transcript and, finding none, hands the text over as a message that stays in the conversation. Where the transcript cannot be read, it hands it over again.
 - **Later calls of a turn** run the commit question instead; see [document-reminder](document-reminder.md).
 - **`HOST - Antigravity` follows the norms.** It maps Claude Code's tools to this host's: `AskUserQuestion` is `ask_question`, the shell tools are `run_command`, a subagent is `invoke_subagent`, an `mcp__server__tool` is `call_mcp_tool`, a skill is its `SKILL.md` read with `view_file`. It also says the guards run as hooks, unseen until one refuses, and that where `AGENTS.md` and the norms disagree, the norms hold.
 - **`CLAUDE.md` is printed** under `--- CLAUDE.md — what is true of this app alone ---`, because this host does not load it.

@@ -1,5 +1,5 @@
 {
-  "raizen-norms": {
+  "kaizn": {
     "PreInvocation": [
       { "type": "command", "command": "python3 scripts/session_norms.py" }
     ],

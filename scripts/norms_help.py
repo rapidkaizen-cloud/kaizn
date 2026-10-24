@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Print the help card of this copy of raizen-norms: version, commands, pages, last change.
+"""Print the help card of this copy of kaizn: version, commands, pages, last change.
 
 The `norms-help` skill runs this from the plugin folder it was read from, so the card is
 about the copy the session runs: a machine keeps one folder per installed version, and
@@ -45,7 +45,7 @@ def card(root: Path) -> str:
         ("PAGES - under docs/ of the plugin folder", page(root / "docs" / "README.md")),
         ("LAST CHANGE", last_change(read(root / "CHANGELOG.md"))),
     ]
-    out = [f"raizen-norms {version}"]
+    out = [f"kaizn {version}"]
     for title, body in blocks:
         if body:
             out += ["", title, "", body]

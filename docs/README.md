@@ -1,8 +1,8 @@
-# raizen-toolkit docs
+# kaizn docs
 
-`raizen-norms` settles an app one layer at a time and holds every later session to what was settled. These pages are for the people who install it. What an agent obeys is in `skills/` and `scripts/`; nothing here is a rule, and where a page and a skill disagree the skill is right and the page is the defect.
+`kaizn` settles an app one layer at a time and holds every later session to what was settled. These pages are for the people who install it. What an agent obeys is in `skills/` and `scripts/`; nothing here is a rule, and where a page and a skill disagree the skill is right and the page is the defect.
 
-New here: [Overview](start/overview.md), then [Install](start/install.md), then [Quickstart](start/quickstart.md). In a session: `/raizen-norms:norms-help`.
+New here: [Overview](start/overview.md), then [Install](start/install.md), then [Quickstart](start/quickstart.md). In a session: `/kaizn:norms-help`.
 
 ## Getting started
 
@@ -65,6 +65,6 @@ New here: [Overview](start/overview.md), then [Install](start/install.md), then 
 | Page | Holds |
 |---|---|
 | [What is proven](reference/status.md) | What has run for real on each host, and what has not |
-| [Changelog](https://github.com/rapidkaizen-cloud/raizen-toolkit/blob/master/CHANGELOG.md) | What changed in each version, newest first. Kept at the repo root, where `norms-help` reads it in an installed copy |
+| [Changelog](https://github.com/rapidkaizen-cloud/kaizn/blob/master/CHANGELOG.md) | What changed in each version, newest first. Kept at the repo root, where `norms-help` reads it in an installed copy |
 
 A feature with no page here has its skill as the only source: `skills/<name>/SKILL.md`.

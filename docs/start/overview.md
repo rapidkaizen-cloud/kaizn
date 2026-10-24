@@ -1,6 +1,6 @@
 # Overview
 
-`raizen-norms` is one plugin, for Claude Code and for Antigravity, that settles an app one layer at a time and then holds every later session to what was settled.
+`kaizn` is one plugin, for Claude Code and for Antigravity, that settles an app one layer at a time and then holds every later session to what was settled.
 
 It has two halves. The settle skills are interviews: they decide with you what is yours to decide and write the answers into the repo. Everything else — the rule skills, the session norms, the hooks — keeps the sessions that build afterwards to those answers.
 

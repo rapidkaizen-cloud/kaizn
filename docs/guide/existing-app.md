@@ -8,7 +8,7 @@ One command reads the repo and runs the mode it owes next: document it, migrate 
 ## Steps
 
 1. **Commit or stash your own work.** Migrate and align stop on a dirty working tree and name the paths, because their commits must carry nobody else's changes.
-2. **Open Claude Code in the repo and run `/raizen-norms:app-settle`.** Its first block reports the mode, with the fact that produced it. You may overrule it in one line.
+2. **Open Claude Code in the repo and run `/kaizn:app-settle`.** Its first block reports the mode, with the fact that produced it. You may overrule it in one line.
 3. **Answer what the mode asks.**
 
    | The repo has | Mode | What happens |
@@ -18,10 +18,10 @@ One command reads the repo and runs the mode it owes next: document it, migrate 
    | Documents in place | Align | The repo is audited against the installed rules, the findings are ranked, and you pick what is fixed — one finding per commit |
    | Documents in place, and you want the app itself to change | Rework | The decisions are reopened, keeping first, and the documents are edited to match |
 
-4. **Run `/raizen-norms:app-settle` again** when you want the next mode. It runs one mode per run.
+4. **Run `/kaizn:app-settle` again** when you want the next mode. It runs one mode per run.
 5. **Settle the other two layers**, or only the one you need:
-   - `/raizen-norms:logic-settle` — also the right command when a repo has grown handwritten data-fetching or validation and you want to know what to adopt. A session never starts it on a running app by itself.
-   - `/raizen-norms:design-settle` — existing UI is audited first, and today's look is one of the candidates. Where a `DESIGN.md` is already written, it also offers to fix only the drift.
+   - `/kaizn:logic-settle` — also the right command when a repo has grown handwritten data-fetching or validation and you want to know what to adopt. A session never starts it on a running app by itself.
+   - `/kaizn:design-settle` — existing UI is audited first, and today's look is one of the candidates. Where a `DESIGN.md` is already written, it also offers to fix only the drift.
 
 ## Align or rework
 

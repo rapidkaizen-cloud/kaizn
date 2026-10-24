@@ -57,7 +57,7 @@ import remind_docs
 import switches
 
 HEAD = """\
-SESSION NORMS (raizen-norms)
+SESSION NORMS (kaizn)
 
 These hold in every app repo. The app's CLAUDE.md holds what is true of that app
 alone; where the two disagree about a norm, this one is the newer.
@@ -484,7 +484,7 @@ FIRST = """\
 
 FIRST SESSION ON THIS MACHINE
 End your first answer, once the user's task is done, with one line in the user's language:
-these rules can be adjusted with `/raizen-norms:norms-config`. Do not stop or ask about it
+these rules can be adjusted with `/kaizn:norms-config`. Do not stop or ask about it
 before the task.
 """
 # Written into the plugin's data folder once `FIRST` was printed; kept across updates.
@@ -807,7 +807,7 @@ def stale_note(root: Path) -> None:
     if not found:
         return
     sys.stdout.write(
-        "\nNOTE: CLAUDE.md still carries sections now owned by raizen-norms:\n"
+        "\nNOTE: CLAUDE.md still carries sections now owned by kaizn:\n"
         + "".join(f"  - {label}\n" for label in found)
         + "Tell the user to delete them; the plugin version above is authoritative.\n"
     )

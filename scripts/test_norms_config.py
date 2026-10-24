@@ -39,7 +39,7 @@ def demo() -> None:
         assert allowed in (switches.THREE, switches.TWO) and what.endswith("."), key
 
     with tempfile.TemporaryDirectory() as tmp:
-        data = Path(tmp) / "plugins" / "data" / "raizen-norms-raizen"
+        data = Path(tmp) / "plugins" / "data" / "kaizn-kaizn"
         file = data / "switches.json"
 
         # show, before any file or folder exists: every rule on, and nothing is created
