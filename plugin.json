@@ -1,4 +1,4 @@
 {
-  "name": "raizen-norms",
+  "name": "kaizn",
   "description": "Settle an app one layer at a time and hold it there: app-settle, logic-settle and design-settle decide the domain, the logic layer and the look; session norms, git and destructive-operation guards, and document, UI, database, application-logic and build-order rules govern every session after."
 }

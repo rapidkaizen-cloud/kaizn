@@ -50,10 +50,10 @@ def demo() -> None:
     assert run("PowerShell", {"command": 'psql -c "TRUNCATE foo;"'}) == 2
 
     # shell vocabulary is not SQL: `update` without SET, coreutils truncate -> pass
-    assert run("Bash", {"command": 'claude plugin update "raizen-hub@raizen"'}) == 0
+    assert run("Bash", {"command": 'claude plugin update "kaizn@kaizn"'}) == 0
     assert run("Bash", {"command": "sudo apt update && sudo apt upgrade -y"}) == 0
     assert run("Bash", {"command": "truncate -s 0 logs/app.log"}) == 0
-    assert run("PowerShell", {"command": "claude plugin update raizen-norms@raizen"}) == 0
+    assert run("PowerShell", {"command": "claude plugin update kaizn@kaizn"}) == 0
     # but SQL arriving through a shell still blocks
     assert run("Bash", {"command": 'psql -c "UPDATE users SET active = false;"'}) == 2
 
@@ -241,5 +241,60 @@ def demo() -> None:
     print("ok")
 
 
+def switched() -> None:
+    """The user's switch: `advice` lets the SQL through and hands the model the refusal,
+    `off` does nothing, a value it does not know is `on`, and the repo's marker still holds."""
+    import os
+    import tempfile
+
+    def call(query: str, mode: str, cwd: str | None = None) -> tuple:
+        payload = json.dumps({"tool_name": "mcp__supabase__execute_sql", "tool_input": {"query": query}})
+        with tempfile.TemporaryDirectory() as data:
+            (Path(data) / "switches.json").write_text(json.dumps({"guard_destructive": mode}), encoding="utf-8")
+            env = {**os.environ, "CLAUDE_PLUGIN_DATA": data}
+            result = subprocess.run([PYTHON, str(GUARD)], input=payload, capture_output=True, text=True, env=env, cwd=cwd)
+        told = json.loads(result.stdout)["hookSpecificOutput"] if result.stdout else {}
+        return result.returncode, result.stderr, told
+
+    # must pass, and say nothing, under every mode
+    for mode in ("on", "advice", "off"):
+        assert call("SELECT count(*) FROM orders;", mode) == (0, "", {})
+        assert call("DELETE FROM notes WHERE title LIKE '[CLAUDE]%';", mode) == (0, "", {})
+    assert call("DROP TABLE foo;", "off") == (0, "", {})
+
+    code, err, told = call("DROP TABLE foo;", "advice")
+    assert code == 0 and err == "" and told["hookEventName"] == "PreToolUse"
+    assert told["additionalContext"].startswith("ADVICE - the user switched guard_destructive to advice")
+    assert "REFUSED: a destructive operation (DROP)" in told["additionalContext"]
+
+    assert "norms-config" not in told["additionalContext"]
+
+    # refused, ending on the one sentence that offers its switch
+    offer = (
+        "This guard is switchable: if it is in the user's way, tell them once that "
+        "`/kaizn:norms-config` sets `guard_destructive` to `advice` or `off`, and never recommend turning it off.\n"
+    )
+    for mode in ("on", "maybe"):
+        code, err, told = call("DROP TABLE foo;", mode)
+        assert code == 2 and err.startswith("REFUSED:") and err.endswith(offer) and told == {}, mode
+    # ... and never on Antigravity, where there are no switches
+    with tempfile.TemporaryDirectory() as td:
+        agy = {"toolCall": {"name": "call_mcp_tool", "args": {"ServerName": "supabase", "ToolName": "execute_sql",
+                                                             "Arguments": {"query": "DROP TABLE foo;"}}},
+               "workspacePaths": [td]}
+        result = subprocess.run([PYTHON, str(GUARD)], input=json.dumps(agy), capture_output=True, text=True)
+    assert result.returncode == 2 and result.stderr.startswith("REFUSED:") and "norms-config" not in result.stderr
+
+    # the repo's marker turns it off there whatever the switch says
+    with tempfile.TemporaryDirectory() as td:
+        (Path(td) / ".claude").mkdir()
+        (Path(td) / ".claude" / "destructive-gate.off").write_text("why\n")
+        assert call("DROP TABLE foo;", "on", td) == (0, "", {})
+        assert call("DROP TABLE foo;", "advice", td) == (0, "", {})
+
+    print("ok switched")
+
+
 if __name__ == "__main__":
     demo()
+    switched()

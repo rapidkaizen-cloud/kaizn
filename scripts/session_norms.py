@@ -11,6 +11,12 @@ update instead of an edit in N repositories. An app's CLAUDE.md keeps only what 
 plugin cannot know: its stack, its locale, the rules that belong to that app alone,
 and the two gates that must survive the plugin being absent.
 
+Each block prints as the user's switch for it says (`switches.py`): whole, marked as
+advice, or not at all. The norms then open with one line naming every rule the user moved
+away from `on`, so that a missing block reads as their choice rather than a fault. Nothing
+asks for a switch up front; the first session on a machine is told once, after its task,
+where the rules are switched.
+
 The documents are injected rather than pointed at. A pointer is obeyed by judgement,
 and the sessions that skip it are exactly the narrow ones where its prohibitions still
 apply. A repo with a root `PRD.md` is on the legacy form and gets `QUEUE.md` and the
@@ -44,12 +50,14 @@ import re
 import sys
 from pathlib import Path
 
+import guard_output
 import handoff
 import host
 import remind_docs
+import switches
 
 HEAD = """\
-SESSION NORMS (raizen-norms)
+SESSION NORMS (kaizn)
 
 These hold in every app repo. The app's CLAUDE.md holds what is true of that app
 alone; where the two disagree about a norm, this one is the newer.
@@ -173,7 +181,33 @@ is flagged. Then this block, always, even where the answer is "none":
 A missing block is ambiguous between "none" and "forgot".
 """
 
-NORMS = HEAD + LANGUAGE + POINTERS + SCOPE + GIT + ASKING + DECISIONS + CLOSING
+# The blocks in the order they print, each under the switch the user sets for it.
+BLOCKS = [
+    ("norm_language", LANGUAGE),
+    ("norm_pointers", POINTERS),
+    ("norm_scope", SCOPE),
+    ("norm_git", GIT),
+    ("norm_asking", ASKING),
+    ("norm_decisions", DECISIONS),
+    ("norm_closing", CLOSING),
+]
+
+# Every block on: what a session gets where the user switched nothing.
+NORMS = HEAD + "".join(text for _, text in BLOCKS)
+
+# Printed after the norms in every form and on every host, with the folder worked out for
+# this session, because the session is the one place that knows its checkout.
+OUTPUT = """\
+
+OUTPUT
+A file made for the user to open or pass on - a report, a spreadsheet, a CSV, a PDF -
+goes to this session's own folder, never into the repo, a scratchpad or the root of the
+output folder:
+  {folder}
+Working files - scripts, raw data, screenshots - stay where the work is. Name a file for
+what it holds, with no date, and never overwrite one: a name already taken gets `-v2`,
+`-v3`. Give the user the full path. `guard_output` refuses any other folder there.
+"""
 
 # The block above is the legacy form's, printed byte for byte where a root `PRD.md`
 # exists. The `docs/` form differs only where the block names a document.
@@ -301,6 +335,52 @@ def unsettled_norms() -> str:
     return text.rstrip("\n") + "\n"
 
 
+UNSETTLED_BLOCKS = [
+    (key, NOT_SETTLED if key == "norm_pointers" else text) for key, text in BLOCKS if key != "norm_closing"
+]
+
+# Printed under the heading of a block the user switched to `advice`.
+ADVICE = "Advice only: the user has not made this block binding - weigh it.\n"
+
+
+def switched_block(key: str, text: str) -> str:
+    """A block as the user's switch for it says: whole, marked as advice, or nothing."""
+    mode = switches.mode(key)
+    if mode == switches.OFF:
+        return ""
+    if mode == switches.ADVICE:
+        lead = len(text) - len(text.lstrip("\n"))
+        heading, _, body = text[lead:].partition("\n")
+        return text[:lead] + heading + "\n" + ADVICE + body
+    return text
+
+
+def switched_line() -> str:
+    """One line naming every rule the user moved away from `on`, so that a missing block or
+    a quiet hook reads as their choice rather than a fault. Nothing when none moved."""
+    moved = switches.switched()
+    if not moved:
+        return ""
+    return (
+        "SWITCHED by the user, on purpose: "
+        + ", ".join(f"{key} {mode}" for key, mode in moved.items())
+        + ".\n\n"
+    )
+
+
+def norms(blocks: list, *forms: list) -> str:
+    """The norms as this session gets them: each block worded for the repo's form, then
+    printed as its switch says. Every switch on, this is `NORMS`, `docs_norms()` or
+    `unsettled_norms()` exactly - each replacement lies inside one block."""
+    out = HEAD + switched_line()
+    for key, text in blocks:
+        for form in forms:
+            for old, new in form:
+                text = text.replace(old, new)
+        out += switched_block(key, text)
+    return out.rstrip("\n") + "\n"
+
+
 # Sections that used to be rendered into an app's CLAUDE.md and are now owned by this
 # plugin. A repo bootstrapped before a move still carries the old copy, and the two
 # then contradict each other silently. Detection is by a phrase distinctive to the old
@@ -396,6 +476,36 @@ def fit(text: str, room: float, more: str) -> str:
         kept += line
     # six lines are a listing's own heading: with no entry under them, say only `more`
     return (kept if kept.count("\n") > 6 else "\n") + more
+
+
+# Printed in the first session on a machine, on Claude Code alone: a user cannot judge a rule
+# before meeting it, so nothing asks up front, and this line is where the switches are named.
+FIRST = """\
+
+FIRST SESSION ON THIS MACHINE
+End your first answer, once the user's task is done, with one line in the user's language:
+these rules can be adjusted with `/kaizn:norms-config`. Do not stop or ask about it
+before the task.
+"""
+# Written into the plugin's data folder once `FIRST` was printed; kept across updates.
+ONBOARDED = "onboarded"
+
+
+def first_session() -> str:
+    """`FIRST` where the plugin's data folder holds no marker yet, which it then gets. A
+    marker that cannot be written leaves the line out, so that it never repeats."""
+    folder = os.environ.get("CLAUDE_PLUGIN_DATA", "").strip()
+    if not folder:
+        return ""
+    marker = Path(folder) / ONBOARDED
+    try:
+        if marker.exists():
+            return ""
+        marker.parent.mkdir(parents=True, exist_ok=True)
+        marker.write_text("The first session here was told where the switches are.\n", encoding="utf-8")
+    except OSError:
+        return ""
+    return FIRST
 
 
 # The norms and the skills are written in Claude Code's vocabulary. A session on another
@@ -697,7 +807,7 @@ def stale_note(root: Path) -> None:
     if not found:
         return
     sys.stdout.write(
-        "\nNOTE: CLAUDE.md still carries sections now owned by raizen-norms:\n"
+        "\nNOTE: CLAUDE.md still carries sections now owned by kaizn:\n"
         + "".join(f"  - {label}\n" for label in found)
         + "Tell the user to delete them; the plugin version above is authoritative.\n"
     )
@@ -708,9 +818,9 @@ def emit(root: Path, payload: dict) -> None:
     queue = "what is not built yet"
     notes = ""
     if (root / "PRD.md").is_file():
-        norms, files = NORMS, [("PRD.md", "intent and prohibitions"), ("QUEUE.md", queue)]
+        text, files = norms(BLOCKS), [("PRD.md", "intent and prohibitions"), ("QUEUE.md", queue)]
     elif (root / "docs" / "PRD.md").is_file():
-        norms, files = docs_norms(), list(LIVING)
+        text, files = norms(BLOCKS, DOCS_FORM), list(LIVING)
         for rel in ("docs/README.md", "docs/product.md"):
             if not (root / rel).is_file():
                 notes += f"\nNOTE: {rel} is missing. `app-settle` seeds it from docs/PRD.md - tell the user.\n"
@@ -718,15 +828,18 @@ def emit(root: Path, payload: dict) -> None:
     else:
         # No PRD in either form: an empty directory, an app not documented yet, or a repo
         # that is not an app. Its queue is still printed, from the root or from `docs/`.
-        norms, files = unsettled_norms(), [("QUEUE.md", queue), ("docs/queue.md", queue)]
+        text, files = norms(UNSETTLED_BLOCKS, DOCS_FORM, UNSETTLED_FORM), [("QUEUE.md", queue), ("docs/queue.md", queue)]
     notes += captured(stale_note, root)
+    text += switched_block("norm_output", OUTPUT.format(folder=guard_output.folder(str(root))))
     # Antigravity takes the text as an injected step, which no such cap cuts.
     room = float("inf") if on_antigravity else BUDGET
     if on_antigravity:
-        norms += HOST_ANTIGRAVITY
+        text += HOST_ANTIGRAVITY
         files.append(("CLAUDE.md", "what is true of this app alone"))
-    out = norms
-    room -= size(norms) + size(notes)
+    else:
+        text += first_session()
+    out = text
+    room -= size(text) + size(notes)
     for rel, what in files:
         text = document(root, rel, what, room)
         out += text

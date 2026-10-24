@@ -7,19 +7,22 @@ Two commands in Claude Code, one setting, and a restart. For Antigravity, see [R
 | Needs | Why |
 |---|---|
 | Claude Code | The host the commands below are typed into |
-| `python3` | Every `raizen-norms` hook calls it. With only `python` on the machine the guards silently never run |
+| `python3` | Every `kaizn` hook calls it. With only `python` on the machine the guards silently never run |
 | Node.js | The companion skills install through `npx` |
 
 ## Install the plugin
 
 ```
-/plugin marketplace add rapidkaizen-cloud/raizen-toolkit
-/plugin install raizen-norms@raizen
+/plugin marketplace add rapidkaizen-cloud/kaizn
+/plugin install kaizn@kaizn
 ```
 
 1. **Install at user scope only.** A project-scope entry updates separately and falls behind.
-2. **Turn on `autoUpdate`.** In `~/.claude/settings.json`, set `"autoUpdate": true` on `raizen` under `extraKnownMarketplaces`, so a new version reaches the machine at its next start.
-3. **Restart Claude Code.**
+2. **Choose the output folder, or leave it empty.** Claude Code asks for **Output folder**: where sessions write the reports and files they make for you, one folder per repo and per worktree inside it. Empty means `Downloads/Claude` in your home folder; change it later in `/config`. See [guard-output](../reference/guard-output.md).
+3. **Turn on `autoUpdate`.** In `~/.claude/settings.json`, set `"autoUpdate": true` on `kaizn` under `extraKnownMarketplaces`, so a new version reaches the machine at its next start.
+4. **Restart Claude Code.**
+
+Nothing else is asked: every rule starts `on`. The first session ends its first answer with one line naming `/kaizn:norms-config`, and a guard that refuses tells the session it can be switched; see [norms-config](../reference/norms-config.md).
 
 ## Companion skills
 
@@ -51,8 +54,8 @@ Recommended: `npx skills add supabase/agent-skills` (Postgres guidance for `db-o
 
 ## Check that it loaded
 
-- `/plugin` lists `raizen-norms`.
-- `/raizen-norms:norms-help` prints the running version, the commands and the last change, in any session.
+- `/plugin` lists `kaizn`.
+- `/kaizn:norms-help` prints the running version, the commands and the last change, in any session.
 - `design-settle` prints the running build as `Skill build` in its Step 0 block.
 
 ## Next

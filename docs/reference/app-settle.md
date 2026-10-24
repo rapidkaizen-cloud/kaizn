@@ -5,7 +5,7 @@ Running it settles an app repo at the app level — what the app is for, who use
 | | |
 |---|---|
 | Kind | Settle skill — runs only when you invoke it |
-| Run | `/raizen-norms:app-settle` |
+| Run | `/kaizn:app-settle` |
 | Run it when | You start an app, document or migrate an existing one, check whether a repo follows the current rules, or want to re-plan one |
 | Needs first | Nothing in an empty directory. Migrate and Align need a git repo with a clean working tree. A session never works on `main` |
 | Writes | By mode: `docs/PRD.md` and the living documents it seeds, `CLAUDE.md`, `AGENTS.md`, `.claude/settings.json`, the root `README.md`. Align also changes existing code and agent files |
@@ -33,7 +33,7 @@ One session runs one mode, in the order a repo owes them: Document, then Migrate
 3. **N3, the summary.** One message, then a stop for your approval. It names the init command N5 will run, so approving the summary approves that command. Approving part of it writes nothing: the lines you reject are settled, then the summary is shown again whole.
 4. **N4, `docs/PRD.md`.** Frozen from the moment it is written. It seeds `docs/product.md`, `docs/rules.md`, `docs/glossary.md` and one record per answered stack question in `docs/decisions/`. `docs/architecture.md` and `docs/runbook.md` are written from the stack answers, with `[needs verification]` where nothing has run yet. Then `docs/README.md` and the root `README.md`.
 5. **N5, scaffold.** The app's skeleton comes from the platform's own init command — the framework's official scaffolder — run first, before the documents are written, because a scaffolder refuses a directory that is not empty; a `README.md`, `CLAUDE.md` or `AGENTS.md` it shipped is replaced. Then `CLAUDE.md`, `AGENTS.md`, `.claude/settings.json`; a host rewrite rule for a static SPA only; a CI workflow only if you ask. Every file is written for your answers, never copied. Then `git init`, `git branch -M main`, the one commit `main` ever takes directly, and `development` created and switched to.
-6. **N6, close.** The files created, and what you must do by hand: create the database project (and its staging counterpart if question 7 asked for one) and connect it. It says plainly when there is no staging. It offers `/logic-settle`, then `/design-settle`, unless the product has no UI. `raizen-norms` becomes active once the next session starts in this repo.
+6. **N6, close.** The files created, and what you must do by hand: create the database project (and its staging counterpart if question 7 asked for one) and connect it. It says plainly when there is no staging. It offers `/logic-settle`, then `/design-settle`, unless the product has no UI. `kaizn` becomes active once the next session starts in this repo.
 
 **Pioneer and Not ready.** A Pioneer option opens with `Pioneer —` and what does not exist for it yet. Picking one, or typing a platform outside the list, adds three lines — no rubric row, no repo that has run it, what the destructive guard covers — and one confirmation; declining routes back to a Ready platform (`references/pioneer.md`). A Not ready option is never offered, but one you name is accepted with what you must set up yourself. A non-SQL store first gets a notice that the destructive guard does not cover it, then a question whether to proceed.
 

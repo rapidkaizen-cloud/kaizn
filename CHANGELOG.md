@@ -1,6 +1,81 @@
 # Changelog
 
-All notable changes to the `raizen-norms` plugin, and to `raizen-hub` until 0.70.0 merged it in, newest first. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versions before these are in `git log`.
+All notable changes to the `kaizn` plugin — named `raizen-norms` until 0.106.0, and `raizen-hub` until 0.70.0 merged it in — newest first. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versions before these are in `git log`.
+
+## [kaizn 0.106.0] - 2026-10-24
+
+`raizen-norms` is now `kaizn`, and its marketplace and repo take the same name, so the plugin is named for what it does rather than for who wrote it. The name is *kaizen* without its `e`: `kaizen` itself is already a Claude Code plugin with the same scope.
+
+### Changed
+
+- The plugin `raizen-norms` is renamed `kaizn`: every skill is now `/kaizn:<skill>`, and the session norms open with `SESSION NORMS (kaizn)`. The `renames` map in `marketplace.json` carries `raizen-norms` to `kaizn`.
+- The marketplace `raizen` is renamed `kaizn`, so the install is `/plugin install kaizn@kaizn`.
+- The repo moves to `rapidkaizen-cloud/kaizn` and the docs site to `https://rapidkaizen-cloud.github.io/kaizn/`; GitHub redirects the old URLs.
+- `app-settle` writes `kaizn@kaizn` into a new app's `.claude/settings.json`.
+- Changelog headings read `## [kaizn x.y.z]`; the entries below this one keep the old name.
+
+To act on:
+
+- Claude Code: remove the marketplace `raizen`, add `rapidkaizen-cloud/kaizn`, install `kaizn@kaizn`, and turn `autoUpdate` on for `kaizn` — the steps are in `docs/guide/update.md`. An update in place is not enough: the machine keeps the marketplace under `raizen`, and the `renames` map then rewrites `raizen-norms@raizen` to `kaizn@raizen` in user and project settings, a key no new install shares.
+- Every app repo whose `.claude/settings.json` names `raizen-norms@raizen`: change the key to `kaizn@kaizn` and commit it.
+- Antigravity: `agy plugin uninstall raizen-norms`, then install from `https://github.com/rapidkaizen-cloud/kaizn`.
+- Anything written outside the plugin that invokes a skill — notes, aliases, scripts — changes `/raizen-norms:` to `/kaizn:`.
+
+## [raizen-norms 0.105.0] - 2026-10-24
+
+Nothing about the rules is asked up front any more. A user cannot judge a rule before meeting it, so the thirteen switches 0.104.0 put in the enable-time dialog asked for a decision nobody could make yet. The install asks only for the output folder, the switches move to one file the plugin owns, and the choice is offered where a guard bites.
+
+### Changed
+
+- The thirteen switches are no longer plugin settings, so they are gone from the enable-time dialog and from `/config`. They sit in `switches.json` in the plugin's data folder (`~/.claude/plugins/data/<id>/`, kept across updates) — still one file for every repo on the machine, and a missing file, an unreadable one or a value it does not know is still `on`.
+- `norms-config` reads and writes that file alone, through the data folder Claude Code fills into its text, and no longer touches `~/.claude/settings.json`. Where the host leaves that folder unfilled — Antigravity — it says switches are not available there and stops.
+- A guard's or a reminder's switch applies from its next call, in the session that set it too; a block of the norms from the next session start.
+- Claude Code 2.1.271 is no longer needed: the manifest carries no picker.
+
+### Added
+
+- Every refusal and hold of `guard_git`, `guard_destructive` and `guard_output` ends on one sentence: the rule is switchable, and if it is in the user's way the session says once that `/raizen-norms:norms-config` sets it to `advice` or `off`, never recommending turning it off. Not on Antigravity.
+- Session norms, the first session on a machine, on Claude Code: one instruction to end the first answer, after the task, with one line saying the rules can be adjusted with `/raizen-norms:norms-config`. A marker `onboarded` in the data folder keeps it to once per machine.
+
+To act on:
+
+- Nothing to carry over: 0.104.0 was never published, so no machine holds its switches under `pluginConfigs`.
+
+## [raizen-norms 0.104.0] - 2026-10-23
+
+Every block of the session norms, every guard and every reminder can now be switched by the user: until this version each one bound everyone who installed the plugin, and the only way out was a per-repo marker for the destructive gate. A switch is global — one plugin setting for every repo — and starts at `on`, so a machine that switches nothing gets exactly what it got before.
+
+### Added
+
+- Thirteen plugin settings, rows in `/config` and in the dialog when the plugin is enabled: `norm_language`, `norm_pointers`, `norm_scope`, `norm_git`, `norm_asking`, `norm_decisions`, `norm_closing`, `norm_output`, `guard_git`, `guard_destructive`, `guard_output` — each `on`, `advice` or `off` — and `remind_docs`, `remind_context` — each `on` or `off`.
+- Skill `norms-config`: shows each switch, its mode and what it does, asks which to change, and writes the answers into `pluginConfigs` of `~/.claude/settings.json` itself, leaving every other key as it was. A change applies to sessions started after it.
+- Session norms: one line under the heading naming every switch away from `on`, so a missing block reads as the user's choice.
+
+### Changed
+
+- Session norms: a block switched to `advice` is printed with one line under its heading saying it is not binding; one switched `off` is not printed. `norm_pointers` covers `NOT SETTLED` where it stands in place of `POINTERS`.
+- `guard_git`, `guard_destructive`, `guard_output`: under `advice` a call is let through and the session is handed what the hook would have said; under `off` the hook does nothing. `.claude/destructive-gate.off` still turns `guard_destructive` off in its repo alone.
+- `remind_docs` and `remind_context`: silent under `off`, each apart from the other.
+- A block and its guard switch apart: `norm_git` off leaves `guard_git` holding pushes, and the like.
+
+To act on:
+
+- Claude Code 2.1.271 or later: a plugin whose settings carry a picker does not load on an earlier version. Update Claude Code before this version arrives.
+- Nothing to rename. Antigravity has no plugin settings, so every rule there stays `on`.
+
+## [raizen-norms 0.103.0] - 2026-10-23
+
+Every session writes the files it makes for you to one output folder, in a folder of its own per repo and per worktree. Before the rule, one machine's output folder had collected some 210 loose files from every repo at its root, each sorted back by hand from session transcripts, and a report written into a repo dirtied its `git status`.
+
+### Added
+
+- Plugin setting **Output folder** (`output_dir`), asked when the plugin is enabled and changed in `/config`. Left empty, it is `Downloads/Claude` in the home folder; Antigravity, with no plugin settings, always uses that.
+- Session norms, `OUTPUT`: the full path this session writes to — `<repo>` for a main checkout, `<repo>-<worktree>` for a linked worktree, beside the repo's folder and never inside it, `_general` outside any repo — with working files left where the work is, no date in a name, and `-v2` where a name is taken.
+- `guard_output`: refuses a tool call naming a folder of the output folder that does not exist and is not the session's own, and, from a worktree, a new name inside its repo's folder. On Antigravity it is wired to `run_command` and `call_mcp_tool` only.
+
+To act on:
+
+- Nothing to rename. A machine that kept an output rule of its own in `~/.claude/CLAUDE.md` or a user-level hook drops it once this version runs, so the rule lives in one place.
 
 ## [raizen-norms 0.102.0] - 2026-10-22
 

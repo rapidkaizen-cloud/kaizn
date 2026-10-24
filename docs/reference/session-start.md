@@ -24,7 +24,8 @@ Order: the norms, the documents and their notes, the two listings, the hand-over
 
 | Block or listing | When it appears | What it holds |
 |---|---|---|
-| `SESSION NORMS (raizen-norms)` | Always | The heading, and that the norms hold where they and the app's `CLAUDE.md` disagree about a norm |
+| `SESSION NORMS (kaizn)` | Always | The heading, and that the norms hold where they and the app's `CLAUDE.md` disagree about a norm |
+| `SWITCHED by the user, on purpose:` | A switch is away from `on` | One line naming each switch you moved and its mode; see [Switches](#switches) |
 | `LANGUAGE` | Always | Your language for chat, documents, commit messages, pull requests and on-screen strings; English for comments, identifiers, file names, URL routes, API paths and every database name; enum values decided per case |
 | `POINTERS` | A repo with `PRD.md` or `docs/PRD.md` | Which skill to read before which work: `build-flow`, `docs-format`, `ui-build`, `db-ops`, `logic-build` — and `norms-help` for which command to run, the version and what changed |
 | `NOT SETTLED` | A repo with neither, in place of `POINTERS` | That `app-settle` has not run: `build-flow` and `docs-format` do not apply, UI is built only from the components and tokens the repo has, the session says once at the end that `app-settle` has not run, and `norms-help` answers which command to run |
@@ -33,10 +34,41 @@ Order: the norms, the documents and their notes, the two listings, the hand-over
 | `ASKING` | Always | A decision that is yours is asked, or answered in chat at a hard stop; the session never hands you a command to type. A block or a table a skill orders printed is printed whole, whatever brevity mode another plugin sets |
 | `DECISIONS` | Always | An answer with two or more decisions closes with one table: question, options, recommendation and its trade-off |
 | `CLOSING THE SESSION` | A repo with `PRD.md` or `docs/PRD.md` | The report per scope item, then a block written even when the answer is "none" |
+| `OUTPUT` | Always, after the blocks above | The full path of the folder this session writes your files to, worked out from its checkout — see [guard-output](guard-output.md) — and that working files stay where the work is, a name carries no date, and nothing is overwritten |
+| `FIRST SESSION ON THIS MACHINE` | Claude Code, the first session on the machine | That the session ends its first answer, once your task is done, with one line in your language saying these rules can be adjusted with `/kaizn:norms-config` — never a stop or a question before the task. See [First session](#first-session) |
 | `HOST - Antigravity` | Antigravity only | See below |
 | Components listing | A `components` or `widgets` folder holds components | Opens `--- Components already in this repo`: what to reuse before writing a component |
 | Data layer listing | `CLAUDE.md` has a `Data layer` row naming a folder that exists and has files | Opens `--- Data layer of this repo (<folder>)`: what to call before writing a query |
 | Hand-over | See below | What the other host's last session knew |
+
+### Switches
+
+Each block from `LANGUAGE` to `OUTPUT` has a switch of its own, set with [norms-config](norms-config.md) and read from its file when a session starts; the heading, `FIRST SESSION ON THIS MACHINE` and `HOST - Antigravity` have none. The table above is what every switch at `on` prints.
+
+| Switch | Block |
+|---|---|
+| `norm_language` | `LANGUAGE` |
+| `norm_pointers` | `POINTERS`, or `NOT SETTLED` in its place |
+| `norm_scope` | `SCOPE` |
+| `norm_git` | `GIT` |
+| `norm_asking` | `ASKING` |
+| `norm_decisions` | `DECISIONS` |
+| `norm_closing` | `CLOSING THE SESSION` |
+| `norm_output` | `OUTPUT` |
+
+- **`advice`** prints the block whole, with `Advice only: the user has not made this block binding - weigh it.` under its heading.
+- **`off`** leaves the block out. The documents, the notes, the listings and the hand-over are printed as before.
+- **The `SWITCHED` line** follows the heading whenever any switch — a block's, a guard's or a reminder's — is away from `on`, so a session reads a missing block as your choice.
+- **A block's switch reaches nothing else.** `norm_git` off leaves `guard_git` holding pushes, and `norm_output` off leaves `guard_output` refusing.
+- **On Antigravity** every switch is `on`: the skill cannot reach the switches file there.
+
+### First session
+
+Nothing asks about the rules when the plugin is installed. Instead, the first session on a machine is told to name [norms-config](norms-config.md) once, at the end of its first answer, after your task.
+
+- **Once per machine.** With the block, the hook writes a file `onboarded` into the plugin's data folder, `~/.claude/plugins/data/<id>/`. A machine where that file exists never gets the block again, across plugin updates; uninstalling the plugin deletes the folder, and the next install is told again.
+- **Never a failed start.** Where the file cannot be written the block is left out, so it never repeats every session.
+- **Claude Code only.** Antigravity has no switches, so it never gets the block.
 
 ### The documents, by repo form
 
@@ -87,7 +119,7 @@ It holds the last request, the last 12 answers you gave as question and answer, 
 
 ## On Antigravity
 
-- **There is no start event,** so the script runs before every model call. On the first call of a turn it looks for `SESSION NORMS (raizen-norms)` in the transcript and, finding none, hands the text over as a message that stays in the conversation. Where the transcript cannot be read, it hands it over again.
+- **There is no start event,** so the script runs before every model call. On the first call of a turn it looks for `SESSION NORMS (kaizn)` in the transcript and, finding none, hands the text over as a message that stays in the conversation. Where the transcript cannot be read, it hands it over again.
 - **Later calls of a turn** run the commit question instead; see [document-reminder](document-reminder.md).
 - **`HOST - Antigravity` follows the norms.** It maps Claude Code's tools to this host's: `AskUserQuestion` is `ask_question`, the shell tools are `run_command`, a subagent is `invoke_subagent`, an `mcp__server__tool` is `call_mcp_tool`, a skill is its `SKILL.md` read with `view_file`. It also says the guards run as hooks, unseen until one refuses, and that where `AGENTS.md` and the norms disagree, the norms hold.
 - **`CLAUDE.md` is printed** under `--- CLAUDE.md — what is true of this app alone ---`, because this host does not load it.

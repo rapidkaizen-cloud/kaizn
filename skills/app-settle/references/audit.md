@@ -34,7 +34,7 @@ C8 page specs       : [N pages reading data · N with a spec · Playwright — i
 
 `AGENTS.md` takes its shape from `app-settle`'s `references/scaffold.md` (N5): report it missing, the parts it lacks, and every path its `## UI` or `## Logic` part names that does not resolve.
 
-**C3 — language split.** `raizen-norms` puts identifiers, file names, routes, API paths, and every database name in English, whatever language the UI speaks. Count what deviates and name where.
+**C3 — language split.** `kaizn` puts identifiers, file names, routes, API paths, and every database name in English, whatever language the UI speaks. Count what deviates and name where.
 
 **C4 — guard coverage.** Find every norm that cannot apply here. One known shape: a `.claude/destructive-gate.off` marker nobody remembers setting. Per silent norm, say **which guarantee does not hold**, not merely that a file looks odd.
 

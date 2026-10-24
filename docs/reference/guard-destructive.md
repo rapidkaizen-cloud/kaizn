@@ -58,9 +58,16 @@ A `WHERE` inside a subquery is not the statement's own `WHERE`: `UPDATE users SE
 - **A shell command continued onto a line that opens with `-- "<sql>"`.** That line is read as a comment.
 - **SQL that does not pass through the wired tool calls.** [Gates](../concepts/gates.md) lists what that leaves out.
 
-## Switching it off
+## Switching it
 
-A repo can turn the hook off with a file at `.claude/destructive-gate.off` in the project directory. Its presence is the decision and its content is free text naming why. That is your decision, never the session's.
+Ask [norms-config](norms-config.md). The switch holds in every repo, from the hook's next call. When it refuses, its message ends on one sentence telling the session that this rule is switchable: if it is in your way, the session tells you once that `norms-config` sets it to `advice` or `off`, and never recommends turning it off. Not on Antigravity.
+
+- **`on`**, the default: as above.
+- **`advice`**: nothing is refused. The SQL runs, and the session is handed what the hook would have said, beside the call's result, with an order to tell you in one line.
+- **`off`**: the hook does nothing.
+- **On Antigravity** it is always `on`.
+
+A repo can also turn the hook off alone, with a file at `.claude/destructive-gate.off` in the project directory, whatever the switch says. Its presence is the decision and its content is free text naming why. That is your decision, never the session's.
 
 - **It is per repo.** Other repos keep the gate, because the plugin's hooks load into every app repo at once.
 - **Deleting the file turns the gate back on.**

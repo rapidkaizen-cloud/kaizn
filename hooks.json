@@ -1,5 +1,5 @@
 {
-  "raizen-norms": {
+  "kaizn": {
     "PreInvocation": [
       { "type": "command", "command": "python3 scripts/session_norms.py" }
     ],
@@ -8,13 +8,15 @@
         "matcher": "run_command",
         "hooks": [
           { "type": "command", "command": "python3 scripts/guard_git.py" },
-          { "type": "command", "command": "python3 scripts/guard_destructive.py" }
+          { "type": "command", "command": "python3 scripts/guard_destructive.py" },
+          { "type": "command", "command": "python3 scripts/guard_output.py" }
         ]
       },
       {
         "matcher": "call_mcp_tool",
         "hooks": [
-          { "type": "command", "command": "python3 scripts/guard_destructive.py" }
+          { "type": "command", "command": "python3 scripts/guard_destructive.py" },
+          { "type": "command", "command": "python3 scripts/guard_output.py" }
         ]
       }
     ]

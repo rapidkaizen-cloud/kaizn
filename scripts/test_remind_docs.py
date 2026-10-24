@@ -17,10 +17,21 @@ NORMS = Path(__file__).parent / "session_norms.py"
 PYTHON = "python3"
 
 
-def run(repo: Path, command: str = "git commit -m 'add page' -- src/page.tsx") -> str:
+# The plugin's data folder of every case: its `switches.json` holds the case's switches.
+DATA = tempfile.TemporaryDirectory()
+
+
+def switched(options: dict) -> dict:
+    """The environment of a hook the user set these switches for."""
+    (Path(DATA.name) / "switches.json").write_text(json.dumps(options), encoding="utf-8")
+    return {**os.environ, "CLAUDE_PLUGIN_DATA": DATA.name}
+
+
+def run(repo: Path, command: str = "git commit -m 'add page' -- src/page.tsx", **options: str) -> str:
     payload = {"tool_name": "Bash", "tool_input": {"command": command}, "cwd": str(repo)}
     result = subprocess.run(
-        [PYTHON, str(HOOK)], input=json.dumps(payload), capture_output=True, text=True, cwd=repo
+        [PYTHON, str(HOOK)], input=json.dumps(payload), capture_output=True, text=True, cwd=repo,
+        env=switched(options),
     )
     assert result.returncode == 0, result.stderr
     if not result.stdout:
@@ -30,13 +41,13 @@ def run(repo: Path, command: str = "git commit -m 'add page' -- src/page.tsx") -
     return out["additionalContext"]
 
 
-def before_call(repo: Path, invocation: int, transcript: Path) -> str:
+def before_call(repo: Path, invocation: int, transcript: Path, **options: str) -> str:
     """Antigravity: no hook speaks after a tool, so `session_norms.py` asks before the
     next model call - started, as there, from the folder holding hooks.json."""
     payload = {"invocationNum": invocation, "workspacePaths": [str(repo)], "transcriptPath": str(transcript)}
     result = subprocess.run(
         [PYTHON, str(NORMS)], input=json.dumps(payload), capture_output=True,
-        text=True, encoding="utf-8", cwd=NORMS.parent.parent,
+        text=True, encoding="utf-8", cwd=NORMS.parent.parent, env=switched(options),
     )
     assert result.returncode == 0, result.stderr
     if not result.stdout:
@@ -101,6 +112,9 @@ def demo() -> None:
         assert asked.startswith("DOCS CHECK - commit ") and "changed 2 file(s) and no document" in asked
         assert "`docs/changelog.md`" in asked and "`docs/architecture.md`" in asked and "`PRD.md`" not in asked
         assert "`Docs: none - <why>`" in asked and "amend" in asked
+        # the user switched it off: silent on the same commit; `on` or a value nobody offered is not off
+        assert run(docs, remind_docs="off") == ""
+        assert run(docs, remind_docs="on") == asked and run(docs, remind_docs="maybe") == asked
         # the guide page is asked about only where the app keeps guide pages for its users
         assert "`docs/guide/`" not in asked
         for help_row, kept in (("none", False), ("guide pages", True), ("in-app — /help", True)):
@@ -122,7 +136,7 @@ def demo() -> None:
         assert run(docs, "git commit --amend --no-edit") == ""
 
         # Antigravity: the conversation's transcript says whether its last tool call committed
-        norms = {"type": "USER_INPUT", "source": "SYSTEM_SDK", "content": "SESSION NORMS (raizen-norms)"}
+        norms = {"type": "USER_INPUT", "source": "SYSTEM_SDK", "content": "SESSION NORMS (kaizn)"}
         ran = {"type": "PLANNER_RESPONSE", "tool_calls": [{"name": "run_command", "args": {"CommandLine": 'git add src/page.tsx; git commit -m "page"'}}]}
         looked = {"type": "PLANNER_RESPONSE", "tool_calls": [{"name": "run_command", "args": {"CommandLine": "git status"}}]}
         done = {"type": "GENERIC", "content": "The command exited with code 0."}
@@ -139,6 +153,7 @@ def demo() -> None:
         commit(docs, "src/page.tsx")
         asked = before_call(docs, 1, heard(ran, done))
         assert asked.startswith("DOCS CHECK - commit ") and asked == run(docs)
+        assert before_call(docs, 1, heard(ran, done), remind_docs="off") == ""
         # ... once: the step that asked is in the transcript by the next call
         said = {"type": "USER_INPUT", "source": "SYSTEM_SDK", "content": asked}
         assert before_call(docs, 2, heard(ran, done, said)) == ""

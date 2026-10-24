@@ -5,15 +5,15 @@ Pick the case that matches your repo, run the command, and answer what the sessi
 ## A new app
 
 1. **Open Claude Code in an empty directory.**
-2. **Run `/raizen-norms:app-settle`.** It reads the directory, finds it empty, and bootstraps the app: an interview, the documents, a scaffold, `git init`.
-3. **In the new repo, run `/raizen-norms:logic-settle`**, then **`/raizen-norms:design-settle`**.
+2. **Run `/kaizn:app-settle`.** It reads the directory, finds it empty, and bootstraps the app: an interview, the documents, a scaffold, `git init`.
+3. **In the new repo, run `/kaizn:logic-settle`**, then **`/kaizn:design-settle`**.
 4. **Ask for the first page.** `build-flow` needs no command; it loads in every app session and builds from `docs/queue.md`.
 
 The long version: [Start a new app](../guide/new-app.md).
 
 ## An app that already exists
 
-1. **Open Claude Code in the repo and run `/raizen-norms:app-settle`.** It reads the repo and runs the one mode it owes next:
+1. **Open Claude Code in the repo and run `/kaizn:app-settle`.** It reads the repo and runs the one mode it owes next:
 
    | It finds | It does |
    |---|---|
@@ -44,4 +44,4 @@ The last two are the [gates](../concepts/gates.md).
 
 ## Stuck?
 
-Run `/raizen-norms:norms-help`, or ask a session in your own words which command to run. See [norms-help](../reference/norms-help.md).
+Run `/kaizn:norms-help`, or ask a session in your own words which command to run. See [norms-help](../reference/norms-help.md).

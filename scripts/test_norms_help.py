@@ -42,7 +42,7 @@ CHANGELOG = """\
 
 Intro.
 
-## [raizen-norms 0.3.0] - 2026-02-01
+## [kaizn 0.3.0] - 2026-02-01
 
 - third
 
@@ -50,7 +50,7 @@ To act on:
 
 - rename the thing
 
-## [raizen-norms 0.2.0] - 2026-01-10
+## [kaizn 0.2.0] - 2026-01-10
 
 - second
 """
@@ -63,7 +63,7 @@ def demo() -> None:
         (root / ".claude-plugin" / "plugin.json").write_text(json.dumps({"version": "0.3.0"}), encoding="utf-8")
 
         # a copy holding nothing but its manifest still names its version, and adds no empty block
-        assert norms_help.card(root) == "raizen-norms 0.3.0\n"
+        assert norms_help.card(root) == "kaizn 0.3.0\n"
 
         (root / "docs" / "reference").mkdir(parents=True)
         (root / "docs" / "reference" / "commands.md").write_text(COMMANDS, encoding="utf-8")
@@ -71,12 +71,12 @@ def demo() -> None:
         (root / "CHANGELOG.md").write_text(CHANGELOG, encoding="utf-8")
         out = norms_help.card(root)
 
-        assert out.startswith("raizen-norms 0.3.0\n")
+        assert out.startswith("kaizn 0.3.0\n")
         # the commands and the pages: each file whole, without its title
         assert "`/x:settle`" in out and "# Commands" not in out
         assert "concepts/gates.md" in out and "# docs" not in out
         # the version's change: the top entry whole, and no older one
-        assert "## [raizen-norms 0.3.0] - 2026-02-01" in out and "- rename the thing" in out
+        assert "## [kaizn 0.3.0] - 2026-02-01" in out and "- rename the thing" in out
         assert "0.2.0" not in out and "- second" not in out
         assert out.index("COMMANDS") < out.index("PAGES") < out.index("LAST CHANGE")
 
@@ -84,9 +84,9 @@ def demo() -> None:
     result = subprocess.run([PYTHON, str(SCRIPT)], capture_output=True)
     assert result.returncode == 0, result.stderr
     out = result.stdout.decode("utf-8")
-    assert out.startswith("raizen-norms ")
+    assert out.startswith("kaizn ")
     assert "COMMANDS" in out and "PAGES" in out and "LAST CHANGE" in out
-    assert "/raizen-norms:norms-help" in out
+    assert "/kaizn:norms-help" in out
     assert out.count("\n## [") == 1
 
     # this repo's index lists every page, and every page it lists exists

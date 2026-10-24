@@ -1,6 +1,6 @@
 # Overview
 
-`raizen-norms` is one plugin, for Claude Code and for Antigravity, that settles an app one layer at a time and then holds every later session to what was settled.
+`kaizn` is one plugin, for Claude Code and for Antigravity, that settles an app one layer at a time and then holds every later session to what was settled.
 
 It has two halves. The settle skills are interviews: they decide with you what is yours to decide and write the answers into the repo. Everything else — the rule skills, the session norms, the hooks — keeps the sessions that build afterwards to those answers.
 
@@ -12,7 +12,7 @@ It has two halves. The settle skills are interviews: they decide with you what i
 | Five rule skills — `build-flow`, `docs-format`, `ui-build`, `db-ops`, `logic-build` | Hold a building session to the build order and to the document, UI, database and logic rules | By themselves, when the work matches their description |
 | Session norms | Language, scope, git, asking, decisions and the closing report — the same text in every repo | At every session start |
 | Guard hooks | Refuse or hold what must not happen unasked: publishing, destructive SQL, a Supabase call aimed at another project | Before every shell command and every MCP call |
-| `norms-help` | The commands, these pages, the version and its last change | When you ask |
+| `norms-help`, `norms-config` | The commands, these pages, the version and its last change; each norm, guard and reminder switched on, to advice, or off | When you ask |
 
 ## How a repo moves through it
 

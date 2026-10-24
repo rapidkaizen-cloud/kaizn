@@ -1,6 +1,6 @@
 ---
 name: norms-help
-description: Help for the raizen-norms skills — which command to run in which situation, where each guide page is, the version this session runs and its latest changelog entry. Use when the user asks for help with these skills, which command to run, how something they do works, what version they are, or what changed.
+description: Help for the kaizn skills — which command to run in which situation, where each guide page is, the version this session runs and its latest changelog entry. Use when the user asks for help with these skills, which command to run, how something they do works, what version they are, or what changed.
 ---
 
 # norms-help — the commands, the pages, the version

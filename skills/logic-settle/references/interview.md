@@ -43,7 +43,7 @@ L3 dates → Intl built-in          (platform ladder: format-only, no date arith
 |---|---|
 | Unmaintained, or a fresh supply-chain event or advisory | Research ranks another candidate higher |
 | Past end-of-life for security fixes | A newer option exists |
-| **It blocks a norm** — something in `raizen-norms` cannot hold while this library stands | You would have picked differently |
+| **It blocks a norm** — something in `kaizn` cannot hold while this library stands | You would have picked differently |
 
 - **A finding exists → the replacement may be recommended, and the finding is its one-sentence consequence.** State the finding, never a preference.
 - **Against handwritten code, the need file's recommendation rule decides**, *keep* still written first — the closed list names library failures, so it never indicts handwritten code.

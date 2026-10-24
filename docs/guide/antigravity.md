@@ -7,15 +7,15 @@ One command in a terminal, once per machine, and every folder `agy` opens runs u
 | Needs | Why |
 |---|---|
 | The Antigravity CLI, `agy` | The host the command below is typed into. The IDE and Antigravity 2.0 are not verified: see [What is proven](../reference/status.md) |
-| `python3` | Every `raizen-norms` hook calls it. There, a hook that cannot start blocks every command |
+| `python3` | Every `kaizn` hook calls it. There, a hook that cannot start blocks every command |
 
 ## Install the plugin
 
 ```
-agy plugin install https://github.com/rapidkaizen-cloud/raizen-toolkit
+agy plugin install https://github.com/rapidkaizen-cloud/kaizn
 ```
 
-The copy lands in `~/.gemini/config/plugins/raizen-norms`.
+The copy lands in `~/.gemini/config/plugins/kaizn`.
 
 > [!WARNING]
 > - **Install it for the machine, never through a repo's `.agents/plugins.json`.** Registered per folder, the plugin loaded a minute after an interactive conversation began, and that conversation ran unguarded.
@@ -38,13 +38,13 @@ Required: the same three as on Claude Code, where [Install](../start/install.md)
 
 ## Check that it loaded
 
-- `agy plugin list` names `raizen-norms`, with `skills` and `hooks` as its components.
+- `agy plugin list` names `kaizn`, with `skills` and `hooks` as its components.
 
 ## Update
 
 ```
-agy plugin uninstall raizen-norms
-agy plugin install https://github.com/rapidkaizen-cloud/raizen-toolkit
+agy plugin uninstall kaizn
+agy plugin install https://github.com/rapidkaizen-cloud/kaizn
 ```
 
 The install is a copy, and nothing refreshes it.
@@ -56,7 +56,7 @@ A headless run (`agy -p`) cannot be asked for permission, and a skill file sits 
 1. **Allow the plugin folder to be read**, in `~/.gemini/antigravity-cli/settings.json`, or the run stops at the first skill it reads:
 
    ```json
-   {"permissions": {"allow": ["read_file(C:/Users/<you>/.gemini/config/plugins/raizen-norms)"]}}
+   {"permissions": {"allow": ["read_file(C:/Users/<you>/.gemini/config/plugins/kaizn)"]}}
    ```
 
 2. **For a headless `design-settle` run, allow all of these**, or the turn ends with no output at the first one missing:

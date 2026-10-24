@@ -69,6 +69,16 @@ How they are read:
 - **On Antigravity a result is paired to its call by position,** which holds while a step carries one call.
 - **Only the shell tools are read.** The hook is wired to `Bash` and `PowerShell` on Claude Code and to `run_command` on Antigravity.
 
+## Switching it
+
+Ask [norms-config](norms-config.md). The switch holds in every repo, from the hook's next call. When it refuses or holds, its message ends on one sentence telling the session that this rule is switchable: if it is in your way, the session tells you once that `norms-config` sets it to `advice` or `off`, and never recommends turning it off. Not on Antigravity.
+
+- **`on`**, the default: as above.
+- **`advice`**: nothing is refused or held. The command runs, and the session is handed what the hook would have said, beside the command's result, with an order to tell you in one line.
+- **`off`**: the hook does nothing.
+
+It switches apart from the `GIT` block of the norms: turning one off leaves the other as it is. On Antigravity it is always `on`.
+
 ## Related
 
 - [Gates](../concepts/gates.md) — the publishing stop as you meet it

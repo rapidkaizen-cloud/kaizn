@@ -10,6 +10,8 @@ A session decides most things with you through a question. Two actions are diffe
 | The hook checks | That the stop happened and you replied | That the statement carries its own guard |
 | The hook does not check | What your reply means | Whether you agreed |
 
+Each hook is `on` until you switch it, for every repo, with [norms-config](../reference/norms-config.md): `advice` lets the call through and tells the session what the hook would have said, `off` does nothing. Then the stop is the session's alone, by the norms. Nothing asks you at install; when a hook refuses or holds, its message tells the session that the rule is switchable, and the session tells you once if the rule is in your way. On Antigravity both stay `on`.
+
 ## Publishing — push and merge
 
 The session ends its turn on a message like this, and does nothing until you reply:

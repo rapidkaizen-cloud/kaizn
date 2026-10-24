@@ -1,8 +1,8 @@
-# raizen-toolkit docs
+# kaizn docs
 
-`raizen-norms` settles an app one layer at a time and holds every later session to what was settled. These pages are for the people who install it. What an agent obeys is in `skills/` and `scripts/`; nothing here is a rule, and where a page and a skill disagree the skill is right and the page is the defect.
+`kaizn` settles an app one layer at a time and holds every later session to what was settled. These pages are for the people who install it. What an agent obeys is in `skills/` and `scripts/`; nothing here is a rule, and where a page and a skill disagree the skill is right and the page is the defect.
 
-New here: [Overview](start/overview.md), then [Install](start/install.md), then [Quickstart](start/quickstart.md). In a session: `/raizen-norms:norms-help`.
+New here: [Overview](start/overview.md), then [Install](start/install.md), then [Quickstart](start/quickstart.md). In a session: `/kaizn:norms-help`.
 
 ## Getting started
 
@@ -47,6 +47,7 @@ New here: [Overview](start/overview.md), then [Install](start/install.md), then 
 | [db-ops](reference/db-ops.md) | Introspection, migrations, RLS and role testing, destructive operations |
 | [logic-build](reference/logic-build.md) | Keys, where a rule lives, validation, transactions, error shape, the data layer |
 | [norms-help](reference/norms-help.md) | Asking a session for help: the card it prints — version, commands, pages, last change |
+| [norms-config](reference/norms-config.md) | Each block of the norms, each guard and each reminder switched on, to advice, or off, for every repo |
 
 ## Reference: hooks
 
@@ -55,6 +56,7 @@ New here: [Overview](start/overview.md), then [Install](start/install.md), then 
 | [session-start](reference/session-start.md) | What a session is handed when it starts: the norms, the documents, the listings, the hand-over |
 | [guard-git](reference/guard-git.md) | What is refused and what is held around commits, pushes and merges |
 | [guard-destructive](reference/guard-destructive.md) | Destructive SQL sent without its guard |
+| [guard-output](reference/guard-output.md) | Where a session's files for you go, and a file written into the root of that folder or into another session's folder |
 | [document-reminder](reference/document-reminder.md) | The three questions a session is handed after a commit that touched no document |
 | [context-reminder](reference/context-reminder.md) | The one line you are told when a session's context passes 200k, 500k or 800k tokens |
 
@@ -63,6 +65,6 @@ New here: [Overview](start/overview.md), then [Install](start/install.md), then 
 | Page | Holds |
 |---|---|
 | [What is proven](reference/status.md) | What has run for real on each host, and what has not |
-| [Changelog](https://github.com/rapidkaizen-cloud/raizen-toolkit/blob/master/CHANGELOG.md) | What changed in each version, newest first. Kept at the repo root, where `norms-help` reads it in an installed copy |
+| [Changelog](https://github.com/rapidkaizen-cloud/kaizn/blob/master/CHANGELOG.md) | What changed in each version, newest first. Kept at the repo root, where `norms-help` reads it in an installed copy |
 
 A feature with no page here has its skill as the only source: `skills/<name>/SKILL.md`.

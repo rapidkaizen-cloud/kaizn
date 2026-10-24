@@ -126,4 +126,4 @@ Substitute the vocabulary before any option is written: **design language** — 
 
 ## What is not asked
 
-Loading, empty state, and error placement, and the structural writing rules (button and link text, capitalization, toggle labels, error phrasing, the tone table), are fixed in `raizen-norms`' `ui-build`; only the voice varies per app. **Copy length is capped by `ui-build`'s copy caps**, on tenth-use pages; first-visit page groups are exempt. `build-flow` prints each page's longest and median.
+Loading, empty state, and error placement, and the structural writing rules (button and link text, capitalization, toggle labels, error phrasing, the tone table), are fixed in `kaizn`'s `ui-build`; only the voice varies per app. **Copy length is capped by `ui-build`'s copy caps**, on tenth-use pages; first-visit page groups are exempt. `build-flow` prints each page's longest and median.
