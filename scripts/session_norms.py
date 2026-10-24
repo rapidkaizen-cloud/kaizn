@@ -13,7 +13,9 @@ and the two gates that must survive the plugin being absent.
 
 Each block prints as the user's switch for it says (`switches.py`): whole, marked as
 advice, or not at all. The norms then open with one line naming every rule the user moved
-away from `on`, so that a missing block reads as their choice rather than a fault.
+away from `on`, so that a missing block reads as their choice rather than a fault. Nothing
+asks for a switch up front; the first session on a machine is told once, after its task,
+where the rules are switched.
 
 The documents are injected rather than pointed at. A pointer is obeyed by judgement,
 and the sessions that skip it are exactly the narrow ones where its prohibitions still
@@ -476,6 +478,36 @@ def fit(text: str, room: float, more: str) -> str:
     return (kept if kept.count("\n") > 6 else "\n") + more
 
 
+# Printed in the first session on a machine, on Claude Code alone: a user cannot judge a rule
+# before meeting it, so nothing asks up front, and this line is where the switches are named.
+FIRST = """\
+
+FIRST SESSION ON THIS MACHINE
+End your first answer, once the user's task is done, with one line in the user's language:
+these rules can be adjusted with `/raizen-norms:norms-config`. Do not stop or ask about it
+before the task.
+"""
+# Written into the plugin's data folder once `FIRST` was printed; kept across updates.
+ONBOARDED = "onboarded"
+
+
+def first_session() -> str:
+    """`FIRST` where the plugin's data folder holds no marker yet, which it then gets. A
+    marker that cannot be written leaves the line out, so that it never repeats."""
+    folder = os.environ.get("CLAUDE_PLUGIN_DATA", "").strip()
+    if not folder:
+        return ""
+    marker = Path(folder) / ONBOARDED
+    try:
+        if marker.exists():
+            return ""
+        marker.parent.mkdir(parents=True, exist_ok=True)
+        marker.write_text("The first session here was told where the switches are.\n", encoding="utf-8")
+    except OSError:
+        return ""
+    return FIRST
+
+
 # The norms and the skills are written in Claude Code's vocabulary. A session on another
 # host gets this block after them, and it is the only place the two are mapped.
 HOST_ANTIGRAVITY = """\
@@ -804,6 +836,8 @@ def emit(root: Path, payload: dict) -> None:
     if on_antigravity:
         text += HOST_ANTIGRAVITY
         files.append(("CLAUDE.md", "what is true of this app alone"))
+    else:
+        text += first_session()
     out = text
     room -= size(text) + size(notes)
     for rel, what in files:

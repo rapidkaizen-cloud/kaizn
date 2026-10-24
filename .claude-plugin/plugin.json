@@ -1,6 +1,6 @@
 {
   "name": "raizen-norms",
-  "version": "0.104.0",
+  "version": "0.105.0",
   "description": "Settle an app one layer at a time and hold it there: app-settle for the domain, the stack, the docs/ documents, and existing code brought back onto these rules; logic-settle for the layer between database and UI; design-settle for the visual direction and DESIGN.md. Session norms, git and destructive-operation guards, and document, UI, database, application-logic and build-order rules govern every session after.",
   "keywords": ["norms", "guard", "docs", "rls", "hooks", "build-order", "secrets", "bootstrap", "scaffold", "logic-layer", "design-system", "rework", "brownfield", "align"],
   "userConfig": {
@@ -8,97 +8,6 @@
       "type": "directory",
       "title": "Output folder",
       "description": "Where sessions write the files they make for you - reports, spreadsheets, PDFs - in one folder per repo and per worktree. Leave empty for Downloads/Claude in your home folder."
-    },
-    "norm_language": {
-      "type": "string",
-      "title": "Norm: language",
-      "description": "The LANGUAGE block: chat, documents, commits and on-screen text in your language; code, file names, routes and database names in English. advice = printed but not binding, off = not printed.",
-      "options": ["on", "advice", "off"],
-      "default": "on"
-    },
-    "norm_pointers": {
-      "type": "string",
-      "title": "Norm: pointers",
-      "description": "The POINTERS block, or NOT SETTLED where app-settle has not run: which rule skill to read before UI, SQL, queries or documents. advice = printed but not binding, off = not printed.",
-      "options": ["on", "advice", "off"],
-      "default": "on"
-    },
-    "norm_scope": {
-      "type": "string",
-      "title": "Norm: scope",
-      "description": "The SCOPE block: only what was asked - no refactor, rename or document nobody requested. advice = printed but not binding, off = not printed.",
-      "options": ["on", "advice", "off"],
-      "default": "on"
-    },
-    "norm_git": {
-      "type": "string",
-      "title": "Norm: git",
-      "description": "The GIT block: fetch and check the branch first, commit each finished item with named paths, push or merge only on your yes in chat. Leaves guard_git as it is. advice = printed but not binding, off = not printed.",
-      "options": ["on", "advice", "off"],
-      "default": "on"
-    },
-    "norm_asking": {
-      "type": "string",
-      "title": "Norm: asking",
-      "description": "The ASKING block: your decisions are asked, and the session runs commands itself instead of handing them to you. advice = printed but not binding, off = not printed.",
-      "options": ["on", "advice", "off"],
-      "default": "on"
-    },
-    "norm_decisions": {
-      "type": "string",
-      "title": "Norm: decisions",
-      "description": "The DECISIONS block: an answer with two or more decisions closes with one table - options, and a recommendation with its trade-off. advice = printed but not binding, off = not printed.",
-      "options": ["on", "advice", "off"],
-      "default": "on"
-    },
-    "norm_closing": {
-      "type": "string",
-      "title": "Norm: closing report",
-      "description": "The CLOSING THE SESSION block, in a settled repo: a report per scope item, then a fixed block - routes, defaults decided, unfinished steps, branch and commits. advice = printed but not binding, off = not printed.",
-      "options": ["on", "advice", "off"],
-      "default": "on"
-    },
-    "norm_output": {
-      "type": "string",
-      "title": "Norm: output folder",
-      "description": "The OUTPUT block: files made for you go to this session's folder in the output folder, named without a date, never overwritten. Leaves guard_output as it is. advice = printed but not binding, off = not printed.",
-      "options": ["on", "advice", "off"],
-      "default": "on"
-    },
-    "guard_git": {
-      "type": "string",
-      "title": "Guard: git",
-      "description": "Refuses git add -A, a bare force push and a commit on main; holds git push and gh pr merge until your yes in chat. advice = lets the call through and warns the session, off = does nothing.",
-      "options": ["on", "advice", "off"],
-      "default": "on"
-    },
-    "guard_destructive": {
-      "type": "string",
-      "title": "Guard: destructive SQL",
-      "description": "Refuses DROP, TRUNCATE, DELETE, a rename or an UPDATE with no narrow WHERE unless it runs inside a guard holding the row count you approved. advice = lets it through and warns the session, off = does nothing.",
-      "options": ["on", "advice", "off"],
-      "default": "on"
-    },
-    "guard_output": {
-      "type": "string",
-      "title": "Guard: output folder",
-      "description": "Refuses a file written to the root of the output folder, or into a folder there that is not the session's own. advice = lets it through and warns the session, off = does nothing.",
-      "options": ["on", "advice", "off"],
-      "default": "on"
-    },
-    "remind_docs": {
-      "type": "string",
-      "title": "Reminder: documents after a commit",
-      "description": "After a commit that changed no document, asks the session whether one became false. off = never asks.",
-      "options": ["on", "off"],
-      "default": "on"
-    },
-    "remind_context": {
-      "type": "string",
-      "title": "Reminder: context size",
-      "description": "At the first commit past 200k, 500k or 800k tokens of context, the session tells you the next item costs less in a new session. off = never says it.",
-      "options": ["on", "off"],
-      "default": "on"
     }
   }
 }

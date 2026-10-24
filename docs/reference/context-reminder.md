@@ -40,7 +40,7 @@ It stays silent when any of these holds:
 
 ## Switching it
 
-Set `remind_context` in `/config`, or ask [norms-config](norms-config.md): `on`, the default, or `off`, which leaves every milestone unsaid, in every repo. Switching the [document reminder](document-reminder.md) off leaves this one as it is.
+Ask [norms-config](norms-config.md): `on`, the default, or `off`, which leaves every milestone unsaid, in every repo, from the next commit. Switching the [document reminder](document-reminder.md) off leaves this one as it is.
 
 ## Related
 

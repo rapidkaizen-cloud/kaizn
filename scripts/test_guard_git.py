@@ -427,8 +427,10 @@ def switched() -> None:
 
     def call(command: str, mode: str) -> tuple:
         payload = {"tool_name": "Bash", "tool_input": {"command": command}}
-        env = {**os.environ, "CLAUDE_PLUGIN_OPTION_GUARD_GIT": mode}
-        result = subprocess.run([PYTHON, str(GUARD)], input=json.dumps(payload), capture_output=True, text=True, env=env)
+        with tempfile.TemporaryDirectory() as data:
+            (Path(data) / "switches.json").write_text(json.dumps({"guard_git": mode}), encoding="utf-8")
+            env = {**os.environ, "CLAUDE_PLUGIN_DATA": data}
+            result = subprocess.run([PYTHON, str(GUARD)], input=json.dumps(payload), capture_output=True, text=True, env=env)
         told = json.loads(result.stdout)["hookSpecificOutput"] if result.stdout else {}
         return result.returncode, result.stderr, told
 
@@ -445,11 +447,26 @@ def switched() -> None:
         assert code == 0 and err == "" and told["hookEventName"] == "PreToolUse", command
         assert told["additionalContext"].startswith("ADVICE - the user switched guard_git to advice"), command
         assert word in told["additionalContext"] and "permissionDecision" not in told, command
+        assert "norms-config" not in told["additionalContext"], command
 
     # refused as before: `on` spelled out, or a value nobody offered
     for mode in ("on", " ON ", "maybe", ""):
         code, err, told = call("git add -A", mode)
         assert code == 2 and err.startswith("REFUSED:") and told == {}, mode
+
+    # every refusal and hold ends on the one sentence that offers its switch, on Claude Code
+    offer = (
+        "This guard is switchable: if it is in the user's way, tell them once that "
+        "`/raizen-norms:norms-config` sets `guard_git` to `advice` or `off`, and never recommend turning it off.\n"
+    )
+    for command in ("git add -A", "git push --force origin dev", "git push origin development", "gh pr merge 12",
+                    "git push origin dev && git status"):
+        code, err, _ = call(command, "on")
+        assert code == 2 and err.endswith(offer) and err.count("norms-config") == 1, command
+    # ... and never on Antigravity, where there are no switches
+    for command in ("git add -A", "git push origin development"):
+        code, _, err = run_antigravity(command)
+        assert code == 2 and err.startswith(("REFUSED:", "HELD:")) and "norms-config" not in err, command
 
     print("ok switched")
 

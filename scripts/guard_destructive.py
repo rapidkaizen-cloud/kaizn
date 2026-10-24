@@ -16,9 +16,9 @@ agent created itself — passes unguarded, because its blast radius is already
 fixed to rows the agent owns. See claude_test_delete for what disqualifies it.
 
 Two off switches. The user's `guard_destructive` switch (`switches.py`) sets the
-guard for every repo: `advice` warns instead of refusing, `off` does nothing. And a
-marker file at `.claude/destructive-gate.off` in the project directory disables it
-for that repo alone. The file's presence is the decision; its content is free text
+guard for every repo: `advice` warns instead of refusing, `off` does nothing, and every
+refusal names it. And a marker file at `.claude/destructive-gate.off` in the project
+directory disables it for that repo alone. The file's presence is the decision; its content is free text
 naming why. This exists because the plugin's hooks load into every app repo at
 once — an app that legitimately needs the gate gone (heavy schema iteration,
 bulk re-imports) must not take the gate away from the apps holding production
@@ -82,9 +82,9 @@ CLAUDE_SCOPED = re.compile(r"(?:\bLIKE\b|(?<![!<>=])=)\s*'\[CLAUDE\][^']*'", re.
 COMMENT = re.compile(r"'(?:[^']|'')*'|/\*.*?\*/|--[^\n]*", re.S)
 
 
-def read_sql() -> tuple[str, bool]:
+def read_sql(payload: dict) -> tuple[str, bool]:
     """The SQL-bearing text, and whether it arrived as a shell command."""
-    ti = host.read_payload().get("tool_input")
+    ti = payload.get("tool_input")
     if not isinstance(ti, dict):
         return "", False
     parts = [str(ti[k]) for k in SQL_KEYS if k in ti and ti[k]]
@@ -204,7 +204,7 @@ def bare_update(stmt: str, flags: int) -> bool:
     return False
 
 
-def block(op: str) -> None:
+def block(op: str, payload: dict) -> None:
     switches.refuse(
         "guard_destructive",
         "REFUSED: a destructive operation ({op}) was sent without a guard.\n\n"
@@ -217,11 +217,13 @@ def block(op: str) -> None:
         "Expected, followed by a verifying SELECT in the same call.\n\n"
         "The exception aborts the whole transaction, so zero data is lost when the "
         "number does not match.\n".format(op=op),
+        payload,
     )
 
 
 def main() -> None:
-    text, shell = read_sql()
+    payload = host.read_payload()
+    text, shell = read_sql(payload)
     if switches.mode("guard_destructive") == switches.OFF:
         sys.exit(0)
 
@@ -247,10 +249,10 @@ def main() -> None:
             if label == "DELETE" and exempt_delete:
                 continue
             if re.search(pattern, stmt, flags=flags):
-                block(label)
+                block(label, payload)
 
         if bare_update(stmt, flags):
-            block("UPDATE without a narrow WHERE")
+            block("UPDATE without a narrow WHERE", payload)
 
     sys.exit(0)
 

@@ -35,6 +35,7 @@ Order: the norms, the documents and their notes, the two listings, the hand-over
 | `DECISIONS` | Always | An answer with two or more decisions closes with one table: question, options, recommendation and its trade-off |
 | `CLOSING THE SESSION` | A repo with `PRD.md` or `docs/PRD.md` | The report per scope item, then a block written even when the answer is "none" |
 | `OUTPUT` | Always, after the blocks above | The full path of the folder this session writes your files to, worked out from its checkout — see [guard-output](guard-output.md) — and that working files stay where the work is, a name carries no date, and nothing is overwritten |
+| `FIRST SESSION ON THIS MACHINE` | Claude Code, the first session on the machine | That the session ends its first answer, once your task is done, with one line in your language saying these rules can be adjusted with `/raizen-norms:norms-config` — never a stop or a question before the task. See [First session](#first-session) |
 | `HOST - Antigravity` | Antigravity only | See below |
 | Components listing | A `components` or `widgets` folder holds components | Opens `--- Components already in this repo`: what to reuse before writing a component |
 | Data layer listing | `CLAUDE.md` has a `Data layer` row naming a folder that exists and has files | Opens `--- Data layer of this repo (<folder>)`: what to call before writing a query |
@@ -42,7 +43,7 @@ Order: the norms, the documents and their notes, the two listings, the hand-over
 
 ### Switches
 
-Each block from `LANGUAGE` to `OUTPUT` has a switch of its own, set in `/config` or with [norms-config](norms-config.md); the heading and `HOST - Antigravity` have none. The table above is what every switch at `on` prints.
+Each block from `LANGUAGE` to `OUTPUT` has a switch of its own, set with [norms-config](norms-config.md) and read from its file when a session starts; the heading, `FIRST SESSION ON THIS MACHINE` and `HOST - Antigravity` have none. The table above is what every switch at `on` prints.
 
 | Switch | Block |
 |---|---|
@@ -59,7 +60,15 @@ Each block from `LANGUAGE` to `OUTPUT` has a switch of its own, set in `/config`
 - **`off`** leaves the block out. The documents, the notes, the listings and the hand-over are printed as before.
 - **The `SWITCHED` line** follows the heading whenever any switch — a block's, a guard's or a reminder's — is away from `on`, so a session reads a missing block as your choice.
 - **A block's switch reaches nothing else.** `norm_git` off leaves `guard_git` holding pushes, and `norm_output` off leaves `guard_output` refusing.
-- **On Antigravity** every switch is `on`: that host has no plugin settings.
+- **On Antigravity** every switch is `on`: the skill cannot reach the switches file there.
+
+### First session
+
+Nothing asks about the rules when the plugin is installed. Instead, the first session on a machine is told to name [norms-config](norms-config.md) once, at the end of its first answer, after your task.
+
+- **Once per machine.** With the block, the hook writes a file `onboarded` into the plugin's data folder, `~/.claude/plugins/data/<id>/`. A machine where that file exists never gets the block again, across plugin updates; uninstalling the plugin deletes the folder, and the next install is told again.
+- **Never a failed start.** Where the file cannot be written the block is left out, so it never repeats every session.
+- **Claude Code only.** Antigravity has no switches, so it never gets the block.
 
 ### The documents, by repo form
 

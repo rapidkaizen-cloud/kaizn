@@ -6,11 +6,11 @@ Switch each block of the session norms, each guard and each reminder on, to advi
 |---|---|
 | Kind | Settings skill — runs when you ask |
 | Run | `/raizen-norms:norms-config`, or ask in your own words: turn the git guard off, make the scope norm advice only, which rules are switched |
-| Changes | This plugin's options under `pluginConfigs` in `~/.claude/settings.json`, and nothing else in that file |
+| Changes | `switches.json` in the plugin's data folder, `~/.claude/plugins/data/<id>/`, and nothing else |
 | Source | `skills/norms-config/SKILL.md`, `scripts/norms_config.py`, `scripts/switches.py` |
 | Self-check | `scripts/test_norms_config.py` |
 
-Without it you would have to know each option's key and set it in `/config` by hand, with no word on what each rule does.
+Nothing asks about these rules when you install the plugin, because a rule is hard to judge before you meet it. You meet a guard when it refuses or holds: its message then tells the session that the rule is switchable, and the session tells you once that this skill sets it to `advice` or `off`. The first session on a machine also ends its first answer with one line naming this skill. See [session-start](session-start.md).
 
 ## The switches
 
@@ -53,18 +53,18 @@ A request that names the switch and the mode — "turn `guard_output` off" — i
 
 ## When it takes effect
 
-In sessions started after the change. The session that made it keeps the switches it started with.
+- **A guard or a reminder**: from its next call, in the session that changed it too. A guard reads the file each time it runs.
+- **A block of the norms**: from the next session start. The norms are printed once, when a session starts.
 
 ## What you can rely on
 
 - **A switch holds in every repo.** There is no switch per repo, except `.claude/destructive-gate.off`, which still turns [guard-destructive](guard-destructive.md) off in its repo whatever `guard_destructive` says.
 - **A block and its guard switch apart.** `norm_git` off leaves `guard_git` refusing and holding; `guard_git` off leaves the `GIT` block telling the session to stop before a push. The same holds for `norm_output` and `guard_output`.
-- **Only what you named is written.** Every other key of `settings.json` stays as it was, in its order, with its indent and its line endings — the output folder among them. An unknown switch or a mode it does not take is refused, and nothing is written.
-- **The plugin is found by its id in the file**, `raizen-norms@<marketplace>`, not by a fixed marketplace name. A machine where the plugin is not enabled at user scope is refused.
-- **The same switches are rows in `/config`.** You can set them there as well, and Claude Code asks for them when the plugin is enabled.
+- **One file holds every switch.** `switches.json` in the plugin's data folder lists each rule and its mode. Claude Code keeps that folder across plugin updates and deletes it when you uninstall the plugin, which sets every rule back to `on`.
+- **What it cannot read counts as `on`**: a missing file, one that is not JSON, or a value a switch does not take. An unknown switch or mode you ask for is refused, and nothing is written.
+- **Nothing else is touched.** `~/.claude/settings.json` and the output folder stay as they are; the output folder is the one plugin setting, in `/config`.
 - **The rules inside the skills are not switched here**: `build-flow`, `docs-format`, `ui-build`, `db-ops` and `logic-build` hold as they are.
-- **On Antigravity every rule is `on`.** That host has no plugin settings, and the skill writes nothing there.
-- **It needs Claude Code 2.1.271 or later.** The switches are pickers, which an earlier version cannot load; see [Install](../start/install.md).
+- **On Antigravity every rule is `on`.** That host gives the skill no data folder, so it says switches are not available there and writes nothing.
 
 ## Related
 

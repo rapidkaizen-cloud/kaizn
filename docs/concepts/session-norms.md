@@ -25,7 +25,7 @@ Where an app's `CLAUDE.md` and the norms disagree about a norm, the norms are th
 
 ## Switching a block
 
-Each block above is `on` until you switch it, for every repo at once, in `/config` or with [norms-config](../reference/norms-config.md):
+Each block above is `on` until you switch it, for every repo at once, with [norms-config](../reference/norms-config.md). Nothing asks you at install: the first session on a machine names that skill once, after its first answer, and a guard names its own switch when it refuses. A block's switch applies from the next session start:
 
 - **`advice`**: the block is still printed, marked as advice you have not made binding. The session weighs it.
 - **`off`**: the block is not printed, and the session does not follow it.

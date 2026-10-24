@@ -24,19 +24,26 @@ DATA_MARK = "Data layer of this repo"
 PYTHON = "python3"
 
 
-def run(root: Path, **options: str) -> str:
-    # The user's switches come from the environment, so none is inherited: every case
-    # below sets its own, and the rest are on.
-    env = {k: v for k, v in os.environ.items() if not k.startswith(("CLAUDE_PLUGIN_OPTION_NORM_", "CLAUDE_PLUGIN_OPTION_GUARD_", "CLAUDE_PLUGIN_OPTION_REMIND_"))}
-    env.update({f"CLAUDE_PLUGIN_OPTION_{key.upper()}": mode for key, mode in options.items()})
-    result = subprocess.run(
-        [PYTHON, str(SCRIPT)],
-        input=json.dumps({"cwd": str(root)}),
-        capture_output=True,
-        text=True,
-        encoding="utf-8",
-        env=env,
-    )
+def run(root: Path, data: Path | str | None = None, **options: str) -> str:
+    """The hook's output for `root`. Its data folder is a fresh one holding `options` as
+    the user's switches and the first session's marker, so that a case sees only what it
+    sets - unless `data` names the folder, or `""` hands the hook none."""
+    env = {k: v for k, v in os.environ.items() if k != "CLAUDE_PLUGIN_DATA"}
+    with tempfile.TemporaryDirectory() as tmp:
+        if data is None:
+            (Path(tmp) / "switches.json").write_text(json.dumps(options), encoding="utf-8")
+            (Path(tmp) / "onboarded").write_text("", encoding="utf-8")
+            data = tmp
+        if data:
+            env["CLAUDE_PLUGIN_DATA"] = str(data)
+        result = subprocess.run(
+            [PYTHON, str(SCRIPT)],
+            input=json.dumps({"cwd": str(root)}),
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            env=env,
+        )
     assert result.returncode == 0, result.stderr
     return result.stdout
 
@@ -528,7 +535,53 @@ def switched() -> None:
     print("ok switched")
 
 
+def first() -> None:
+    """The first session on a machine is told once, after its task, where the rules are
+    switched: on Claude Code, where a data folder holds no marker yet."""
+    spec = importlib.util.spec_from_file_location("session_norms", SCRIPT)
+    norms = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(norms)
+
+    with tempfile.TemporaryDirectory() as tmp:
+        root = Path(tmp) / "app"
+        write(root, "PRD.md", "# PRD - Demo\n")
+        plain = run(root)
+        assert "FIRST SESSION" not in plain
+        # no data folder handed over: what every session got before
+        assert run(root, data="") == plain
+
+        data = Path(tmp) / "plugins" / "data" / "raizen-norms-raizen"
+        out = run(root, data=data)
+        assert out.count("\nFIRST SESSION ON THIS MACHINE\n") == 1 and "`/raizen-norms:norms-config`" in out
+        assert out.replace(norms.FIRST, "") == plain and (data / "onboarded").is_file()
+        # once: the next session on the machine is not told again
+        assert run(root, data=data) == plain
+        # the user's switches do not count as having been told
+        other = Path(tmp) / "other"
+        write(other, "switches.json", json.dumps({"guard_git": "advice"}))
+        assert "FIRST SESSION" in run(root, data=other)
+        # a data folder that cannot hold the marker: no line, never a failed hook
+        write(Path(tmp), "a-file", "x")
+        assert run(root, data=Path(tmp) / "a-file" / "data") == plain
+
+        # Antigravity: never, and no marker written
+        fresh = Path(tmp) / "fresh.jsonl"
+        fresh.write_text(json.dumps({"type": "USER_INPUT", "content": "build the page"}) + "\n", encoding="utf-8")
+        unseen = Path(tmp) / "agy-data"
+        payload = {"invocationNum": 0, "workspacePaths": [str(root)], "transcriptPath": str(fresh)}
+        result = subprocess.run(
+            [PYTHON, str(SCRIPT)], input=json.dumps(payload), capture_output=True, text=True, encoding="utf-8",
+            cwd=SCRIPT.parent.parent, env={**os.environ, "CLAUDE_PLUGIN_DATA": str(unseen)},
+        )
+        text = json.loads(result.stdout)["injectSteps"][0]["userMessage"]
+        assert result.returncode == 0 and text.startswith("SESSION NORMS") and "FIRST SESSION" not in text
+        assert not unseen.exists()
+
+    print("ok first")
+
+
 if __name__ == "__main__":
     demo()
     antigravity()
     switched()
+    first()

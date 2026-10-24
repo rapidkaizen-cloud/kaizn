@@ -17,9 +17,14 @@ NORMS = Path(__file__).parent / "session_norms.py"
 PYTHON = "python3"
 
 
+# The plugin's data folder of every case: its `switches.json` holds the case's switches.
+DATA = tempfile.TemporaryDirectory()
+
+
 def switched(options: dict) -> dict:
     """The environment of a hook the user set these switches for."""
-    return {**os.environ, **{f"CLAUDE_PLUGIN_OPTION_{key.upper()}": mode for key, mode in options.items()}}
+    (Path(DATA.name) / "switches.json").write_text(json.dumps(options), encoding="utf-8")
+    return {**os.environ, "CLAUDE_PLUGIN_DATA": DATA.name}
 
 
 def run(repo: Path, command: str = "git commit -m 'add page' -- src/page.tsx", **options: str) -> str:

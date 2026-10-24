@@ -60,7 +60,7 @@ A `WHERE` inside a subquery is not the statement's own `WHERE`: `UPDATE users SE
 
 ## Switching it
 
-Set `guard_destructive` in `/config`, or ask [norms-config](norms-config.md). It holds in every repo.
+Ask [norms-config](norms-config.md). The switch holds in every repo, from the hook's next call. When it refuses, its message ends on one sentence telling the session that this rule is switchable: if it is in your way, the session tells you once that `norms-config` sets it to `advice` or `off`, and never recommends turning it off. Not on Antigravity.
 
 - **`on`**, the default: as above.
 - **`advice`**: nothing is refused. The SQL runs, and the session is handed what the hook would have said, beside the call's result, with an order to tell you in one line.

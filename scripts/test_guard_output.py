@@ -108,7 +108,10 @@ def demo() -> None:
         # refusal, `off` does nothing, a value it does not know is `on` ---
         def switched(file_path: str, mode: str) -> tuple:
             payload = {"tool_name": "Write", "tool_input": {"file_path": file_path, "content": "x"}, "cwd": str(plain)}
-            env = {**os.environ, "CLAUDE_PLUGIN_OPTION_OUTPUT_DIR": str(out), "CLAUDE_PLUGIN_OPTION_GUARD_OUTPUT": mode}
+            data = tmp / "plugin-data"
+            data.mkdir(exist_ok=True)
+            (data / "switches.json").write_text(json.dumps({"guard_output": mode}), encoding="utf-8")
+            env = {**os.environ, "CLAUDE_PLUGIN_OPTION_OUTPUT_DIR": str(out), "CLAUDE_PLUGIN_DATA": str(data)}
             result = subprocess.run([PYTHON, str(GUARD)], input=json.dumps(payload), capture_output=True, text=True, env=env)
             told = json.loads(result.stdout)["hookSpecificOutput"] if result.stdout else {}
             return result.returncode, result.stderr, told
@@ -120,9 +123,18 @@ def demo() -> None:
         assert code == 0 and err == "" and told["hookEventName"] == "PreToolUse"
         assert told["additionalContext"].startswith("ADVICE - the user switched guard_output to advice")
         assert "is not this session's output folder" in told["additionalContext"]
+        assert "norms-config" not in told["additionalContext"]
+        # refused, ending on the one sentence that offers its switch - never on Antigravity
+        offer = (
+            "This guard is switchable: if it is in the user's way, tell them once that "
+            "`/raizen-norms:norms-config` sets `guard_output` to `advice` or `off`, and never recommend turning it off.\n"
+        )
         for mode in ("on", "maybe"):
             code, err, told = switched(f"{R}\\laporan.xlsx", mode)
-            assert code == 2 and err.startswith("REFUSED:") and told == {}, mode
+            assert code == 2 and err.startswith("REFUSED:") and err.endswith(offer) and told == {}, mode
+        result = subprocess.run([PYTHON, str(GUARD)], input=json.dumps(agy(f"python make.py --out {RP}/laporan.pdf")),
+                                capture_output=True, text=True, env={**os.environ, "CLAUDE_PLUGIN_OPTION_OUTPUT_DIR": str(out)})
+        assert result.returncode == 2 and result.stderr.startswith("REFUSED:") and "norms-config" not in result.stderr
 
     print("ok")
 

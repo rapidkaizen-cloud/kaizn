@@ -1,12 +1,12 @@
 # Install
 
-Two commands in Claude Code, its settings, and a restart. For Antigravity, see [Run on Antigravity](../guide/antigravity.md).
+Two commands in Claude Code, one setting, and a restart. For Antigravity, see [Run on Antigravity](../guide/antigravity.md).
 
 ## Before you start
 
 | Needs | Why |
 |---|---|
-| Claude Code 2.1.271 or later | The host the commands below are typed into. The plugin's switches are pickers, and an earlier version cannot load a plugin that has one |
+| Claude Code | The host the commands below are typed into |
 | `python3` | Every `raizen-norms` hook calls it. With only `python` on the machine the guards silently never run |
 | Node.js | The companion skills install through `npx` |
 
@@ -19,9 +19,10 @@ Two commands in Claude Code, its settings, and a restart. For Antigravity, see [
 
 1. **Install at user scope only.** A project-scope entry updates separately and falls behind.
 2. **Choose the output folder, or leave it empty.** Claude Code asks for **Output folder**: where sessions write the reports and files they make for you, one folder per repo and per worktree inside it. Empty means `Downloads/Claude` in your home folder; change it later in `/config`. See [guard-output](../reference/guard-output.md).
-3. **Leave the switches at `on`, or change them.** The same dialog lists one switch per block of the session norms, per guard and per reminder, each `on` — every rule as written. Change one later in `/config`, or ask `/raizen-norms:norms-config`, which says what each does. See [norms-config](../reference/norms-config.md).
-4. **Turn on `autoUpdate`.** In `~/.claude/settings.json`, set `"autoUpdate": true` on `raizen` under `extraKnownMarketplaces`, so a new version reaches the machine at its next start.
-5. **Restart Claude Code.**
+3. **Turn on `autoUpdate`.** In `~/.claude/settings.json`, set `"autoUpdate": true` on `raizen` under `extraKnownMarketplaces`, so a new version reaches the machine at its next start.
+4. **Restart Claude Code.**
+
+Nothing else is asked: every rule starts `on`. The first session ends its first answer with one line naming `/raizen-norms:norms-config`, and a guard that refuses tells the session it can be switched; see [norms-config](../reference/norms-config.md).
 
 ## Companion skills
 

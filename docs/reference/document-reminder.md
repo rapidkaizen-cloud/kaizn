@@ -58,7 +58,7 @@ On Antigravity the reminder also needs the conversation's own last tool call to 
 
 ## Switching it
 
-Set `remind_docs` in `/config`, or ask [norms-config](norms-config.md): `on`, the default, or `off`, which leaves every commit unasked, in every repo. It switches apart from the [context reminder](context-reminder.md) that rides in its process. On Antigravity it is always `on`.
+Ask [norms-config](norms-config.md): `on`, the default, or `off`, which leaves every commit unasked, in every repo, from the next commit. It switches apart from the [context reminder](context-reminder.md) that rides in its process. On Antigravity it is always `on`.
 
 ## Related
 

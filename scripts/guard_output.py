@@ -16,7 +16,7 @@ root that neither exists nor is the session's own, and, from a worktree, a name 
 repo's folder that does not exist yet. Reading what is already there passes.
 
 Exit 0 = pass, exit 2 = block. The user's `guard_output` switch (`switches.py`) can make
-it warn instead of refusing, or do nothing.
+it warn instead of refusing, or do nothing; every refusal names it.
 """
 import os
 import re
@@ -151,6 +151,7 @@ def main() -> None:
         f"Folders already there: {', '.join(there) or '(none yet)'}.\n"
         "Send it again with that path. A path built at runtime to get past this is the same\n"
         "mistake, unseen.\n",
+        payload,
     )
 
 

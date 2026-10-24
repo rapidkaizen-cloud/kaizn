@@ -3,7 +3,8 @@
 
 Reads the hook payload from stdin.
 Exit 0 = pass, exit 2 = block (the agent reads stderr). The user's `guard_git` switch
-(`switches.py`) can make it warn instead of refusing or holding, or do nothing.
+(`switches.py`) can make it warn instead of refusing or holding, or do nothing; every
+refusal and hold names that switch.
 
 Refused, and fixed by the agent itself:
   - commit while HEAD is on main, in a repo that has a development branch
@@ -199,8 +200,8 @@ def approved(payload: dict, cmd: str, strict: bool = False) -> bool:
     return granted
 
 
-def block(msg: str) -> None:
-    switches.refuse("guard_git", msg)
+def block(msg: str, payload: dict) -> None:
+    switches.refuse("guard_git", msg, payload)
 
 
 # A held command the call adds anything to: chained, piped or redirected. A reply covers
@@ -236,7 +237,8 @@ def hold(payload: dict, cmd: str, what: str, wrapped: bool = False, strict: bool
         "No question dialog - one gets clicked before it is read. Read the reply yourself: on a "
         f"clear yes, in whatever words, {after} One stop covers one run of each command named. "
         "Never hand the command to the user to type."
-        + ("" if wrapped else f"\nCommand: {norm(cmd)}")
+        + ("" if wrapped else f"\nCommand: {norm(cmd)}"),
+        payload,
     )
 
 
@@ -258,14 +260,16 @@ def main() -> None:
             "REFUSED: git add -A / git add . is not used in this repo.\n"
             "A commit contains only paths that are in SCOPE, named explicitly.\n"
             "Files changed outside SCOPE are findings reported to the user, "
-            "not things to commit along."
+            "not things to commit along.",
+            payload,
         )
 
     # `\s\+\S` is `push origin +main` — a force with no flag to grep for.
     if re.search(GIT + r"push" + ARGS + r"(--force(?![-\w])|\s-f\b|\s\+\S)", code):
         block(
             "REFUSED: a bare force push. Use --force-with-lease instead - it refuses when "
-            "the remote moved since your last fetch - and ask for it as for any push."
+            "the remote moved since your last fetch - and ask for it as for any push.",
+            payload,
         )
 
     if re.search(GIT + r"commit\b", code):
@@ -273,7 +277,8 @@ def main() -> None:
         if branch == "main" and has_development():
             block(
                 "REFUSED: HEAD is on main. A session never works on main.\n"
-                "Switch to development first, then retry."
+                "Switch to development first, then retry.",
+                payload,
             )
 
     wrapped = WRAPPED.search(code) is not None

@@ -19,13 +19,23 @@ PYTHON = "python3"
 COMMIT = "git commit -m 'add page' -- src/page.tsx"
 
 
+# The plugin's data folder of every case: its `switches.json` holds the case's switches.
+DATA = tempfile.TemporaryDirectory()
+
+
+def switched(options: dict) -> dict:
+    """The environment of a hook the user set these switches for."""
+    (Path(DATA.name) / "switches.json").write_text(json.dumps(options), encoding="utf-8")
+    return {**os.environ, "CLAUDE_PLUGIN_DATA": DATA.name}
+
+
 def run(repo: Path, transcript: str = "", command: str = COMMIT, **options: str) -> str:
     payload = {"tool_name": "Bash", "tool_input": {"command": command}, "cwd": str(repo)}
     if transcript:
         payload["transcript_path"] = transcript
     result = subprocess.run(
         [PYTHON, str(HOOK)], input=json.dumps(payload), capture_output=True, text=True, cwd=repo,
-        env={**os.environ, **{f"CLAUDE_PLUGIN_OPTION_{key.upper()}": mode for key, mode in options.items()}},
+        env=switched(options),
     )
     assert result.returncode == 0, result.stderr
     if not result.stdout:

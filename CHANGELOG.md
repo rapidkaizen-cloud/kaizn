@@ -2,6 +2,26 @@
 
 All notable changes to the `raizen-norms` plugin, and to `raizen-hub` until 0.70.0 merged it in, newest first. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versions before these are in `git log`.
 
+## [raizen-norms 0.105.0] - 2026-10-24
+
+Nothing about the rules is asked up front any more. A user cannot judge a rule before meeting it, so the thirteen switches 0.104.0 put in the enable-time dialog asked for a decision nobody could make yet. The install asks only for the output folder, the switches move to one file the plugin owns, and the choice is offered where a guard bites.
+
+### Changed
+
+- The thirteen switches are no longer plugin settings, so they are gone from the enable-time dialog and from `/config`. They sit in `switches.json` in the plugin's data folder (`~/.claude/plugins/data/<id>/`, kept across updates) — still one file for every repo on the machine, and a missing file, an unreadable one or a value it does not know is still `on`.
+- `norms-config` reads and writes that file alone, through the data folder Claude Code fills into its text, and no longer touches `~/.claude/settings.json`. Where the host leaves that folder unfilled — Antigravity — it says switches are not available there and stops.
+- A guard's or a reminder's switch applies from its next call, in the session that set it too; a block of the norms from the next session start.
+- Claude Code 2.1.271 is no longer needed: the manifest carries no picker.
+
+### Added
+
+- Every refusal and hold of `guard_git`, `guard_destructive` and `guard_output` ends on one sentence: the rule is switchable, and if it is in the user's way the session says once that `/raizen-norms:norms-config` sets it to `advice` or `off`, never recommending turning it off. Not on Antigravity.
+- Session norms, the first session on a machine, on Claude Code: one instruction to end the first answer, after the task, with one line saying the rules can be adjusted with `/raizen-norms:norms-config`. A marker `onboarded` in the data folder keeps it to once per machine.
+
+To act on:
+
+- Nothing to carry over: 0.104.0 was never published, so no machine holds its switches under `pluginConfigs`.
+
 ## [raizen-norms 0.104.0] - 2026-10-23
 
 Every block of the session norms, every guard and every reminder can now be switched by the user: until this version each one bound everyone who installed the plugin, and the only way out was a per-repo marker for the destructive gate. A switch is global — one plugin setting for every repo — and starts at `on`, so a machine that switches nothing gets exactly what it got before.

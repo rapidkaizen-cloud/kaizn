@@ -249,8 +249,10 @@ def switched() -> None:
 
     def call(query: str, mode: str, cwd: str | None = None) -> tuple:
         payload = json.dumps({"tool_name": "mcp__supabase__execute_sql", "tool_input": {"query": query}})
-        env = {**os.environ, "CLAUDE_PLUGIN_OPTION_GUARD_DESTRUCTIVE": mode}
-        result = subprocess.run([PYTHON, str(GUARD)], input=payload, capture_output=True, text=True, env=env, cwd=cwd)
+        with tempfile.TemporaryDirectory() as data:
+            (Path(data) / "switches.json").write_text(json.dumps({"guard_destructive": mode}), encoding="utf-8")
+            env = {**os.environ, "CLAUDE_PLUGIN_DATA": data}
+            result = subprocess.run([PYTHON, str(GUARD)], input=payload, capture_output=True, text=True, env=env, cwd=cwd)
         told = json.loads(result.stdout)["hookSpecificOutput"] if result.stdout else {}
         return result.returncode, result.stderr, told
 
@@ -265,9 +267,23 @@ def switched() -> None:
     assert told["additionalContext"].startswith("ADVICE - the user switched guard_destructive to advice")
     assert "REFUSED: a destructive operation (DROP)" in told["additionalContext"]
 
+    assert "norms-config" not in told["additionalContext"]
+
+    # refused, ending on the one sentence that offers its switch
+    offer = (
+        "This guard is switchable: if it is in the user's way, tell them once that "
+        "`/raizen-norms:norms-config` sets `guard_destructive` to `advice` or `off`, and never recommend turning it off.\n"
+    )
     for mode in ("on", "maybe"):
         code, err, told = call("DROP TABLE foo;", mode)
-        assert code == 2 and err.startswith("REFUSED:") and told == {}, mode
+        assert code == 2 and err.startswith("REFUSED:") and err.endswith(offer) and told == {}, mode
+    # ... and never on Antigravity, where there are no switches
+    with tempfile.TemporaryDirectory() as td:
+        agy = {"toolCall": {"name": "call_mcp_tool", "args": {"ServerName": "supabase", "ToolName": "execute_sql",
+                                                             "Arguments": {"query": "DROP TABLE foo;"}}},
+               "workspacePaths": [td]}
+        result = subprocess.run([PYTHON, str(GUARD)], input=json.dumps(agy), capture_output=True, text=True)
+    assert result.returncode == 2 and result.stderr.startswith("REFUSED:") and "norms-config" not in result.stderr
 
     # the repo's marker turns it off there whatever the switch says
     with tempfile.TemporaryDirectory() as td:

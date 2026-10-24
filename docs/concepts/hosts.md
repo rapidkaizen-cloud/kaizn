@@ -15,7 +15,8 @@ Each host reads its own manifest and its own hook file. `.claude-plugin/` and `h
 | The document reminder | With the result of a commit that touched no document | Before the model call that follows such a commit, once per commit — a hook there cannot hand the model text after a tool has run |
 | The context reminder | At the first commit after the context passes 200k, 500k or 800k tokens | None — a hook there cannot hand the model text after a tool has run |
 | A question to you | `AskUserQuestion` | `ask_question` |
-| Settings — the output folder, the [switches](../reference/norms-config.md) | Set in `/config` or with `norms-config` | None: the default folder, and every rule `on` |
+| Settings — the output folder | Asked at install, changed in `/config` | None: the default folder |
+| The [switches](../reference/norms-config.md) | Set with `norms-config`, kept in the plugin's data folder; the first session on a machine names it once | None: every rule `on` |
 
 ## What is the same
 
