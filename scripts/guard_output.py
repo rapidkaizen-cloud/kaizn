@@ -3,13 +3,16 @@
 
 A report, a spreadsheet or a PDF written into the repo dirties `git status`, and one left
 in a scratchpad is never found again. They go to the output folder instead - `output_dir`
-in the plugin's settings, `Downloads/Claude` in the home folder while that is empty - each
-session in a folder of its own:
+in the switches file (`switches.py`), set with `norms-config` - each session in a folder of
+its own:
   - a repo's main checkout : `<repo>`
   - a linked worktree      : `<repo>-<worktree>`, beside its repo's folder, never inside it
   - no repo                : `_general`
 On one machine the root of that folder had collected some 210 loose files from every repo
 before the rule existed, each sorted back by hand from session transcripts.
+
+Until the user sets a folder there is none: the norms print no `OUTPUT` block, this hook
+passes every call, and files go where Claude Code puts them without the plugin.
 
 The session norms print the folder; this hook refuses a tool call naming a folder of the
 root that neither exists nor is the session's own, and, from a worktree, a name inside its
@@ -27,7 +30,6 @@ from pathlib import Path
 import host
 import switches
 
-OPTION = "CLAUDE_PLUGIN_OPTION_OUTPUT_DIR"
 NO_REPO = "_general"
 # A name ends at a quote, a space, a bracket or a separator. One that opens with `$`, `%`,
 # `{`, `<` or `*` is a variable, a placeholder or a glob: unknowable here, so it passes.
@@ -35,10 +37,10 @@ NAME = r"""[^\\/"'`\s<>|*?:;,()\[\]{}$%]+"""
 DOTS = re.compile(r"\.+")
 
 
-def base() -> Path:
-    """The output folder: the plugin setting, else `Downloads/Claude` in the home folder."""
-    value = os.environ.get(OPTION, "").strip()
-    return Path(os.path.expandvars(os.path.expanduser(value))) if value else Path.home() / "Downloads" / "Claude"
+def base(value=None):
+    """The output folder: `value`, else the one the user set; None while there is none."""
+    value = switches.output_dir() if value is None else value.strip()
+    return Path(os.path.expandvars(os.path.expanduser(value))) if value else None
 
 
 def checkout(cwd: str) -> tuple[str, str]:
@@ -68,9 +70,10 @@ def own(repo: str, worktree: str) -> str:
     return worktree if worktree.lower().startswith(repo.lower() + "-") else f"{repo}-{worktree}"
 
 
-def folder(cwd: str) -> Path:
-    """The folder this session's output files go to."""
-    return base() / own(*checkout(cwd))
+def folder(cwd: str):
+    """The folder this session's output files go to; None while no output folder is set."""
+    root = base()
+    return root / own(*checkout(cwd)) if root else None
 
 
 def strings(value, out: list) -> list:
@@ -116,7 +119,7 @@ def entries(path: Path, dirs_only: bool = False) -> set[str]:
 
 def refused(tool_input, cwd: str) -> list[str]:
     root = base()
-    found = named(tool_input, root)
+    found = named(tool_input, root) if root else []
     if not found:
         return []
     repo, worktree = checkout(cwd)

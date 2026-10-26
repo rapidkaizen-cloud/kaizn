@@ -32,7 +32,7 @@ def run(root: Path, data: Path | str | None = None, **options: str) -> str:
     with tempfile.TemporaryDirectory() as tmp:
         if data is None:
             (Path(tmp) / "switches.json").write_text(json.dumps(options), encoding="utf-8")
-            (Path(tmp) / "onboarded").write_text("", encoding="utf-8")
+            (Path(tmp) / "onboarded-output").write_text("", encoding="utf-8")
             data = tmp
         if data:
             env["CLAUDE_PLUGIN_DATA"] = str(data)
@@ -58,10 +58,13 @@ def demo() -> None:
     with tempfile.TemporaryDirectory() as tmp:
         root = Path(tmp)
 
-        # quiet: an empty repo gets the norms and nothing else, its output folder among them
+        # quiet: an empty repo gets the norms and nothing else; no output folder set, no OUTPUT block
         out = run(root)
-        assert "SESSION NORMS" in out and "\nOUTPUT\n" in out and "`guard_output` refuses" in out
+        assert "SESSION NORMS" in out and "\nOUTPUT\n" not in out and "`guard_output`" not in out
         assert MARK not in out
+        # an output folder set: the block names this session's folder in it - outside a repo, `_general`
+        out = run(root, output_dir=str(root / "Hasil"))
+        assert "\nOUTPUT\n" in out and f"  {root / 'Hasil' / '_general'}\n" in out and "`guard_output` refuses" in out
 
         # quiet: a repo with code but no components folder
         write(root, "src/lib/date.ts", "export const Format = 1\n")
@@ -287,8 +290,7 @@ def limit() -> None:
         assert norms.MORE_COMPONENTS in out
 
         # a queue sized to leave less room than the listing's own heading takes
-        output = norms.OUTPUT.format(folder=norms.guard_output.folder(str(root)))
-        room = norms.BUDGET - sized(norms.unsettled_norms() + output)
+        room = norms.BUDGET - sized(norms.unsettled_norms())
         write(root, "docs/queue.md", "- A line of the queue\n" * ((room - 150) // 23))
         out = run(root)
         assert sized(out) <= norms.LIMIT, sized(out)
@@ -491,16 +493,17 @@ def switched() -> None:
         # off: the block is gone, the others and the documents stay, and the line says why
         out = run(root, norm_git="off", norm_closing="off")
         assert "\nGIT\n" not in out and "CLOSING THE SESSION" not in out and "git commit -- <paths>" not in out
-        assert "\nLANGUAGE\n" in out and "\nSCOPE\n" in out and "\nOUTPUT\n" in out and "# PRD - Demo" in out
+        assert "\nLANGUAGE\n" in out and "\nSCOPE\n" in out and "# PRD - Demo" in out
         assert out.startswith(norms.HEAD + "SWITCHED by the user, on purpose: norm_git off, norm_closing off.\n\nLANGUAGE\n")
 
         # advice: the block whole, one line under its heading
-        out = run(root, norm_language="advice", norm_output="advice")
+        folder = str(root / "Hasil")
+        out = run(root, norm_language="advice", norm_output="advice", output_dir=folder)
         assert "\nLANGUAGE\n" + norms.ADVICE + "The user's language and" in out
         assert "\nOUTPUT\n" + norms.ADVICE + "A file made for the user" in out
         assert out.replace(norms.ADVICE, "").replace(
             "SWITCHED by the user, on purpose: norm_language advice, norm_output advice.\n\n", ""
-        ) == plain
+        ) == run(root, output_dir=folder)
 
         # a guard or a reminder moved away from on: every block printed, and the line names it
         out = run(root, guard_git="advice", remind_docs="off")
@@ -508,7 +511,8 @@ def switched() -> None:
         assert out.replace("SWITCHED by the user, on purpose: guard_git advice, remind_docs off.\n\n", "") == plain
 
         # the output block and the pointers, in each form that prints them
-        assert "\nOUTPUT\n" not in run(root, norm_output="off")
+        assert "\nOUTPUT\n" in run(root, output_dir=folder) and "\nOUTPUT\n" not in plain
+        assert "\nOUTPUT\n" not in run(root, norm_output="off", output_dir=folder)
         assert "\nPOINTERS - read before touching\n" not in run(root, norm_pointers="off")
 
     with tempfile.TemporaryDirectory() as tmp:
@@ -537,7 +541,8 @@ def switched() -> None:
 
 def first() -> None:
     """The first session on a machine is told once, after its task, where the rules are
-    switched: on Claude Code, where a data folder holds no marker yet."""
+    switched, and asked for the output folder: on Claude Code, where a data folder holds no
+    marker yet."""
     spec = importlib.util.spec_from_file_location("session_norms", SCRIPT)
     norms = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(norms)
@@ -553,13 +558,23 @@ def first() -> None:
         data = Path(tmp) / "plugins" / "data" / "kaizn-kaizn"
         out = run(root, data=data)
         assert out.count("\nFIRST SESSION ON THIS MACHINE\n") == 1 and "`/kaizn:norms-config`" in out
-        assert out.replace(norms.FIRST, "") == plain and (data / "onboarded").is_file()
+        assert "by running\n`/kaizn:norms-config` once" in out and "never before it" in out
+        assert out.replace(norms.FIRST, "") == plain and (data / "onboarded-output").is_file()
         # once: the next session on the machine is not told again
         assert run(root, data=data) == plain
-        # the user's switches do not count as having been told
+        # a user who already set a switch with the skill: only the line naming it
         other = Path(tmp) / "other"
         write(other, "switches.json", json.dumps({"guard_git": "advice"}))
-        assert "FIRST SESSION" in run(root, data=other)
+        assert norms.FIRST_SET in run(root, data=other)
+        # a machine told before 0.107.0 holds the old marker alone: asked for the folder once
+        told = Path(tmp) / "told"
+        write(told, "onboarded", "")
+        assert norms.FIRST in run(root, data=told) and "FIRST SESSION" not in run(root, data=told)
+        # an output folder already set: the same
+        chosen = Path(tmp) / "chosen"
+        write(chosen, "switches.json", json.dumps({"output_dir": str(Path(tmp) / "Hasil")}))
+        out = run(root, data=chosen)
+        assert norms.FIRST_SET in out and norms.FIRST not in out
         # a data folder that cannot hold the marker: no line, never a failed hook
         write(Path(tmp), "a-file", "x")
         assert run(root, data=Path(tmp) / "a-file" / "data") == plain

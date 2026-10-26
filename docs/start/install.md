@@ -1,6 +1,6 @@
 # Install
 
-Two commands in Claude Code, one setting, and a restart. For Antigravity, see [Run on Antigravity](../guide/antigravity.md).
+Two commands in Claude Code and a restart. For Antigravity, see [Run on Antigravity](../guide/antigravity.md).
 
 ## Before you start
 
@@ -18,11 +18,10 @@ Two commands in Claude Code, one setting, and a restart. For Antigravity, see [R
 ```
 
 1. **Install at user scope only.** A project-scope entry updates separately and falls behind.
-2. **Choose the output folder, or leave it empty.** Claude Code asks for **Output folder**: where sessions write the reports and files they make for you, one folder per repo and per worktree inside it. Empty means `Downloads/Claude` in your home folder; change it later in `/config`. See [guard-output](../reference/guard-output.md).
-3. **Turn on `autoUpdate`.** In `~/.claude/settings.json`, set `"autoUpdate": true` on `kaizn` under `extraKnownMarketplaces`, so a new version reaches the machine at its next start.
-4. **Restart Claude Code.**
+2. **Turn on `autoUpdate`.** In `~/.claude/settings.json`, set `"autoUpdate": true` on `kaizn` under `extraKnownMarketplaces`, so a new version reaches the machine at its next start.
+3. **Restart Claude Code.**
 
-Nothing else is asked: every rule starts `on`. The first session ends its first answer with one line naming `/kaizn:norms-config`, and a guard that refuses tells the session it can be switched; see [norms-config](../reference/norms-config.md).
+Nothing is asked: every rule starts `on`. The first session, once your task is done, runs `/kaizn:norms-config` once: which rules to switch, and where the reports and files sessions make for you go. Run it again any time; a guard that refuses also tells the session it can be switched. See [norms-config](../reference/norms-config.md).
 
 ## Companion skills
 

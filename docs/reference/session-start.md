@@ -34,8 +34,8 @@ Order: the norms, the documents and their notes, the two listings, the hand-over
 | `ASKING` | Always | A decision that is yours is asked, or answered in chat at a hard stop; the session never hands you a command to type. A block or a table a skill orders printed is printed whole, whatever brevity mode another plugin sets |
 | `DECISIONS` | Always | An answer with two or more decisions closes with one table: question, options, recommendation and its trade-off |
 | `CLOSING THE SESSION` | A repo with `PRD.md` or `docs/PRD.md` | The report per scope item, then a block written even when the answer is "none" |
-| `OUTPUT` | Always, after the blocks above | The full path of the folder this session writes your files to, worked out from its checkout — see [guard-output](guard-output.md) — and that working files stay where the work is, a name carries no date, and nothing is overwritten |
-| `FIRST SESSION ON THIS MACHINE` | Claude Code, the first session on the machine | That the session ends its first answer, once your task is done, with one line in your language saying these rules can be adjusted with `/kaizn:norms-config` — never a stop or a question before the task. See [First session](#first-session) |
+| `OUTPUT` | Once you set an output folder, after the blocks above | The full path of the folder this session writes your files to, worked out from its checkout — see [guard-output](guard-output.md) — and that working files stay where the work is, a name carries no date, and nothing is overwritten |
+| `FIRST SESSION ON THIS MACHINE` | Claude Code, the first session on the machine | That the session ends its first answer, once your task is done, by running `/kaizn:norms-config` once — the switches and the output folder — after one line in your language saying it is asked once and can be changed there any time. Never a stop or a question before the task. See [First session](#first-session) |
 | `HOST - Antigravity` | Antigravity only | See below |
 | Components listing | A `components` or `widgets` folder holds components | Opens `--- Components already in this repo`: what to reuse before writing a component |
 | Data layer listing | `CLAUDE.md` has a `Data layer` row naming a folder that exists and has files | Opens `--- Data layer of this repo (<folder>)`: what to call before writing a query |
@@ -64,9 +64,11 @@ Each block from `LANGUAGE` to `OUTPUT` has a switch of its own, set with [norms-
 
 ### First session
 
-Nothing asks about the rules when the plugin is installed. Instead, the first session on a machine is told to name [norms-config](norms-config.md) once, at the end of its first answer, after your task.
+Nothing asks about the rules when the plugin is installed. Instead, the first session on a machine, at the end of its first answer and after your task, runs [norms-config](norms-config.md) once: the same questions as when you run it yourself, the output folder among them — Claude Code's own behaviour, or a folder of your own. Pick nothing and every rule stays `on`, with no output folder.
 
-- **Once per machine.** With the block, the hook writes a file `onboarded` into the plugin's data folder, `~/.claude/plugins/data/<id>/`. A machine where that file exists never gets the block again, across plugin updates; uninstalling the plugin deletes the folder, and the next install is told again.
+- **Already set, not asked.** A machine where `norms-config` has written anything gets only the line naming it.
+
+- **Once per machine.** With the block, the hook writes a file `onboarded-output` into the plugin's data folder, `~/.claude/plugins/data/<id>/`. A machine where that file exists never gets the block again, across plugin updates; uninstalling the plugin deletes the folder, and the next install is asked again. A machine told before 0.107.0 holds only the older `onboarded`, so it is asked once more.
 - **Never a failed start.** Where the file cannot be written the block is left out, so it never repeats every session.
 - **Claude Code only.** Antigravity has no switches, so it never gets the block.
 

@@ -20,14 +20,22 @@ PYTHON = "python3"
 R = "C:\\Users\\me\\" + "Downloads\\Claude"
 RP = "/c/Users/me/" + "Downloads/Claude"
 
+# The plugin's data folder of every case: its `switches.json` holds the case's output folder.
+DATA = tempfile.TemporaryDirectory()
+
+
+def env(out_dir: Path, **switched: str) -> dict:
+    """The hook's environment, with `out_dir` and `switched` written where `norms-config` writes them."""
+    (Path(DATA.name) / "switches.json").write_text(json.dumps({**switched, "output_dir": str(out_dir)}), encoding="utf-8")
+    return {**os.environ, "CLAUDE_PLUGIN_DATA": DATA.name}
+
 
 def run(tool_name: str, tool_input: dict, cwd: Path, out_dir: Path) -> int:
     return send({"tool_name": tool_name, "tool_input": tool_input, "cwd": str(cwd)}, out_dir)
 
 
 def send(payload: dict, out_dir: Path) -> int:
-    env = {**os.environ, "CLAUDE_PLUGIN_OPTION_OUTPUT_DIR": str(out_dir)}
-    result = subprocess.run([PYTHON, str(GUARD)], input=json.dumps(payload), capture_output=True, text=True, env=env)
+    result = subprocess.run([PYTHON, str(GUARD)], input=json.dumps(payload), capture_output=True, text=True, env=env(out_dir))
     assert result.returncode in (0, 2), result.stderr
     return result.returncode
 
@@ -108,11 +116,8 @@ def demo() -> None:
         # refusal, `off` does nothing, a value it does not know is `on` ---
         def switched(file_path: str, mode: str) -> tuple:
             payload = {"tool_name": "Write", "tool_input": {"file_path": file_path, "content": "x"}, "cwd": str(plain)}
-            data = tmp / "plugin-data"
-            data.mkdir(exist_ok=True)
-            (data / "switches.json").write_text(json.dumps({"guard_output": mode}), encoding="utf-8")
-            env = {**os.environ, "CLAUDE_PLUGIN_OPTION_OUTPUT_DIR": str(out), "CLAUDE_PLUGIN_DATA": str(data)}
-            result = subprocess.run([PYTHON, str(GUARD)], input=json.dumps(payload), capture_output=True, text=True, env=env)
+            result = subprocess.run([PYTHON, str(GUARD)], input=json.dumps(payload), capture_output=True, text=True,
+                                    env=env(out, guard_output=mode))
             told = json.loads(result.stdout)["hookSpecificOutput"] if result.stdout else {}
             return result.returncode, result.stderr, told
 
@@ -133,8 +138,21 @@ def demo() -> None:
             code, err, told = switched(f"{R}\\laporan.xlsx", mode)
             assert code == 2 and err.startswith("REFUSED:") and err.endswith(offer) and told == {}, mode
         result = subprocess.run([PYTHON, str(GUARD)], input=json.dumps(agy(f"python make.py --out {RP}/laporan.pdf")),
-                                capture_output=True, text=True, env={**os.environ, "CLAUDE_PLUGIN_OPTION_OUTPUT_DIR": str(out)})
+                                capture_output=True, text=True, env=env(out))
         assert result.returncode == 2 and result.stderr.startswith("REFUSED:") and "norms-config" not in result.stderr
+
+        # --- no folder set, or no data folder at all: there is no output folder, and every call passes ---
+        (Path(DATA.name) / "switches.json").write_text(json.dumps({"guard_output": "on"}), encoding="utf-8")
+        home = str(Path.home() / "Downloads" / "Claude" / "laporan.xlsx")
+        for data in (DATA.name, ""):
+            plain_env = {**os.environ, "CLAUDE_PLUGIN_DATA": data}
+            got = subprocess.run([PYTHON, "-c", "import guard_output; print(guard_output.base(), guard_output.folder('.'))"],
+                                 capture_output=True, text=True, env=plain_env, cwd=GUARD.parent).stdout
+            assert got.strip() == "None None", (data, got)
+            for file_path in (f"{R}\\laporan.xlsx", home, str(out / "laporan.xlsx")):
+                payload = {"tool_name": "Write", "tool_input": {"file_path": file_path, "content": "x"}, "cwd": str(plain)}
+                result = subprocess.run([PYTHON, str(GUARD)], input=json.dumps(payload), capture_output=True, text=True, env=plain_env)
+                assert (result.returncode, result.stderr) == (0, ""), (data, file_path, result.stderr)
 
     print("ok")
 

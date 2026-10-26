@@ -2,6 +2,25 @@
 
 All notable changes to the `kaizn` plugin — named `raizen-norms` until 0.106.0, and `raizen-hub` until 0.70.0 merged it in — newest first. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versions before these are in `git log`.
 
+## [kaizn 0.107.0] - 2026-10-26
+
+The install asks nothing at all now, and the first session on a machine sets everything once instead: the output folder, the last question left in the enable-time dialog, and the switches, which since 0.105.0 were only offered where a guard refused. No folder is picked for the user: with none set, sessions save files as Claude Code does without the plugin.
+
+### Changed
+
+- The output folder is set with `/kaizn:norms-config` — Claude Code's own behaviour, or a folder of the user's own as a full path — and kept as `output_dir` in `switches.json` in the plugin's data folder, beside the switches. `guard-output` guards it from its next call; the `OUTPUT` block names it from the next session start.
+- No output folder set: the norms print no `OUTPUT` block and `guard-output` passes every call. Before, an empty setting meant `Downloads/Claude` in the home folder.
+- The first session on a machine, once the user's task is done, runs `/kaizn:norms-config` once — the switches and the output folder — instead of only naming it. Where the skill has already written anything, only the line naming it. A guard's refusal still names its switch.
+- The first-session marker is now `onboarded-output`, so a machine told before this version is asked once.
+
+### Removed
+
+- The plugin setting **Output folder** (`userConfig.output_dir`): no longer asked when the plugin is enabled, and gone from `/config`.
+
+To act on:
+
+- Nothing by hand: every machine is asked once, in its first session on this version. A folder set in `/config` is no longer read, so answer with it again.
+
 ## [kaizn 0.106.0] - 2026-10-24
 
 `raizen-norms` is now `kaizn`, and its marketplace and repo take the same name, so the plugin is named for what it does rather than for who wrote it. The name is *kaizen* without its `e`: `kaizen` itself is already a Claude Code plugin with the same scope.
