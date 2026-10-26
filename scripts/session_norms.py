@@ -113,9 +113,9 @@ holds what is not built yet.
 
 GIT = """\
 GIT
-Before anything else: `git fetch`, then check the branch position. Where the repo has a
-`development` branch: HEAD on `main` -> stop, and behind `origin/development` -> stop
-and ask to run `git pull --ff-only`.
+Before anything else: `git fetch`, then check the branch position and dirty paths.
+Where the repo has a `development` branch: HEAD on `main` -> stop, and behind
+`origin/development` -> stop and ask to run `git pull --ff-only`.
 
 Committing is part of finishing, not a separate request:
   - A scope item that is finished is committed in the same turn, without asking first.
@@ -124,6 +124,8 @@ Committing is part of finishing, not a separate request:
   - The message states why, not only what - the diff already shows the what.
   - Paths that changed outside SCOPE are findings reported to the user, never
     committed along.
+  - A path dirty before your first edit, or holding a change you did not make, waits
+    for the user: commit it whole, or leave it.
 
 Do not commit when you stop for one of the three legitimate stops in `build-flow`
 Section 6 - the `db-ops` destructive gate, a role test that misses, a business rule

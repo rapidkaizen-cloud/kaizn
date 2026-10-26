@@ -1,6 +1,6 @@
 {
   "name": "kaizn",
-  "version": "0.107.0",
+  "version": "0.108.0",
   "description": "Settle an app one layer at a time and hold it there: app-settle for the domain, the stack, the docs/ documents, and existing code brought back onto these rules; logic-settle for the layer between database and UI; design-settle for the visual direction and DESIGN.md. Session norms, git and destructive-operation guards, and document, UI, database, application-logic and build-order rules govern every session after.",
   "keywords": ["norms", "guard", "docs", "rls", "hooks", "build-order", "secrets", "bootstrap", "scaffold", "logic-layer", "design-system", "rework", "brownfield", "align"]
 }

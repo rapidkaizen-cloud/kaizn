@@ -36,7 +36,7 @@ RULES = {
     "norm_language": (THREE, "The LANGUAGE block: chat, documents, commits and on-screen text in your language; code, file names, routes and database names in English."),
     "norm_pointers": (THREE, "The POINTERS block, or NOT SETTLED where app-settle has not run: which rule skill to read before UI, SQL, queries or documents."),
     "norm_scope": (THREE, "The SCOPE block: only what was asked - no refactor, rename or document nobody requested."),
-    "norm_git": (THREE, "The GIT block: fetch and check the branch first, commit each finished item with named paths, push or merge only on your yes in chat. Leaves guard_git as it is."),
+    "norm_git": (THREE, "The GIT block: fetch and check the branch first, commit each finished item with named paths, asking first where a path holds another session's change, push or merge only on your yes in chat. Leaves guard_git as it is."),
     "norm_asking": (THREE, "The ASKING block: your decisions are asked, and the session runs commands itself instead of handing them to you."),
     "norm_decisions": (THREE, "The DECISIONS block: an answer with two or more decisions closes with one table - options, and a recommendation with its trade-off."),
     "norm_closing": (THREE, "The CLOSING THE SESSION block, in a settled repo: a report per scope item, then a fixed block - routes, defaults decided, unfinished steps, branch and commits."),

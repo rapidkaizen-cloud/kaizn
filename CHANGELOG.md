@@ -2,6 +2,18 @@
 
 All notable changes to the `kaizn` plugin — named `raizen-norms` until 0.106.0, and `raizen-hub` until 0.70.0 merged it in — newest first. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versions before these are in `git log`.
 
+## [kaizn 0.108.0] - 2026-10-26
+
+A session no longer commits another session's work when two of them run in one checkout: git commits a whole file, so a file both changed went into the first commit made.
+
+### Changed
+
+- The `GIT` block: the session checks the dirty paths when it starts. A path that was dirty before its first edit, or holds a change it did not make, waits for the user to pick: commit the file whole, or leave it.
+
+To act on:
+
+- Nothing: every session gets the rule from its next start.
+
 ## [kaizn 0.107.0] - 2026-10-26
 
 The install asks nothing at all now, and the first session on a machine sets everything once instead: the output folder, the last question left in the enable-time dialog, and the switches, which since 0.105.0 were only offered where a guard refused. No folder is picked for the user: with none set, sessions save files as Claude Code does without the plugin.
