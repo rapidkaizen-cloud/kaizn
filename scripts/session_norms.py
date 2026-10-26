@@ -14,8 +14,8 @@ and the two gates that must survive the plugin being absent.
 Each block prints as the user's switch for it says (`switches.py`): whole, marked as
 advice, or not at all. The norms then open with one line naming every rule the user moved
 away from `on`, so that a missing block reads as their choice rather than a fault. Nothing
-asks for a switch up front; the first session on a machine is told once, after its task,
-where the rules are switched.
+asks at install; the first session on a machine runs `norms-config` once, after its task,
+for the switches and the output folder.
 
 The documents are injected rather than pointed at. A pointer is obeyed by judgement,
 and the sessions that skip it are exactly the narrow ones where its prohibitions still
@@ -478,9 +478,18 @@ def fit(text: str, room: float, more: str) -> str:
     return (kept if kept.count("\n") > 6 else "\n") + more
 
 
-# Printed in the first session on a machine, on Claude Code alone: a user cannot judge a rule
-# before meeting it, so nothing asks up front, and this line is where the switches are named.
+# Printed in the first session on a machine, on Claude Code alone: nothing asks at install,
+# so the user sets the rules and the output folder here, once, after the task they came for.
 FIRST = """\
+
+FIRST SESSION ON THIS MACHINE
+Once the user's task is done - never before it - end your first answer by running
+`/kaizn:norms-config` once: it asks which rules to switch and where the files sessions make
+for the user go. Say first, in one line in the user's language, that this is asked once
+and can be changed there any time.
+"""
+# Where the user has already set something with the skill: only the line naming it.
+FIRST_SET = """\
 
 FIRST SESSION ON THIS MACHINE
 End your first answer, once the user's task is done, with one line in the user's language:
@@ -488,7 +497,8 @@ these rules can be adjusted with `/kaizn:norms-config`. Do not stop or ask about
 before the task.
 """
 # Written into the plugin's data folder once `FIRST` was printed; kept across updates.
-ONBOARDED = "onboarded"
+# Renamed from `onboarded` in 0.107.0, so a machine only told of the skill before is asked once.
+ONBOARDED = "onboarded-output"
 
 
 def first_session() -> str:
@@ -502,10 +512,10 @@ def first_session() -> str:
         if marker.exists():
             return ""
         marker.parent.mkdir(parents=True, exist_ok=True)
-        marker.write_text("The first session here was told where the switches are.\n", encoding="utf-8")
+        marker.write_text("The first session here was asked for the switches and the output folder.\n", encoding="utf-8")
     except OSError:
         return ""
-    return FIRST
+    return FIRST_SET if switches.found(folder) else FIRST
 
 
 # The norms and the skills are written in Claude Code's vocabulary. A session on another
@@ -830,7 +840,9 @@ def emit(root: Path, payload: dict) -> None:
         # that is not an app. Its queue is still printed, from the root or from `docs/`.
         text, files = norms(UNSETTLED_BLOCKS, DOCS_FORM, UNSETTLED_FORM), [("QUEUE.md", queue), ("docs/queue.md", queue)]
     notes += captured(stale_note, root)
-    text += switched_block("norm_output", OUTPUT.format(folder=guard_output.folder(str(root))))
+    # No output folder set: no block, and files go where Claude Code puts them without the plugin.
+    if place := guard_output.folder(str(root)):
+        text += switched_block("norm_output", OUTPUT.format(folder=place))
     # Antigravity takes the text as an injected step, which no such cap cuts.
     room = float("inf") if on_antigravity else BUDGET
     if on_antigravity:

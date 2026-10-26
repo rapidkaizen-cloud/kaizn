@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Self-check norms_config.py, and that the install dialog asks for no switch.
+"""Self-check norms_config.py, and that the install dialog asks for nothing.
 
 Every case passes a data folder of its own in a temporary folder with `--data`: the
 plugin's real data folder is never read or written here.
@@ -32,8 +32,8 @@ def run(*args: str) -> tuple:
 
 
 def demo() -> None:
-    # install asks for the output folder alone: a rule is decided when it gets in the way
-    assert list(json.loads(MANIFEST.read_text(encoding="utf-8"))["userConfig"]) == ["output_dir"]
+    # install asks nothing, the output folder included: a rule is decided when it gets in the way
+    assert "userConfig" not in json.loads(MANIFEST.read_text(encoding="utf-8"))
     every = {key: "on" for key in switches.RULES}
     for key, (allowed, what) in switches.RULES.items():
         assert allowed in (switches.THREE, switches.TWO) and what.endswith("."), key
@@ -85,6 +85,30 @@ def demo() -> None:
         assert modes(run("--data", str(data), "show")[1]) == {**every, "norm_scope": "advice"}
         assert run("--data", str(data), "set", "guard_output=off")[0] == 0
         assert json.loads(file.read_text(encoding="utf-8")) == {**every, "norm_scope": "advice", "guard_output": "off"}
+        now = {**every, "norm_scope": "advice", "guard_output": "off"}
+
+        # the output folder: none until set, kept by a later set of a switch, read by the guard
+        unset = "output_dir: not set - files go where Claude Code puts them without the plugin"
+        assert unset in run("--data", str(data), "show")[1]
+        chosen = Path(tmp) / "Hasil Laporan"
+        code, out, _ = run("--data", str(data), "set", f"output_dir={chosen}", "norm_git=advice")
+        assert code == 0 and f"output_dir: {chosen}\n" in out
+        assert json.loads(file.read_text(encoding="utf-8")) == {**now, "norm_git": "advice", "output_dir": str(chosen)}
+        assert run("--data", str(data), "set", "norm_git=on")[0] == 0
+        assert json.loads(file.read_text(encoding="utf-8"))["output_dir"] == str(chosen)
+        base = subprocess.run([PYTHON, "-c", "import guard_output; print(guard_output.base())"], capture_output=True,
+                              text=True, env=env, cwd=SCRIPT.parent).stdout
+        assert base.strip() == str(chosen), base
+        # `~` is expanded before it is stored; a relative folder is refused and nothing written
+        assert run("--data", str(data), "set", "output_dir=~/Hasil")[0] == 0
+        assert json.loads(file.read_text(encoding="utf-8"))["output_dir"] == str(Path.home() / "Hasil")
+        before = file.read_bytes()
+        for bad in ("output_dir=Hasil", "output_dir=./x"):
+            code, _, err = run("--data", str(data), "set", bad)
+            assert code == 2 and "takes a full path or `none`" in err and file.read_bytes() == before, (bad, err)
+        # `none` drops the key, and there is no output folder again
+        code, out, _ = run("--data", str(data), "set", "output_dir=NONE")
+        assert code == 0 and "output_dir" not in json.loads(file.read_text(encoding="utf-8")) and unset in out
 
     print("ok")
 

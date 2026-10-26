@@ -1,6 +1,6 @@
 # guard-output
 
-Refuses a file written into the root of your output folder, or into a folder there that is not the session's own.
+Once you set an output folder, refuses a file written into its root, or into a folder there that is not the session's own.
 
 | | |
 |---|---|
@@ -14,7 +14,7 @@ Refuses a file written into the root of your output folder, or into a folder the
 
 The reports, spreadsheets, CSVs and PDFs a session makes for you go to one folder, never into the repo, where they dirty `git status`, and never into a scratchpad, where nobody finds them again.
 
-- **You choose it.** Claude Code asks for **Output folder** when the plugin is enabled; change it later in `/config`. Left empty, it is `Downloads/Claude` in your home folder. Antigravity has no plugin settings, so there it is always the default.
+- **The first session asks for it.** Nothing asks at install; the first session on a machine asks once, after your task, through [norms-config](norms-config.md), and Claude Code's own behaviour — no folder — is one of the two answers. Change it any time with the same skill. Without a folder, the norms print no `OUTPUT` block and this hook passes every call, so files land where Claude Code puts them without the plugin. A folder you set holds for every repo on the machine. Antigravity gives that skill no data folder, so there the hook never acts.
 - **Each session has a folder of its own inside it**, worked out from where the session runs:
 
 | The session runs in | Its folder |
