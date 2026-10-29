@@ -20,7 +20,7 @@ Mechanical work: change **code and agent files that already exist**, and only wh
 
 **C3 is never run unasked**: it reads every identifier, route and database name in the repo, and what it finds is band 3 unless a rename is cheap. A3 offers it.
 
-**The installed plugin copy is the standard, not the toolkit repo's `master`** — an unreleased fix reaches no app. Read a rule's exact text from the installed plugin. A rule that looks wrong is a finding for `app-eval`, in the toolkit repo, in another session.
+**The installed plugin copy is the standard, not the toolkit repo's `main`** — an unreleased fix reaches no app. Read a rule's exact text from the installed plugin. A rule that looks wrong is a finding for `app-eval`, in the toolkit repo, in another session.
 
 **It returns only the `AUDIT` block — eight rows, C1 to C8, a clean one included and C3 as `not run` — with what each row counts listed under it.** Print it as returned.
 

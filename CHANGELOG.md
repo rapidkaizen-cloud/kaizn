@@ -2,6 +2,19 @@
 
 All notable changes to the `kaizn` plugin — named `raizen-norms` until 0.106.0, and `raizen-hub` until 0.70.0 merged it in — newest first. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versions before these are in `git log`.
 
+## [kaizn 0.109.0] - 2026-10-29
+
+The repo's branch is renamed from `master` to `main`, so every repo the user works in names its default branch the same way.
+
+### Changed
+
+- The default branch on GitHub is `main`. The docs workflow deploys on a push to `main`, and the site's links to the changelog and its edit links point there.
+
+To act on:
+
+- Claude Code, on every machine that added the marketplace before this version: point the plugin's clone at `main`, as in `docs/guide/update.md` under "Moving from `master` to `main`". Until then its updates stop without an error.
+- A local clone of the repo: `git branch -m master main`, `git fetch origin`, `git branch -u origin/main main`, `git remote set-head origin -a`.
+
 ## [kaizn 0.107.0] - 2026-10-26
 
 The install asks nothing at all now, and the first session on a machine sets everything once instead: the output folder, the last question left in the enable-time dialog, and the switches, which since 0.105.0 were only offered where a guard refused. No folder is picked for the user: with none set, sessions save files as Claude Code does without the plugin.
