@@ -35,6 +35,20 @@ Until 0.106.0 the plugin was `raizen-norms`, from the marketplace `raizen`. An u
 
 Then restart the host.
 
+## Moving from `master` to `main`
+
+Since 0.109.0 the repo's branch is `main`. A machine that added the marketplace before then keeps a clone that fetches `master` only: its updates stop without an error, and `claude plugin marketplace update kaizn` still reports success. Point the clone at `main` once:
+
+```
+git -C ~/.claude/plugins/marketplaces/kaizn config remote.origin.fetch "+refs/heads/main:refs/remotes/origin/main"
+git -C ~/.claude/plugins/marketplaces/kaizn fetch origin
+git -C ~/.claude/plugins/marketplaces/kaizn branch -m master main
+git -C ~/.claude/plugins/marketplaces/kaizn branch -u origin/main main
+claude plugin marketplace update kaizn
+```
+
+Then restart Claude Code. Removing the marketplace and adding it again works too, but it uninstalls the plugin and takes its switches and output folder with it. Antigravity is not affected: its install is a copy, made again from the URL.
+
 ## Check what you are running
 
 1. **Run `/kaizn:norms-help`** in any session. The first line is the version of the copy that session loaded.

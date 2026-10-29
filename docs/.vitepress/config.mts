@@ -44,12 +44,12 @@ export default defineConfig({
     nav: [
       { text: 'Get started', link: '/start/overview' },
       { text: 'Commands', link: '/reference/commands' },
-      { text: 'Changelog', link: `${REPO}/blob/master/CHANGELOG.md` },
+      { text: 'Changelog', link: `${REPO}/blob/main/CHANGELOG.md` },
     ],
     sidebar: sidebar(),
     outline: { level: [2, 3] },
     search: { provider: 'local' },
-    editLink: { pattern: `${REPO}/edit/master/docs/:path` },
+    editLink: { pattern: `${REPO}/edit/main/docs/:path` },
     socialLinks: [{ icon: 'github', link: REPO }],
   },
 })
