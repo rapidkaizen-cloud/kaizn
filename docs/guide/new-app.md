@@ -11,7 +11,7 @@ Before you start: the plugin and its [companion skills](../start/install.md) are
 3. **Open the new repo and run `/kaizn:logic-settle`.** It settles the layer between the database and the UI, and the one folder every database call lives in. See [logic-settle](../reference/logic-settle.md).
 4. **Run `/kaizn:design-settle`.** Its first question asks Fast or Full. It then draws two to four direction frames, you pick one on screen, and it builds a canvas of every page that you approve once. `/kaizn:design-settle fast` skips the first question. See [design-settle](../reference/design-settle.md).
 5. **Ask for the first page.** `build-flow` loads by itself and builds from `docs/queue.md`. A finished page is committed in the same turn and reported with its route. See [build-flow](../reference/build-flow.md).
-6. **Reply when it asks to publish.** A push waits for your answer in chat. See [Gates](../concepts/gates.md).
+6. **Reply when it asks to publish.** A push you did not ask for waits for your answer in chat. See [Gates](../concepts/gates.md).
 
 > [!NOTE]
 > `logic-settle` and `design-settle` each commit what they wrote when they close. One that stopped before its close leaves the working tree dirty, and `app-settle`'s migrate and align modes stop on a tree that is not clean.

@@ -1,6 +1,6 @@
 # guard-git
 
-Holds `git push` and `gh pr merge` until you reply in chat, and refuses a bare force push, a commit on `main` and `git add -A`.
+Holds a `git push` you did not ask for and `gh pr merge` until you reply in chat, and refuses a bare force push, a commit on `main` and `git add -A`.
 
 | | |
 |---|---|
@@ -28,10 +28,16 @@ The rule behind it is the `GIT` block of the norms; see [session-start](session-
 | `git add` with `-A`, `--all`, `.` or `./` anywhere among its arguments — `git add src -A` and `git add -- .` included | `REFUSED: git add -A / git add . is not used in this repo.` | Naming the paths: `git add src/app/orders/page.tsx` |
 | `git push` with `--force`, `-f` or a `+` refspec such as `+main` among its own arguments, a continued line included | `REFUSED: a bare force push.` | `--force-with-lease`, which is held like any push |
 | `git commit` while HEAD is on `main`, in a repo that has a `development` branch, local or on `origin` | `REFUSED: HEAD is on main.` | Switching to `development` first |
-| `git push`, `--force-with-lease` included | `HELD: a push runs only on the user's yes in chat.` | Your reply |
+| `git push`, `--force-with-lease` included | `HELD: a push runs only on the user's yes in chat.` | Your own message asking for it, the lease aside, or your reply |
 | `gh pr merge` | `HELD: merging a pull request runs only on the user's yes in chat.` | Your reply to the message itself |
 
-A held push passes only when all three hold, read from the conversation's transcript:
+A push you asked for passes with no stop, read from the conversation's transcript:
+
+- **Your last typed message names a push.** `push`, `di-push` and `Push it` all count. Whether it asks for one is read by the session: "jangan push dulu" names one too.
+- **No push has run since.** Any push run after your message spends it, whatever its branch. A held attempt before it, or a commit message naming a push, spends nothing.
+- **Not a `--force-with-lease`, and not `gh pr merge`.** Those always need the stop.
+
+Any other push passes only when all three hold:
 
 1. The session's last message before a reply of yours puts the exact command on a line of its own in backticks, or alone in a fenced block. A multi-line command can only go in a fence.
 2. You typed a reply to that message, with text in it.
@@ -42,7 +48,7 @@ A held push passes only when all three hold, read from the conversation's transc
 How they are read:
 
 - **The command must match.** Whitespace is collapsed, nothing else. Another branch is another command and needs its own message and reply.
-- **A push the call adds to is another command.** `cd app && git push origin dev`, a pipe to `tail` or a `2>&1` after it does not match a message naming `git push origin dev`. The hold tells the session to name the push and run it alone.
+- **A push the call adds to is another command** — unless you asked for the push. `cd app && git push origin dev`, a pipe to `tail` or a `2>&1` after it does not match a message naming `git push origin dev`. The hold tells the session to name the push and run it alone.
 - **What you type after the reply takes nothing back from a push.** A question, the session's answer and then your yes are one stop: the push runs with no second message. A merge after a question needs the command put again, with the answer.
 - **One stop, one run.** A call of the command in either shell spends the stop once its result is in the transcript. Another message and reply grant one more run. A held attempt made before your reply spends nothing.
 - **Several commands, one message.** A message that puts a push and a `gh pr merge`, each on a line of its own or in a fence of its own, lets each run once on the one reply, and the run of one spends nothing of the other. Two commands sharing one fence are neither of them put. Which of them your reply covered is read by the session, not by the hook.

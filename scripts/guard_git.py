@@ -17,7 +17,12 @@ Held until the user replies:
   - git push, --force-with-lease included
   - gh pr merge
 
-A push passes once the transcript shows a turn the session ended on the exact command,
+A push the user's last typed message asks for passes with no stop: the user named it in
+their own words, so there is no command left to put to them. The message only has to
+say `push`; whether it asks for one is the session's to read, as a reply is. Any push
+run after it spends it, and a --force-with-lease is never asked for that way.
+
+Any other push passes once the transcript shows a turn the session ended on the exact command,
 in backticks on a line of its own, something the user typed after it, and no call of
 that command since - one stop, one run. What the user typed, and how many messages
 later the yes came, is the session's to read: a question answered first and a yes after
@@ -47,6 +52,9 @@ import switches
 # bare spelling, and the long way round walks past every rule below. `-c`/`-C` take a
 # separate argument, so they need their own alternative.
 GIT = r"\bgit\s+(?:-[cC]\s+\S+\s+|--?[\w-]+(?:=\S+)?\s+)*"
+PUSH = re.compile(GIT + r"push\b")
+# `push`, `di-push`, `dipush` alike; `jangan push dulu` names one too, and the session reads it.
+ASKS_PUSH = re.compile(r"push", re.I)
 # What follows a subcommand up to the end of its own command. A rule that reads further
 # takes the `-f` of `git push origin dev && rm -f x` for a force push.
 ARGS = r"\b[^;&|\n]*?"
@@ -61,6 +69,12 @@ REQUEST = re.compile(r"<USER_REQUEST>\s*(.*?)\s*</USER_REQUEST>", re.S)
 # ponytail: `sh -c 'git push'` hides inside quotes too; parse the shell if agents start wrapping git.
 HEREDOC = re.compile(r"(<<-?\s*(['\"]?)(\w+)\2[^\n]*\n).*?^\s*\3\s*$", re.S | re.M)
 QUOTED = re.compile(r"'[^']*'|\"(?:[^\"\\]|\\.)*\"")
+
+
+def code_of(cmd: str) -> str:
+    code = QUOTED.sub("''", HEREDOC.sub(r"\1", cmd))
+    # A command continued over lines is one command to every rule below.
+    return re.sub(r"\\\r?\n", " ", code)
 
 
 def head_branch() -> str:
@@ -164,40 +178,85 @@ def approved(payload: dict, cmd: str, strict: bool = False) -> bool:
     want = norm(cmd)
     granted = named = False
     pending = set()
+    for who, said, calls, results in walk(payload):
+        pending.update(use_id for use_id, command in calls if norm(command) == want)
+        if pending.intersection(results):
+            granted = False
+        if who == "assistant":
+            named = any(names(text, want) for text in said)
+        elif who == "user":
+            if named:
+                pending.clear()
+            granted, named = named or (granted and not strict), False
+    return granted
+
+
+def walk(payload: dict):
+    """Each Claude Code transcript entry as (who, said, calls, results): `who` is
+    `assistant`, `user` for a message the user typed, or None; `said` its text; `calls`
+    the (id, command) of its shell calls; `results` the call ids its tool results answer."""
     for entry in entries(payload.get("transcript_path") or ""):
         if not isinstance(entry, dict):
             continue
         content = (entry.get("message") or {}).get("content")
         blocks = [{"type": "text", "text": content}] if isinstance(content, str) else content
-        said, result = [], False
+        said, calls, results = [], [], []
         for block in blocks if isinstance(blocks, list) else []:
             if not isinstance(block, dict):
                 continue
-            if (
-                block.get("type") == "tool_use"
-                and block.get("name") in SHELLS
-                and norm(str((block.get("input") or {}).get("command") or "")) == want
-            ):
-                pending.add(block.get("id"))
+            if block.get("type") == "tool_use" and block.get("name") in SHELLS:
+                calls.append((block.get("id"), str((block.get("input") or {}).get("command") or "")))
             elif block.get("type") == "tool_result":
-                result = True
-                if block.get("tool_use_id") in pending:
-                    granted = False
+                results.append(block.get("tool_use_id"))
             elif block.get("type") == "text" and str(block.get("text") or "").strip():
                 said.append(str(block.get("text")))
         # A tool's result, a subagent's prompt and a host-written note are user entries
         # nobody typed.
         # ponytail: every other user entry is taken as typed by the user; read its origin
         # if a host starts writing prompts of its own there.
-        if not said or result or entry.get("isSidechain") or entry.get("isMeta"):
+        typed = said and not results and not entry.get("isSidechain") and not entry.get("isMeta")
+        yield (entry.get("type") if typed else None), said, calls, results
+
+
+def requested(payload: dict) -> bool:
+    """True when the user's last typed message names a push and no push has run since."""
+    if payload.get("host") == host.ANTIGRAVITY:
+        return requested_antigravity(payload)
+    asked = False
+    pushes = set()
+    for who, said, calls, results in walk(payload):
+        pushes.update(use_id for use_id, command in calls if PUSH.search(code_of(command)))
+        if pushes.intersection(results):
+            asked = False
+        if who == "user":
+            asked = any(ASKS_PUSH.search(text) for text in said)
+    return asked
+
+
+def requested_antigravity(payload: dict) -> bool:
+    """`requested`, read from Antigravity's transcript as `approved_antigravity` reads it."""
+    asked = running = False
+    for step in entries(payload.get("transcript_path") or ""):
+        if not isinstance(step, dict):
             continue
-        if entry.get("type") == "assistant":
-            named = any(names(text, want) for text in said)
-        elif entry.get("type") == "user":
-            if named:
-                pending.clear()
-            granted, named = named or (granted and not strict), False
-    return granted
+        calls = step.get("tool_calls")
+        if isinstance(calls, list):
+            running = any(
+                isinstance(call, dict)
+                and call.get("name") == "run_command"
+                and isinstance(call.get("args"), dict)
+                and PUSH.search(code_of(str(call["args"].get("CommandLine") or ""))) is not None
+                for call in calls
+            )
+        elif running:
+            asked = running = False
+        elif step.get("type") == "USER_INPUT" and step.get("source") == "USER_EXPLICIT":
+            content = str(step.get("content") or "")
+            request = REQUEST.search(content)
+            text = (request.group(1) if request else content).strip()
+            if text:
+                asked = ASKS_PUSH.search(text) is not None
+    return asked
 
 
 def block(msg: str, payload: dict) -> None:
@@ -247,9 +306,7 @@ def main() -> None:
     if switches.mode("guard_git") == switches.OFF:
         sys.exit(0)
     cmd = (payload.get("tool_input") or {}).get("command") or ""
-    code = QUOTED.sub("''", HEREDOC.sub(r"\1", cmd))
-    # A command continued over lines is one command to every rule below.
-    code = re.sub(r"\\\r?\n", " ", code)
+    code = code_of(cmd)
     if not re.search(r"\b(git|gh)\b", code):
         sys.exit(0)
 
@@ -285,7 +342,9 @@ def main() -> None:
     if re.search(r"\bgh\s+pr\s+merge\b", code):
         hold(payload, cmd, "merging a pull request", wrapped, strict=True)
 
-    if re.search(GIT + r"push\b", code):
+    if PUSH.search(code):
+        if "--force-with-lease" not in code and requested(payload):
+            sys.exit(0)
         hold(payload, cmd, "a push", wrapped)
 
     sys.exit(0)

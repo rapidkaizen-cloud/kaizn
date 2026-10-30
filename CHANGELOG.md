@@ -2,6 +2,19 @@
 
 All notable changes to the `kaizn` plugin — named `raizen-norms` until 0.106.0, and `raizen-hub` until 0.70.0 merged it in — newest first. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versions before these are in `git log`.
 
+## [kaizn 0.110.0] - 2026-10-30
+
+A push the user asks for in their own message runs with no stop. In a real app, "push dan create PR" still brought a stop that showed the command and asked again: the stop was built so the user would type their consent rather than click it, and here they already had.
+
+### Changed
+
+- `guard_git`: a push passes when the user's last typed message names a push and no push has run since. Any push run after it spends it. A `--force-with-lease` and `gh pr merge` still need the stop.
+- Session norms, `GIT`: a push the user's last message asks for runs at once, and the report lists the commits it published. "Not yet" or a question about a push asks for none. Any other push keeps the chat stop.
+
+To act on:
+
+- Nothing in an installed app's files.
+
 ## [kaizn 0.109.0] - 2026-10-29
 
 The repo's branch is renamed from `master` to `main`, so every repo the user works in names its default branch the same way.

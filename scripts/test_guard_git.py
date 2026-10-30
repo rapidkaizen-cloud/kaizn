@@ -173,6 +173,25 @@ def demo() -> None:
         assert run(merge, transcript(merge_gate, said("wait"), said("now"))) == held
         assert run(merge, transcript(merge_gate, said("is CI green?"), showed(f"Yes.\n\n`{merge}`"), said("ok"))) == passed
 
+        # a push the user's last message asks for runs with no stop, in any spelling of it
+        # and wrapped or not: there is no command left to put to them
+        for request in ("oke sekarang push dan create PR", "Push it", "tolong di-push"):
+            assert run(push, transcript(said(request))) == passed, request
+        assert run(f"cd app && {push} 2>&1", transcript(said("push"))) == passed
+        # ... once: any push run after it spends it, the call being checked aside, and a
+        # held attempt before it, or a commit message naming one, spends nothing
+        assert run(push, transcript(said("push"), called("t1", push))) == passed
+        assert run(push, transcript(said("push"), called("t1", "git push -u origin dev"), ran("t1"))) == held
+        assert run(push, transcript(called("t0", push), ran("t0"), said("push"))) == passed
+        assert run(push, transcript(said("commit lalu push"), called("t0", "git commit -m 'before git push'"), ran("t0"))) == passed
+        # ... from the user's last message only, one they typed
+        assert run(push, transcript(said("push"), showed("Which branch?"), said("dev"))) == held
+        for unseen in (said("push", isMeta=True), said("push", isSidechain=True)):
+            assert run(push, transcript(unseen)) == held
+        # ... and never a lease or a merge
+        assert run("git push --force-with-lease origin dev", transcript(said("push"))) == held
+        assert run(merge, transcript(said("push dan merge"))) == held
+
         # user entries nobody typed neither grant nor take a grant back: a subagent's
         # prompt, a host-written note, a tool's result with a note beside it
         mixed = said([{"type": "tool_result", "tool_use_id": "x", "content": "done"}, {"type": "text", "text": "note"}])
@@ -349,6 +368,13 @@ def antigravity() -> None:
         # another command run between the reply and the push does not take the reply back
         fetch = planned("run_command", {"CommandLine": "git fetch"})
         assert outcome(push, transcript(*yes, fetch, result(), mine)) == passed
+
+        # a push the user's last message asks for runs with no stop, once
+        assert outcome(push, transcript(typed("oke push ke origin"))) == passed
+        assert outcome(push, transcript(typed("push"), mine)) == passed
+        assert outcome(push, transcript(typed("push"), mine, result())) == held
+        assert outcome(push, transcript(typed("push"), told("Which branch?"), typed("dev"))) == held
+        assert outcome(push, transcript(typed("push", "SYSTEM_SDK"))) == held
 
         # spent by a run; a new reply to a new message grants one more
         assert outcome(push, transcript(*yes, mine, result())) == held
