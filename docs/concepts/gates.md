@@ -4,7 +4,7 @@ A session decides most things with you through a question. Two actions are diffe
 
 | | Publishing | Destructive SQL |
 |---|---|---|
-| Covers | `git push`, `gh pr merge` | `DROP`, `TRUNCATE`, `DELETE`, a rename, `ALTER TYPE`, `ALTER ... DROP COLUMN`, an `UPDATE` with no narrow `WHERE` |
+| Covers | A `git push` you did not ask for, `gh pr merge` | `DROP`, `TRUNCATE`, `DELETE`, a rename, `ALTER TYPE`, `ALTER ... DROP COLUMN`, an `UPDATE` with no narrow `WHERE` |
 | You see | The exact command and the commits it publishes | The `DESTRUCTIVE` block, with a real row count |
 | You answer | In chat, in your own words | In chat: you approve the number |
 | The hook checks | That the stop happened and you replied | That the statement carries its own guard |
@@ -14,7 +14,9 @@ Each hook is `on` until you switch it, for every repo, with [norms-config](../re
 
 ## Publishing — push and merge
 
-The session ends its turn on a message like this, and does nothing until you reply:
+**A push you ask for runs with no stop.** Write "push", in any words, and the session pushes, then lists the commits it published. "Not yet" or a question about a push asks for none: the session reads which it is. A `--force-with-lease` still stops.
+
+For any other push, and for a merge, the session ends its turn on a message like this, and does nothing until you reply:
 
 ```
 `git push origin development`
@@ -27,9 +29,9 @@ Run it?
 - **Reply in chat, in any words.** A clear yes runs the command once.
 - **A question, a condition, or another instruction is not a yes.** The session answers or does what you said. A push stays open: your yes after the answer runs it, with no second stop. A merge is shown again with the answer, and runs on your reply to that.
 - **There is no dialog to click.** A dialog gets clicked before it is read.
-- **Opening a pull request is not a stop.** The session opens one only when you ask, and `gh pr create` runs without a reply: it publishes nothing the push before it has not. Asked for a push and its pull request, you get the one stop for the push.
+- **Opening a pull request is not a stop.** The session opens one only when you ask, and `gh pr create` runs without a reply: it publishes nothing the push before it has not. Asked for a push and its pull request, both run with no stop.
 
-What `guard_git` holds a push for, all three at once:
+A push passes `guard_git` when your last message names a push and no push has run since. Otherwise the hook holds it for all three at once:
 
 1. The session ended a turn on a message that puts the exact command in backticks on a line of its own. A command named inside a sentence — a closing report saying what it pushed — does not count.
 2. You typed a reply to that message.
