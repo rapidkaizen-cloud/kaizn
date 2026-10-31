@@ -2,6 +2,18 @@
 
 All notable changes to the `kaizn` plugin — named `raizen-norms` until 0.106.0, and `raizen-hub` until 0.70.0 merged it in — newest first. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versions before these are in `git log`.
 
+## [kaizn 0.113.1] - 2026-11-07
+
+The Playwright MCP's install line sends its automatically named files to the OS temp folder. Without it, every snapshot and unnamed screenshot landed in `.playwright-mcp/` at the app repo's root, leaving the tree dirty after a finished session.
+
+### Fixed
+
+- `build-flow` Section 5 and `docs/start/install.md`: the install line adds `--output-dir "$(node -p "require('os').tmpdir()")/playwright-mcp"`, expanded once when the line runs, in Bash and PowerShell alike. A screenshot saved under a name a skill gives, such as `.design-audit/`, still lands at that path.
+
+To act on:
+
+- A machine that connected the MCP before this version: remove it with `claude mcp remove playwright -s user`, then run the line again.
+
 ## [kaizn 0.113.0] - 2026-11-07
 
 The Playwright MCP becomes a Required install, asked for and recommended like the companion skills, because a script per browser step keeps no page between steps: the audit walk's measuring and every signed-in walk start over at each one.

@@ -32,7 +32,7 @@ Required. A session missing any of them asks before continuing.
 | `impeccable` | `npx impeccable install` | The craft rules a session reads before it writes any component, and the detector `design-settle` runs on each round |
 | `frontend-design` | `/plugin` | Craft rules read before any component, beside `impeccable`'s |
 | `ui-ux-pro-max` | `/plugin marketplace add nextlevelbuilder/ui-ux-pro-max-skill`, then `/plugin install ui-ux-pro-max@ui-ux-pro-max-skill` | The UX floor level with `impeccable`, and the style, palette and type results `design-settle` mixes into its frames |
-| Playwright MCP | `claude mcp add playwright -s user -- npx @playwright/mcp@latest --browser chrome --headless --isolated` | The browser every walk, screenshot and check runs in: your installed Chrome, headless, on a temporary profile, so your own Chrome is never touched. An MCP server, not a skill; needs Chrome installed |
+| Playwright MCP | `claude mcp add playwright -s user -- npx @playwright/mcp@latest --browser chrome --headless --isolated --output-dir "$(node -p "require('os').tmpdir()")/playwright-mcp"` | The browser every walk, screenshot and check runs in: your installed Chrome, headless, on a temporary profile, so your own Chrome is never touched. An MCP server, not a skill; needs Chrome installed |
 
 > [!NOTE]
 > Invoke `/design-settle` by name: `impeccable`'s description overlaps it. `ui-build` forbids `ui-ux-pro-max`'s `--persist` and every script of its sub-skills.
