@@ -92,6 +92,7 @@ Platform        : [from the Surface row, else from the manifest and platform fil
                    Surface's Proof profile line, or to the platform's own tooling where none is written]
 Primary role    : [from the Roles, else from the roles the code enforces, else asked at Step 1]
 Design material : [impeccable · frontend-design · ui-ux-pro-max present/absent — Required ·
+                   Playwright MCP present/absent, from the session's tool list — Required ·
                    review-animations present/absent, found on disk per ui-build, never from
                    the skill list — Optional.
                    Presence only: read from Step 5, ui-ux-pro-max from Step 3]
@@ -128,7 +129,7 @@ Documents missing, or a legacy `PRD.md` off-shape → **not a stop**: say so in 
 
 **Ask for correction through AskUserQuestion, the full sentence inside the question field itself**, Fast or Full in the same call. Its options are the reading as written, first and recommended, then up to three others, each the reading with one slot changed — a slot the sources left open or in conflict first, else the one the reading rests on least; any other correction arrives under Other. Nothing after this runs before it is answered: no dialog, no search, no frame.
 
-**One Required skill absent is asked through AskUserQuestion, never merely reported**, naming what is lost — `impeccable`'s ban list, display-face and convergence calibrations, the Operate register, every later detector count; `frontend-design`'s direction method and restraint; `ui-ux-pro-max`'s UX floor, every later UX-floor check, and its frame ingredients — with continue-without or stop-to-install (the README's install lines); continuing is recommended where installing is unavailable here. The answer rides every canvas round and the ratification report as its own line. An Optional skill absent is only shown in the row.
+**One Required install absent is asked through AskUserQuestion, never merely reported**, naming what is lost — `impeccable`'s ban list, display-face and convergence calibrations, the Operate register, every later detector count; `frontend-design`'s direction method and restraint; `ui-ux-pro-max`'s UX floor, every later UX-floor check, and its frame ingredients; the Playwright MCP's page between browser steps, so every step runs as its own script, signed in again — with continue-without or stop-to-install (the README's install lines); continuing is recommended where installing is unavailable here. The answer rides every canvas round and the ratification report as its own line. An Optional skill absent is only shown in the row.
 
 ### The audit — where UI exists
 

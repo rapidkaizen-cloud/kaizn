@@ -2,6 +2,19 @@
 
 All notable changes to the `kaizn` plugin — named `raizen-norms` until 0.106.0, and `raizen-hub` until 0.70.0 merged it in — newest first. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versions before these are in `git log`.
 
+## [kaizn 0.113.0] - 2026-11-07
+
+The Playwright MCP becomes a Required install, asked for and recommended like the companion skills, because a script per browser step keeps no page between steps: the audit walk's measuring and every signed-in walk start over at each one.
+
+### Changed
+
+- `build-flow` Section 5: the Playwright MCP absent → raised once with the page's Section 4 questions — install it at user scope, recommended, or carry on with a script per step.
+- `design-settle`: the Step 0 `Design material` row shows the Playwright MCP as Required, and its absence is asked like a Required skill's.
+
+To act on:
+
+- Nothing in an installed app's files. Connect the MCP once per machine, or answer the question the next session asks: `claude mcp add playwright -s user -- npx @playwright/mcp@latest --browser chrome --headless --isolated`.
+
 ## [kaizn 0.112.0] - 2026-11-07
 
 Every browser step runs headless in Playwright on the installed Chrome. Only the e2e specs were bound to that before: the walks, screenshots and checks used whatever browser tool the session had, which opened a visible Chrome window.
