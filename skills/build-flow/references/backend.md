@@ -21,7 +21,7 @@ Every page this batch wires leaves one Playwright Test spec, because a walk is p
 - **Three tests in `e2e/<page>.spec.ts`**, or where the repo's Playwright config already collects: the flow the walk just finished, as the page's role; then `failed` and `empty`, the page's reads answered by `page.route` with an error and with no rows, asserting what `contract.md`'s cases ask of those states. A page that reads nothing keeps the first test alone.
 - **`page.route` stands in for the database in those two tests only**, because they test the page, not the read.
 - **A read the browser never makes — rendered on the server — cannot be answered by `page.route`**: write its two tests as `test.fixme`, titled with the read, so the gap prints in every run.
-- **Launch Chrome as Playwright does by default — headless, on its own temporary profile — with `channel: 'chrome'`.** Never `connectOverCDP`, and never `launchPersistentContext` on the user's profile, because the user's own Chrome holds their work.
+- **Launch the spec's browser as `SKILL.md` Section 5 drives every browser step**: `channel: 'chrome'` in the config, headless left on.
 - **Point `baseURL` at the dev server the session started for the walk**, never at one it did not start.
 - **Sign in with the walk's account through environment variables the spec names**, and write a saved `storageState` only to a git-ignored path, because it holds a live session.
 - **A write the flow makes lands on a row named `[CLAUDE] …` that the test deletes after itself, or is answered by `page.route`**, because the database a spec reaches may hold real data.

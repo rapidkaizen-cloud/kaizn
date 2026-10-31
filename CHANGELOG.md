@@ -2,6 +2,19 @@
 
 All notable changes to the `kaizn` plugin — named `raizen-norms` until 0.106.0, and `raizen-hub` until 0.70.0 merged it in — newest first. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versions before these are in `git log`.
 
+## [kaizn 0.112.0] - 2026-11-07
+
+Every browser step runs headless in Playwright on the installed Chrome. Only the e2e specs were bound to that before: the walks, screenshots and checks used whatever browser tool the session had, which opened a visible Chrome window.
+
+### Changed
+
+- `build-flow` Section 5: every browser step is driven through Playwright — headless, `channel: 'chrome'`, its own temporary profile — by the Playwright MCP where the session has it, else by a Playwright script; never the Chrome DevTools MCP, `connectOverCDP`, or the user's profile.
+- `build-flow`'s spec, walk and audit briefs, and `design-settle`'s frames, audit walk and verification, point to that rule instead of the session's browser tooling. `frames.md` drops the Chrome DevTools `emulate` step: a headless viewport takes any width.
+
+To act on:
+
+- Nothing in an installed app's files. Connect the Playwright MCP once per machine to spare the session a script per browser step: `claude mcp add playwright -s user -- npx @playwright/mcp@latest --browser chrome --headless --isolated`.
+
 ## [kaizn 0.111.0] - 2026-11-02
 
 A session in a linked worktree writes its output files to its repo's folder, `<repo>`, no longer to `<repo>-<worktree>`. With a worktree made for every task, the output folder gained one more folder per task.
