@@ -79,8 +79,9 @@ def demo() -> None:
         check("PowerShell", {"command": 'Copy-Item a.xlsx "$HOME\\' + 'Downloads\\Claude\\$repo\\a.xlsx"'}, plain, 0)
         # a repo path that merely looks alike
         check("Bash", {"command": 'cd "D:/Codes/some-app" && git status'}, plain, 0)
-        # a worktree writes to its own folder, reads what its repo's folder already holds
-        check("Write", {"file_path": f"{R}\\wt-repo-fitur\\laporan.xlsx", "content": "x"}, wt, 0)
+        # a worktree writes to its repo's folder and reads what it already holds
+        check("Write", {"file_path": f"{R}\\wt-repo\\laporan.xlsx", "content": "x"}, wt, 0)
+        check("Write", {"file_path": f"{R}\\wt-repo\\fitur\\laporan.xlsx", "content": "x"}, wt, 0)
         check("PowerShell", {"command": f'Get-Content "{R}\\wt-repo\\Laporan Lama.xlsx"'}, wt, 0)
         check("PowerShell", {"command": f'Get-ChildItem "{R}\\wt-repo"'}, wt, 0)
         check("Write", {"file_path": f"{R}\\_general\\catatan.md", "content": "x"}, wt, 0)
@@ -95,10 +96,8 @@ def demo() -> None:
         check("Write", {"file_path": "D:\\x\\make.py", "content": f'OUT = r"{R}\\out.xlsx"'.replace("\\", "\\\\")}, plain, 2)
         check("Bash", {"command": f"python make.py --out {RP}/laporan.pdf"}, plain, 2)
         check("mcp__chrome-devtools__take_screenshot", {"filePath": f"{RP.replace('/c/', 'C:/')}/shot.png"}, plain, 2)
-        # a worktree never writes into its repo's folder, nor makes a folder of its own name there
-        check("Write", {"file_path": f"{R}\\wt-repo\\laporan.xlsx", "content": "x"}, wt, 2)
-        check("Write", {"file_path": f"{R}\\wt-repo\\fitur\\laporan.xlsx", "content": "x"}, wt, 2)
-        # only the worktree's session may make its folder
+        # no session makes a folder per worktree
+        check("Write", {"file_path": f"{R}\\wt-repo-fitur\\laporan.xlsx", "content": "x"}, wt, 2)
         check("Write", {"file_path": f"{R}\\wt-repo-fitur\\laporan.xlsx", "content": "x"}, main, 2)
         # Antigravity's shell tool, read from its own payload shape
         agy = lambda command: {"toolCall": {"name": "run_command", "args": {"CommandLine": command}}, "workspacePaths": [str(plain)]}
@@ -111,6 +110,9 @@ def demo() -> None:
         check("Write", {"file_path": "E:\\Hasil\\Out\\laporan.xlsx", "content": "x"}, plain, 2, custom)
         check("Write", {"file_path": "E:\\Hasil\\Out\\_general\\laporan.xlsx", "content": "x"}, plain, 0, custom)
         check("Write", {"file_path": f"{R}\\laporan.xlsx", "content": "x"}, plain, 0, custom)
+        # an empty folder: a worktree makes its repo's folder, not one of its own
+        check("Write", {"file_path": "E:\\Hasil\\Out\\wt-repo\\laporan.xlsx", "content": "x"}, wt, 0, custom)
+        check("Write", {"file_path": "E:\\Hasil\\Out\\wt-repo-fitur\\laporan.xlsx", "content": "x"}, wt, 2, custom)
 
         # --- the user's switch: `advice` lets the file through and hands the model the
         # refusal, `off` does nothing, a value it does not know is `on` ---

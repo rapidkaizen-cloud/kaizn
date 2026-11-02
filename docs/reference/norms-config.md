@@ -44,7 +44,7 @@ When any switch is away from `on`, the norms open with one line naming each of t
 
 ## The output folder
 
-Where sessions write the reports and files they make for you, one folder per repo and per worktree inside it; see [guard-output](guard-output.md). It has two answers: Claude Code's own behaviour, with no folder, where files land wherever Claude Code puts them without the plugin, or a folder of your own, given as a full path. Files already in the old folder stay where they are.
+Where sessions write the reports and files they make for you, one folder per repo inside it, shared by the repo's worktrees; see [guard-output](guard-output.md). It has two answers: Claude Code's own behaviour, with no folder, where files land wherever Claude Code puts them without the plugin, or a folder of your own, given as a full path. Files already in the old folder stay where they are.
 
 ## How it runs
 

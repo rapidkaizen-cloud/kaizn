@@ -2,6 +2,19 @@
 
 All notable changes to the `kaizn` plugin — named `raizen-norms` until 0.106.0, and `raizen-hub` until 0.70.0 merged it in — newest first. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versions before these are in `git log`.
 
+## [kaizn 0.111.0] - 2026-11-02
+
+A session in a linked worktree writes its output files to its repo's folder, `<repo>`, no longer to `<repo>-<worktree>`. With a worktree made for every task, the output folder gained one more folder per task.
+
+### Changed
+
+- Session norms, `OUTPUT`: a linked worktree's folder is its repo's, the same as the main checkout's.
+- `guard_output`: refuses a new `<repo>-<worktree>` folder like any other folder that is not the session's own, and no longer looks inside the repo's folder.
+
+To act on:
+
+- Nothing in an installed app's files. Files already in a `<repo>-<worktree>` folder stay there and can still be read; move them into `<repo>` by hand if wanted.
+
 ## [kaizn 0.110.0] - 2026-10-30
 
 A push the user asks for in their own message runs with no stop. In a real app, "push dan create PR" still brought a stop that showed the command and asked again: the stop was built so the user would type their consent rather than click it, and here they already had.
