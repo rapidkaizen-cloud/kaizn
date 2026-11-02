@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
-"""Keep the files a session makes for the user in one folder per repo and per worktree.
+"""Keep the files a session makes for the user in one folder per repo.
 
 A report, a spreadsheet or a PDF written into the repo dirties `git status`, and one left
 in a scratchpad is never found again. They go to the output folder instead - `output_dir`
-in the switches file (`switches.py`), set with `norms-config` - each session in a folder of
+in the switches file (`switches.py`), set with `norms-config` - each repo in a folder of
 its own:
-  - a repo's main checkout : `<repo>`
-  - a linked worktree      : `<repo>-<worktree>`, beside its repo's folder, never inside it
-  - no repo                : `_general`
+  - a repo's main checkout or a linked worktree : `<repo>`
+  - no repo                                     : `_general`
+A worktree shares its repo's folder because one is made per task, and a folder per
+worktree left one more folder behind for every task.
 On one machine the root of that folder had collected some 210 loose files from every repo
 before the rule existed, each sorted back by hand from session transcripts.
 
@@ -15,8 +16,7 @@ Until the user sets a folder there is none: the norms print no `OUTPUT` block, t
 passes every call, and files go where Claude Code puts them without the plugin.
 
 The session norms print the folder; this hook refuses a tool call naming a folder of the
-root that neither exists nor is the session's own, and, from a worktree, a name inside its
-repo's folder that does not exist yet. Reading what is already there passes.
+root that neither exists nor is the session's own. Reading what is already there passes.
 
 Exit 0 = pass, exit 2 = block. The user's `guard_output` switch (`switches.py`) can make
 it warn instead of refusing, or do nothing; every refusal names it.
@@ -43,37 +43,33 @@ def base(value=None):
     return Path(os.path.expandvars(os.path.expanduser(value))) if value else None
 
 
-def checkout(cwd: str) -> tuple[str, str]:
-    """The repo's name and, in a linked worktree, the worktree's folder name. Empty outside a repo."""
+def checkout(cwd: str) -> str:
+    """The repo's name, its main checkout's from a linked worktree. Empty outside a repo."""
     try:
         result = subprocess.run(
             ["git", "-C", cwd, "rev-parse", "--path-format=absolute", "--git-common-dir", "--git-dir", "--show-toplevel"],
             capture_output=True, text=True, timeout=5,
         )
     except (OSError, subprocess.SubprocessError):
-        return "", ""
+        return ""
     lines = result.stdout.splitlines()
     if result.returncode or len(lines) < 3:
-        return "", ""
+        return ""
     common, git_dir, top = (Path(line) for line in lines[:3])
     if os.path.normcase(git_dir) == os.path.normcase(common):
-        return top.name, ""
+        return top.name
     # A linked worktree has a git dir of its own; the shared one sits in the main checkout.
-    return common.parent.name, top.name
+    return common.parent.name
 
 
-def own(repo: str, worktree: str) -> str:
-    if not repo:
-        return NO_REPO
-    if not worktree:
-        return repo
-    return worktree if worktree.lower().startswith(repo.lower() + "-") else f"{repo}-{worktree}"
+def own(cwd: str) -> str:
+    return checkout(cwd) or NO_REPO
 
 
 def folder(cwd: str):
     """The folder this session's output files go to; None while no output folder is set."""
     root = base()
-    return root / own(*checkout(cwd)) if root else None
+    return root / own(cwd) if root else None
 
 
 def strings(value, out: list) -> list:
@@ -88,8 +84,8 @@ def strings(value, out: list) -> list:
     return out
 
 
-def named(tool_input, root: Path) -> list[tuple[str, str]]:
-    """Each (folder, name inside it) a tool call names under the output folder.
+def named(tool_input, root: Path) -> list[str]:
+    """Each folder a tool call names under the output folder.
 
     The folder is matched by its last two names, so `C:\\Users\\me\\Downloads\\Claude`,
     `/c/Users/me/Downloads/Claude`, `~/Downloads/Claude` and `$HOME/Downloads/Claude` are
@@ -99,20 +95,20 @@ def named(tool_input, root: Path) -> list[tuple[str, str]]:
     if not names:
         return []
     pattern = re.compile(
-        r"(?<![\w.-])" + r"[\\/]+".join(map(re.escape, names)) + rf"[\\/]+({NAME})(?:[\\/]+({NAME}))?",
+        r"(?<![\w.-])" + r"[\\/]+".join(map(re.escape, names)) + rf"[\\/]+({NAME})",
         re.I,
     )
     return [
-        (m.group(1), m.group(2) or "")
+        m.group(1)
         for text in strings(tool_input, [])
         for m in pattern.finditer(text)
         if not DOTS.fullmatch(m.group(1))
     ]
 
 
-def entries(path: Path, dirs_only: bool = False) -> set[str]:
+def folders(path: Path) -> set[str]:
     try:
-        return {p.name.lower() for p in path.iterdir() if not dirs_only or p.is_dir()}
+        return {p.name.lower() for p in path.iterdir() if p.is_dir()}
     except OSError:
         return set()
 
@@ -122,18 +118,8 @@ def refused(tool_input, cwd: str) -> list[str]:
     found = named(tool_input, root) if root else []
     if not found:
         return []
-    repo, worktree = checkout(cwd)
-    allowed = entries(root, dirs_only=True) | {NO_REPO, own(repo, worktree).lower()}
-    bad = []
-    for name, inside in found:
-        if name.lower() not in allowed:
-            bad.append(name)
-        elif worktree and name.lower() == repo.lower() and inside and not DOTS.fullmatch(inside):
-            # shortcut: a name is cut at its first space or bracket, so it is matched by prefix -
-            # a new file sharing its opening with an old one passes; tighten if that happens.
-            if not any(e.startswith(inside.lower()) for e in entries(root / name)):
-                bad.append(f"{name}/{inside}")
-    return bad
+    allowed = folders(root) | {NO_REPO, own(cwd).lower()}
+    return [name for name in found if name.lower() not in allowed]
 
 
 def main() -> None:
@@ -145,12 +131,12 @@ def main() -> None:
     if not bad:
         sys.exit(0)
     root = base()
-    there = sorted(entries(root, dirs_only=True))
+    there = sorted(folders(root))
     switches.refuse(
         "guard_output",
         f"REFUSED: `{'`, `'.join(dict.fromkeys(bad))}` in `{root}` is not this session's output folder.\n\n"
-        f"Write the file to `{folder(cwd)}`. A worktree has its own folder beside its repo's, never\n"
-        f"one inside it; a session outside a repo writes to `{NO_REPO}`.\n"
+        f"Write the file to `{folder(cwd)}`. A worktree writes to its repo's folder; a session\n"
+        f"outside a repo writes to `{NO_REPO}`.\n"
         f"Folders already there: {', '.join(there) or '(none yet)'}.\n"
         "Send it again with that path. A path built at runtime to get past this is the same\n"
         "mistake, unseen.\n",

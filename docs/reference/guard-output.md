@@ -15,12 +15,12 @@ Once you set an output folder, refuses a file written into its root, or into a f
 The reports, spreadsheets, CSVs and PDFs a session makes for you go to one folder, never into the repo, where they dirty `git status`, and never into a scratchpad, where nobody finds them again.
 
 - **The first session asks for it.** Nothing asks at install; the first session on a machine asks once, after your task, through [norms-config](norms-config.md), and Claude Code's own behaviour — no folder — is one of the two answers. Change it any time with the same skill. Without a folder, the norms print no `OUTPUT` block and this hook passes every call, so files land where Claude Code puts them without the plugin. A folder you set holds for every repo on the machine. Antigravity gives that skill no data folder, so there the hook never acts.
-- **Each session has a folder of its own inside it**, worked out from where the session runs:
+- **Each repo has a folder of its own inside it**, worked out from where the session runs:
 
 | The session runs in | Its folder |
 |---|---|
 | A repo's main checkout | `<repo>`, the checkout's folder name |
-| A linked worktree | `<repo>-<worktree>`, beside the repo's folder and never inside it. A worktree folder already named `<repo>-...` is used as it is |
+| A linked worktree | `<repo>`, its main checkout's folder, so a worktree made for one task leaves no folder of its own behind |
 | No repo | `_general` |
 
 - **The session is told its folder** in the `OUTPUT` block of the norms, as a full path; see [session-start](session-start.md).
@@ -29,15 +29,13 @@ The reports, spreadsheets, CSVs and PDFs a session makes for you go to one folde
 
 The message opens `REFUSED: ... is not this session's output folder.`, names the folder to write to, and lists the folders already there.
 
-- **A name straight under the output folder** that is neither a folder already there nor the session's own: a file at the root, or a new folder such as `mockup-x`.
-- **From a worktree, a new name inside its repo's folder**: a file there, or a folder named after the worktree.
+- **A name straight under the output folder** that is neither a folder already there nor the session's own: a file at the root, or a new folder such as `mockup-x` or `<repo>-<worktree>`.
 - **Wherever the call carries the path**: a file path, a shell command, the text of a script being written, an MCP argument such as a screenshot's `filePath`.
 
 ## What it lets through
 
 - **A folder already there**, the session's own among them: reading, listing and editing what it holds.
 - **`_general`**, from any session.
-- **From a worktree, a name its repo's folder already holds**, so what the main checkout wrote can be read.
 - **A name that opens with `$`, `%`, `{`, `<` or `*`**: a variable, a placeholder or a glob, which the hook cannot know.
 - **A path that only looks alike**, such as a repo under `D:/Codes`.
 
@@ -46,7 +44,6 @@ The message opens `REFUSED: ... is not this session's output folder.`, names the
 - **A path built at runtime**, such as `Path(out) / "x.xlsx"` or `Join-Path $root $name`.
 - **A file written anywhere else** — the repo, a scratchpad. The norms carry that rule; the hook only guards the output folder.
 - **Dates in names and overwriting.** The norms carry both; the hook checks neither.
-- **A name cut at a space or a bracket**, which is matched by its opening: from a worktree, a new file whose name opens like one already in its repo's folder passes.
 - **A folder a session left at the root before the hook existed.** It counts as a folder already there.
 - **The same two names elsewhere.** The output folder is recognised by its last two names, such as `Downloads/Claude`, so it is found whichever way a path writes the home folder — and a folder with the same two names under another parent counts too.
 - **On Antigravity, the tools that write a file.** Only `run_command` and `call_mcp_tool` are wired.

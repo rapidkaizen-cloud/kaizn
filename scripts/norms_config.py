@@ -34,7 +34,7 @@ def show(folder: Path, modes: dict, place: str) -> str:
     lines += [
         "",
         f"{switches.OUTPUT_DIR}: {place or 'not set - files go where Claude Code puts them without the plugin'}",
-        "  where sessions write the files they make for the user, one folder per repo and per worktree;",
+        "  where sessions write the files they make for the user, one folder per repo;",
         f"  set with {switches.OUTPUT_DIR}=<full path>, unset with {switches.OUTPUT_DIR}=none",
     ]
     return "\n".join(lines) + "\n"
