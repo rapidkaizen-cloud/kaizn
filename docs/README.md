@@ -58,7 +58,7 @@ New here: [Overview](start/overview.md), then [Install](start/install.md), then 
 | [guard-destructive](reference/guard-destructive.md) | Destructive SQL sent without its guard |
 | [guard-output](reference/guard-output.md) | Where a session's files for you go, and a file written into the root of that folder or into another session's folder |
 | [document-reminder](reference/document-reminder.md) | The three questions a session is handed after a commit that touched no document |
-| [context-reminder](reference/context-reminder.md) | The one line you are told when a session's context passes 200k, 500k or 800k tokens |
+| [context-reminder](reference/context-reminder.md) | The stop you are offered when a session's context passes 200k, 500k or 800k tokens, and the message held after an hour idle |
 
 ## Project
 

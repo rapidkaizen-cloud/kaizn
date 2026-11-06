@@ -2,6 +2,24 @@
 
 All notable changes to the `kaizn` plugin — named `raizen-norms` until 0.106.0, and `raizen-hub` until 0.70.0 merged it in — newest first. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versions before these are in `git log`.
 
+## [kaizn 0.114.0] - 2026-11-08
+
+A session stops growing where it costs most. In one redesign of a real app the context averaged 249k tokens over 1,914 calls and reading it back was 55% of the cost; the context note spoke only at a commit, and `design-settle` commits once, at the close, so the note never came. Messages sent after a pause rewrote 1.59M tokens of expired cache.
+
+### Added
+
+- `context-reminder` runs on every message you send (`UserPromptSubmit`), still once per milestone of 200k, 500k and 800k tokens.
+- `context-reminder` holds your first message after the session sat idle more than an hour above 100k tokens, saying how many tokens sending would write again. Sending it again passes.
+
+### Changed
+
+- The context note makes a seam: the session writes where the work stands — `.design-audit/resume.md` in a `design-settle` run, else a `docs/queue.md` line — ends the turn at the next point the work can be left, and tells you what each call costs against a new session's.
+- `design-settle` ends its turn for a new session at four more seams: after the pick and its refine round, after a canvas judgement that asks for a redraw, after the proving page, and after each page group of the pass. Every seam says what staying costs.
+
+To act on:
+
+- Nothing in an installed app's files.
+
 ## [kaizn 0.113.1] - 2026-11-07
 
 The Playwright MCP's install line sends its automatically named files to the OS temp folder. Without it, every snapshot and unnamed screenshot landed in `.playwright-mcp/` at the app repo's root, leaving the tree dirty after a finished session.

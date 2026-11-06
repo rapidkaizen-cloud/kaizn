@@ -13,7 +13,7 @@ Each host reads its own manifest and its own hook file. `.claude-plugin/` and `h
 | Norms and documents | Printed at `SessionStart` | Injected before the first model call of a conversation, with the app's `CLAUDE.md` and a `HOST` block mapping the tool names |
 | Where the norms run | Wherever the plugin is enabled | Every folder `agy` opens |
 | The document reminder | With the result of a commit that touched no document | Before the model call that follows such a commit, once per commit — a hook there cannot hand the model text after a tool has run |
-| The context reminder | At the first commit after the context passes 200k, 500k or 800k tokens | None — a hook there cannot hand the model text after a tool has run |
+| The context reminder | At the first message or commit after the context passes 200k, 500k or 800k tokens, and a message held after an hour idle above 100k | None — a hook there can neither hand the model text after a tool has run nor hold a message |
 | A question to you | `AskUserQuestion` | `ask_question` |
 | The output folder | Set with `norms-config`, which the first session on a machine runs once | None: never set |
 | The [switches](../reference/norms-config.md) | Set with `norms-config`, kept in the plugin's data folder; the first session on a machine runs it once | None: every rule `on` |
