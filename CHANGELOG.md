@@ -2,6 +2,44 @@
 
 All notable changes to the `kaizn` plugin — named `raizen-norms` until 0.106.0, and `raizen-hub` until 0.70.0 merged it in — newest first. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versions before these are in `git log`.
 
+## [kaizn 0.113.1] - 2026-11-07
+
+The Playwright MCP's install line sends its automatically named files to the OS temp folder. Without it, every snapshot and unnamed screenshot landed in `.playwright-mcp/` at the app repo's root, leaving the tree dirty after a finished session.
+
+### Fixed
+
+- `build-flow` Section 5 and `docs/start/install.md`: the install line adds `--output-dir "$(node -p "require('os').tmpdir()")/playwright-mcp"`, expanded once when the line runs, in Bash and PowerShell alike. A screenshot saved under a name a skill gives, such as `.design-audit/`, still lands at that path.
+
+To act on:
+
+- A machine that connected the MCP before this version: remove it with `claude mcp remove playwright -s user`, then run the line again.
+
+## [kaizn 0.113.0] - 2026-11-07
+
+The Playwright MCP becomes a Required install, asked for and recommended like the companion skills, because a script per browser step keeps no page between steps: the audit walk's measuring and every signed-in walk start over at each one.
+
+### Changed
+
+- `build-flow` Section 5: the Playwright MCP absent → raised once with the page's Section 4 questions — install it at user scope, recommended, or carry on with a script per step.
+- `design-settle`: the Step 0 `Design material` row shows the Playwright MCP as Required, and its absence is asked like a Required skill's.
+
+To act on:
+
+- Nothing in an installed app's files. Connect the MCP once per machine, or answer the question the next session asks: `claude mcp add playwright -s user -- npx @playwright/mcp@latest --browser chrome --headless --isolated`.
+
+## [kaizn 0.112.0] - 2026-11-07
+
+Every browser step runs headless in Playwright on the installed Chrome. Only the e2e specs were bound to that before: the walks, screenshots and checks used whatever browser tool the session had, which opened a visible Chrome window.
+
+### Changed
+
+- `build-flow` Section 5: every browser step is driven through Playwright — headless, `channel: 'chrome'`, its own temporary profile — by the Playwright MCP where the session has it, else by a Playwright script; never the Chrome DevTools MCP, `connectOverCDP`, or the user's profile.
+- `build-flow`'s spec, walk and audit briefs, and `design-settle`'s frames, audit walk and verification, point to that rule instead of the session's browser tooling. `frames.md` drops the Chrome DevTools `emulate` step: a headless viewport takes any width.
+
+To act on:
+
+- Nothing in an installed app's files. Connect the Playwright MCP once per machine to spare the session a script per browser step: `claude mcp add playwright -s user -- npx @playwright/mcp@latest --browser chrome --headless --isolated`.
+
 ## [kaizn 0.111.0] - 2026-11-02
 
 A session in a linked worktree writes its output files to its repo's folder, `<repo>`, no longer to `<repo>-<worktree>`. With a worktree made for every task, the output folder gained one more folder per task.

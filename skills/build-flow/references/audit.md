@@ -16,4 +16,5 @@ Only findings, one per line — `<pass> · <file>:<line> or <route> · <what is 
 | Platform conventions | the shell affordances this Surface's users expect and no design decision produces — window chrome and menus, context menu and the gesture that opens it, system back, safe areas and insets, file and permission dialogs |
 
 - **Use the skills that cover a pass** — `accessibility`, `make-interfaces-feel-better`, `click-path-audit` in the `ecc` plugin. Without them the rows above are the whole checklist: the audit never depends on a plugin being installed.
+- **Open the browser as `SKILL.md` Section 5 drives every browser step.**
 - **No browser tooling, or no dev server address in your brief → say so in the report and judge from the source.**

@@ -53,7 +53,7 @@ No Storybook, no mock server, no fixture generator, on any platform. Reach for m
 
 **Hand the walk of a page's cases to one subagent on a cheaper model than the session's** (`sonnet` on Claude Code): a walk is dozens of browser calls, and each one made here re-reads the whole session.
 
-- **Brief it with** the address of the dev server this session started, the page's route and the proving page's, the two switches and the values to walk, and the two widths of `SKILL.md` Section 4.
+- **Brief it with** the address of the dev server this session started, the page's route and the proving page's, the two switches and the values to walk, the two widths of `SKILL.md` Section 4, and the browser rule of its Section 5.
 - **It changes no file and returns only** one line per case — `renders`, or what broke with the console error beside it — and the paths of the screenshots it saved: the `bulk` case at both widths, and the proving page at the desktop width.
 - **Read the screenshots and judge them here**, as `SKILL.md` Section 5 orders — the judgement is never the subagent's.
 - **A case that broke is fixed here, then walked again alone.**

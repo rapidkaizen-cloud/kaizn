@@ -71,7 +71,7 @@ Run `impeccable`'s detector against the round's running routes (its URL tier) an
 
 ## Capturing
 
-- **Screenshot at two widths**: `DESIGN.md`'s desktop breakpoint (1440px where none exists yet, and in a redesign, which rebuilds it from zero — the old breakpoint returns only as a line of the gate's diff) and the lowest supported width, with the session's browser tooling. A width below the browser window's minimum (near 500px) is captured by emulating a mobile viewport of that width (Chrome DevTools' `emulate`), never by resizing the window. A page longer than the browser captures is captured in viewport-height segments. Where the Proof profile names something other than a browser, capture through its Visual line — same two bounds or the platform's equivalent.
+- **Screenshot at two widths**: `DESIGN.md`'s desktop breakpoint (1440px where none exists yet, and in a redesign, which rebuilds it from zero — the old breakpoint returns only as a line of the gate's diff) and the lowest supported width, in the browser skill `build-flow` Section 5 drives, each width set as the viewport. A page longer than the browser captures is captured in viewport-height segments. Where the Proof profile names something other than a browser, capture through its Visual line — same two bounds or the platform's equivalent.
 - **Shown inside its device.** Present the narrow capture inside a phone frame and the wide one inside a window frame. **No fake chrome inside the frame** — no painted status bar, keyboard, or fake tab strip carrying content. **The frame belongs to the entry route, never a page file.** With no capture tooling, report the run target and both widths; draw no frame around nothing.
 
 ## The pick
