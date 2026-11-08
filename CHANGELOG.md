@@ -2,6 +2,19 @@
 
 All notable changes to the `kaizn` plugin — named `raizen-norms` until 0.106.0, and `raizen-hub` until 0.70.0 merged it in — newest first. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versions before these are in `git log`.
 
+## [kaizn 0.120.0] - 2026-11-08
+
+A part of the craft material is read alone. The calibrations `design-settle` takes from `impeccable` for new work are one section of a playbook of about 53k characters, and a session that read the playbook whole carried all of it in every later call.
+
+### Changed
+
+- `ui-build` and `design-settle`'s frames: a material part that is one section of a longer file is read alone, by its heading, and `Material loaded:` names the heading of each section read that way.
+- `design-settle`'s `SKILL.md` and `canvas.md` say the same rules in fewer words. No rule was added or removed.
+
+To act on:
+
+- Nothing in an installed app's files.
+
 ## [kaizn 0.119.0] - 2026-11-08
 
 A redesign of a real app on a Pro plan took 8 of its 5-hour windows, and part of what each call carried was the machine's own setup: 56k–67k tokens before any work, and an ECC hook refusing 172 writes and commands, each one more call at the full context.
