@@ -62,3 +62,4 @@ Recommended: `npx skills add supabase/agent-skills` (Postgres guidance for `db-o
 
 - [Quickstart](quickstart.md) — the first run.
 - [Update the plugin](../guide/update.md) — on a machine without `autoUpdate`.
+- [Run on a Pro plan](../guide/pro-plan.md) — what to turn off before a redesign on a Pro plan.

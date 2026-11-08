@@ -7,11 +7,12 @@ description: Rules for building or changing any UI — the DESIGN.md gate, compo
 
 Documents are named by their `docs/` path; a repo with a root `PRD.md` reads each through `docs-format`'s legacy map.
 
-## What a load costs — three rules
+## What a load costs — four rules
 
 - **Run independent reads, searches and commands in one turn** — parallel calls, or one chained command — because every extra model call re-reads the whole session.
 - **Never re-read what the session start printed** — its component listing stands in for listing the components folder (Components).
 - **Load only the craft material the edit at hand needs** — the rows of the table below whose condition it meets.
+- **Read a part that is one section of a longer file alone, by its heading**, here and in `design-settle`, because every later call re-reads the whole file.
 
 ## The material — loaded before the first component
 

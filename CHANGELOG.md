@@ -2,6 +2,113 @@
 
 All notable changes to the `kaizn` plugin — named `raizen-norms` until 0.106.0, and `raizen-hub` until 0.70.0 merged it in — newest first. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versions before these are in `git log`.
 
+## [kaizn 0.120.0] - 2026-11-08
+
+A part of the craft material is read alone. The calibrations `design-settle` takes from `impeccable` for new work are one section of a playbook of about 53k characters, and a session that read the playbook whole carried all of it in every later call.
+
+### Changed
+
+- `ui-build` and `design-settle`'s frames: a material part that is one section of a longer file is read alone, by its heading, and `Material loaded:` names the heading of each section read that way.
+- `design-settle`'s `SKILL.md` and `canvas.md` say the same rules in fewer words. No rule was added or removed.
+
+To act on:
+
+- Nothing in an installed app's files.
+
+## [kaizn 0.119.0] - 2026-11-08
+
+A redesign of a real app on a Pro plan took 8 of its 5-hour windows, and part of what each call carried was the machine's own setup: 56k–67k tokens before any work, and an ECC hook refusing 172 writes and commands, each one more call at the full context.
+
+### Added
+
+- `design-settle` prints a `Quota` row at Step 0 and again at the close: the `used` lines of `claude -p "/usage" --strict-mcp-config`, a local command with no model call, on Claude Code only.
+- `docs/guide/pro-plan.md`: measuring what a session starts with, turning off unused plugins, MCP servers and claude.ai connectors, turning off ECC's GateGuard, running one session per account during a redesign, and reading the quota.
+
+To act on:
+
+- Nothing in an installed app's files. On a Pro plan, follow `docs/guide/pro-plan.md` once per machine.
+
+## [kaizn 0.118.0] - 2026-11-08
+
+A session names the model it runs on and the agent it hands writing to. In one redesign of a real app, a revision another model took over was rejected and redone for $12, and 8 of 12 canvas runs by another agent were fix runs, together twice the tokens of the briefs they fixed, because the checks that decide a round ran only after the writer reported.
+
+### Added
+
+- `design-settle` Step 0: a `Model` row. On a model other than Opus you are asked once, in Fast too: stop and run on Opus (recommended), or continue.
+- `build-flow` `references/delegate.md`: rules for work written by another agent — an `External writer : <agent · model · quota left>` line before the first brief, a brief written to a file that names files and line ranges and ends with the step's scan as commands the writer runs clean before reporting, a review by a subagent on a cheaper model, and two runs per brief at most. `build-flow` Section 5, `design-settle`'s canvas rounds and its pass point to it.
+
+To act on:
+
+- Nothing in an installed app's files.
+
+## [kaizn 0.117.0] - 2026-11-08
+
+Step 8 checks the app the user gets. In one redesign of a desktop app the checks ran on a mock of its backend in a browser: five layout defects and about twelve bugs passed them, and the user first saw the real window after the whole pass, where most of the revisions began.
+
+### Added
+
+- `scripts/verify_pages.js`: one run checks every promoted page at both widths — console errors, fonts loaded, axe-core serious and critical, text under its contrast floor, reduced motion, a page wider than its width — and prints one row per page and width, so only the rows marked `FAIL` or `n/v` are read. On the web it opens the dev server in headless Chrome; given `--app`, it launches the app's own build with its webview's debugging port open, WebView2 or Electron, and attaches to it.
+- `design-settle` Step 0: a `Native build` row — on a Surface that ships a binary, whether this machine has each tool its build command needs. A missing tool is asked like a Required install.
+- `design-settle` Step 7: on a shell or desktop Surface, a chat stop once the proving page is promoted — the app launched, and you asked to look at that page in its own window before the next page moves.
+
+### Changed
+
+- `design-settle` Step 8: the rendered and driven checks, function parity and the seeded walk run on the dev server for the web, on the app's own build for Tauri or Electron on Windows, and on the Proof profile line elsewhere, else `not verified`. A mock, or the frontend in a browser, serves the canvas alone.
+- `build-flow` Section 5: `connectOverCDP` is allowed to the webview of the app's own build that the same step launched, and nowhere else.
+
+To act on:
+
+- Nothing in an installed app's files. A desktop app needs its build toolchain on the machine before Step 8; the Step 0 row names what is missing.
+
+## [kaizn 0.116.0] - 2026-11-08
+
+Three smaller cuts to `design-settle`. In the same redesign the `/design-system` route ran to 3,043 lines — 29% of the redesign's code — in an app with one operator, and later sessions read it again.
+
+### Added
+
+- The install gate carries one line sizing the `/design-system` route: `minimal`, recommended — the tokens and each production component rendered once — or `full`, with every variant, state and an archetype card each. Fix the drift has no install gate; its Step 6 gate carries the line.
+
+### Changed
+
+- The audit measures the components and colour pairs from the source. It opens the running app only when you ask for the walk, by naming `walk` at invocation or in the scope reply; without it the account question is not asked, and every line that compares with an audit screenshot reads `not walked`.
+- Above 12 pages in scope, the canvas draws the proving page and one page per kind. The pass builds every other page on its kind's promoted page, and Step 8 checks those pages by the file checks, the detector and axe-core alone. A function only an undrawn page carries is neither a cut at the judgement nor a removal at the gate.
+
+To act on:
+
+- Nothing in an installed app's files. A redesign that wants the audit to open the running app names `walk`.
+
+## [kaizn 0.115.0] - 2026-11-08
+
+Work that needs no taste leaves the session that decides. In the same redesign, reads, builds, git and browser calls took about 68% of the main model's tokens, and the main session read 252 screenshots, each re-read by every later call.
+
+### Changed
+
+- `design-settle` hands every search across the repo, every build, lint and test run, and each page's promotion in the pass to a subagent on a cheaper model, one page after another; the session keeps every deviation, rework and stop.
+- Every screenshot is taken by a subagent that reads it and reports the defects with their paths. The session opens only the flagged ones, and you are handed every path.
+- Frame and canvas rounds are captured at the desktop width alone. The lowest width joins for a screen the render scan flags there, in the refine round, and once you approve the canvas: every page is then shown at it for one more verdict.
+
+To act on:
+
+- Nothing in an installed app's files.
+
+## [kaizn 0.114.0] - 2026-11-08
+
+A session stops growing where it costs most. In one redesign of a real app the context averaged 249k tokens over 1,914 calls and reading it back was 55% of the cost; the context note spoke only at a commit, and `design-settle` commits once, at the close, so the note never came. Messages sent after a pause rewrote 1.59M tokens of expired cache.
+
+### Added
+
+- `context-reminder` runs on every message you send (`UserPromptSubmit`), still once per milestone of 200k, 500k and 800k tokens.
+- `context-reminder` holds your first message after the session sat idle more than an hour above 100k tokens, saying how many tokens sending would write again. Sending it again passes.
+
+### Changed
+
+- The context note makes a seam: the session writes where the work stands — `.design-audit/resume.md` in a `design-settle` run, else a `docs/queue.md` line — ends the turn at the next point the work can be left, and tells you what each call costs against a new session's.
+- `design-settle` ends its turn for a new session at four more seams: after the pick and its refine round, after a canvas judgement that asks for a redraw, after the proving page, and after each page group of the pass. Every seam says what staying costs.
+
+To act on:
+
+- Nothing in an installed app's files.
+
 ## [kaizn 0.113.1] - 2026-11-07
 
 The Playwright MCP's install line sends its automatically named files to the OS temp folder. Without it, every snapshot and unnamed screenshot landed in `.playwright-mcp/` at the app repo's root, leaving the tree dirty after a finished session.

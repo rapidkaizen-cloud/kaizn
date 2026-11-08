@@ -45,7 +45,7 @@ RULES = {
     "guard_destructive": (THREE, "Refuses DROP, TRUNCATE, DELETE, a rename or an UPDATE with no narrow WHERE unless it runs inside a guard holding the row count you approved."),
     "guard_output": (THREE, "Once an output folder is set: refuses a file written to its root, or into a folder there that is not the session's own."),
     "remind_docs": (TWO, "After a commit that changed no document, asks the session whether one became false."),
-    "remind_context": (TWO, "At the first commit past 200k, 500k or 800k tokens of context, the session tells you the next item costs less in a new session."),
+    "remind_context": (TWO, "At the first message or commit past 200k, 500k or 800k tokens of context, the session stops at the next safe point and offers you a new session; holds your first message after an hour idle above 100k."),
 }
 
 

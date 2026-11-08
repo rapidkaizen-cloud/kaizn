@@ -4,11 +4,15 @@
 
 Every check leaves something the user can inspect. **A check here or in Step 7 that cannot run** — no data, no sign-in, no tooling — **is reported `not verified — <reason>`, never passed**, and becomes a `docs/queue.md` line (Step 9); one run against a verification double, standing in for data or sign-in, is reported as run on it, and its real-data line stays.
 
-**The mechanical checks run in three subagents, one per group below, the two that open the browser one after the other** (`SKILL.md`, What a run costs), because a subagent's every call re-reads all it has gathered and the browser is shared. **Brief each with this file's path — Step 8's opening and its own group — plus what the repo does not show: the path this run took, the account it holds, the lines answered at the gate; the two that open the browser also get skill `build-flow`'s Section 5 browser rule. Never retype the checks**, because a retyped list loses some: each returns one line per check per page — verdict, the count or ratio, the evidence path — and fixes nothing. **The session runs the judged checks itself, fixes every failed item in the same session, and re-runs that check.** All of them pass before reporting done.
+**Run the rendered and driven checks, function parity and the seeded walk on the surface the user gets**: the web → the dev server; a shell (Tauri, Electron) on Windows → the app its own build command built, launched with its webview's debugging port open (`WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS=--remote-debugging-port=<port>` for Tauri, the same switch on Electron's command line) and reached by `connectOverCDP`; any other Surface → its Proof profile line, else `not verified — <surface>`. A mock of a shell's backend, or its frontend in a browser, serves the canvas alone and verifies none of them.
+
+**The mechanical checks run in three subagents, one per group below, the two that open the browser one after the other** (`SKILL.md`, What a run costs), because a subagent's every call re-reads all it has gathered and the browser is shared. **Brief each with this file's path — Step 8's opening and its own group — plus what the repo does not show: the path this run took, the account it holds, the lines answered at the gate, the pages the canvas left undrawn; the two that open the browser also get skill `build-flow`'s Section 5 browser rule. Never retype the checks**, because a retyped list loses some: each returns one line per check per page — verdict, the count or ratio, the evidence path — plus every defect it sees in a capture it took, with that capture's path, and fixes nothing. **The session runs the judged checks itself, fixes every failed item in the same session, and re-runs that check.** All of them pass before reporting done.
 
 **A fix that changes what a ratified page renders is applied without a stop and written as one cancellable line at the close** — the page, what moved, the check that ordered it — and that page's pixel diff and keyboard walk run again, the diff's images showing the fix and nothing else.
 
 **Where no canvas was drawn — fix-the-drift, a Keep — a check that reads a canvas file is `n/a — no canvas`**, never `not verified` and never a queue line: the structural diff, the pixel diff, the rendered-structure count, the signature. `Promoted page` reads as every page a repair touched, and each approved finding is re-read at its place — gone, or a failed item; a rejected finding stands and fails no check.
+
+**A page the canvas left undrawn** (`canvas.md`, The canvas file) **gets the checks from the files with every other file, and from the browser only the detector and axe-core, one line each**; every other per-page check, and every judged check, runs on the drawn pages alone.
 
 ### Mechanical — three subagents
 
@@ -24,12 +28,13 @@ Every check leaves something the user can inspect. **A check here or in Step 7 t
 
 #### From the rendered page
 
+- **Run `<plugin folder>/scripts/verify_pages.js` once, for every promoted page at both widths, and write no checking code of your own** — the plugin folder three levels above this file, its usage its opening lines. Its table answers the loaded webfonts, axe-core and reduced motion below, and adds two counts that fail a page: rendered text pairs under their floor, and a page wider than its width. Open only the rows it marks `FAIL` or `n/v`.
 - **The pixel diff per promoted page**, taken before its data swap (`pass.md`), its diff images shown.
-- **Under a scope narrower than the app — each route the audit walked outside it is captured at desktop width**, its audit screenshot's path beside it. The session reads the pair: the new tokens and chrome landed and nothing else moved. Text that cannot be read, a layout that collapsed or a control that is gone is a failed item — fixed in the shared file that caused it, or written into that group's `docs/queue.md` line where only the page's own file can fix it.
+- **Under a scope narrower than the app — each route `audit.md`'s `## Routes for the walk` names outside it is captured at desktop width**, its audit screenshot's path beside it where the audit walked, `not walked` where it did not. The subagent reads the pair: the new tokens and chrome landed and nothing else moved — the capture alone, where not walked, for the defects below. Text that cannot be read, a layout that collapsed or a control that is gone is a failed item — fixed in the shared file that caused it, or written into that group's `docs/queue.md` line where only the page's own file can fix it.
 - **Computed styles probed in the browser**: fonts are the loaded webfonts; token slots spot-checked against `DESIGN.md`'s tokens — against the theme files in a legacy repo — so the page shows the source's values, not a drifted copy. (No browser in the Proof profile → its Visual line, naming what could not be verified.)
 - **The rendered structure matches, counted.** Canvas and live page in the same dev server; compare each body's element tree (names, classes, and the attributes the canvas source writes — `aria-*`, `role`, `href` — **text and numbers discarded**), one line per page: `canvas n · live n · differs n`. Above zero — outside an `href` at the routing seam, a fix's cancellable line and lines answered at the gate — names the elements and is failed. Unshared chrome is excluded and said; an uncountable page is not verified.
 - **Every accessible name on the promoted pages reads in the app's locale**, a library's own included.
-- **The design-system route passes its done-check** (`pass.md`), foundations rendered as specimens.
+- **The design-system route passes the done-check of its size, minimal or full** (`pass.md`), foundations rendered as specimens.
 - **Every contrast ratio on the page was computed**, not recalled, for every pair `ratify.md` defines, in every ratified theme mode; every semantic dark shade clears 4.5 against its own light shade.
 - **The numbers close** on every page — on its fixtures where it still runs on them, on its real rows where it is wired — totals, percentages, bar widths, pagination (`canvas.md`, Coverage).
 - **The detector ran against the running app** (the dev server): hit count beside the audit's where UI existed, every hit listed. A signed-in page is scanned as its rendered HTML saved from the session's browser, stylesheets inlined — never through a session token on a command line; a check only the URL tier runs is `not verified` on that page. `impeccable` absent → the check could not run, never reported passed.
@@ -45,11 +50,11 @@ Every check leaves something the user can inspect. **A check here or in Step 7 t
 ### Judged — the session
 
 - **Every listed hit and warning is fixed or left standing with one line why** — detector hits, UX-floor don'ts, linter warnings.
-- **Every capture this step and Step 7 took was read by the session**; a visible defect is a failed item.
+- **Every capture a subagent flagged, this step's and Step 7's, was opened by the session** (`SKILL.md`, What a run costs); a visible defect is a failed item.
 - **Motion holds `review-animations`' floor** on a web-technology Surface: every animation on the promoted pages read against it, each refusal fixed or left standing with one line why. Not installed → `n/a — not installed`, said aloud.
 - **The signature survived promotion** on the pages that carry it.
 - **The proving page holds at both widths**, screenshots taken.
-- **Where UI existed — the seeded walk.** Seed `[CLAUDE]`-prefixed rows first. Walk the proving page at desktop and the lower bound; compare one page per archetype with its audit screenshot — each reads redesigned unless all behind it was *keep* and the gate said so; where no canvas was drawn, each reads as its screenshot except where a repair landed.
+- **Where UI existed — the seeded walk.** Seed `[CLAUDE]`-prefixed rows first. Walk the proving page at desktop and the lower bound; compare one page per archetype with its audit screenshot, `not walked` where the audit took none — each reads redesigned unless all behind it was *keep* and the gate said so; where no canvas was drawn, each reads as its screenshot except where a repair landed.
 
 ### The canvas after promotion
 
@@ -66,6 +71,7 @@ Every check leaves something the user can inspect. **A check here or in Step 7 t
 
 One block, a line nothing fills left out:
 
+- the quota, read again as Step 0 reads it, beside the `Quota` row of the run's first Step 0;
 - the detector's numbers — Step 8's count, beside the audit's where UI existed — and every hit left standing with its one-line justification;
 - every `review-animations` refusal, UX-floor don't and linter warning left standing, with its line;
 - the `DESIGN.md` lines that changed, where there was an old one · the decision records written;
