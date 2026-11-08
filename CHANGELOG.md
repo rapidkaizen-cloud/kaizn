@@ -2,6 +2,23 @@
 
 All notable changes to the `kaizn` plugin — named `raizen-norms` until 0.106.0, and `raizen-hub` until 0.70.0 merged it in — newest first. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versions before these are in `git log`.
 
+## [kaizn 0.116.0] - 2026-11-08
+
+Three smaller cuts to `design-settle`. In the same redesign the `/design-system` route ran to 3,043 lines — 29% of the redesign's code — in an app with one operator, and later sessions read it again.
+
+### Added
+
+- The install gate carries one line sizing the `/design-system` route: `minimal`, recommended — the tokens and each production component rendered once — or `full`, with every variant, state and an archetype card each. Fix the drift has no install gate; its Step 6 gate carries the line.
+
+### Changed
+
+- The audit measures the components and colour pairs from the source. It opens the running app only when you ask for the walk, by naming `walk` at invocation or in the scope reply; without it the account question is not asked, and every line that compares with an audit screenshot reads `not walked`.
+- Above 12 pages in scope, the canvas draws the proving page and one page per kind. The pass builds every other page on its kind's promoted page, and Step 8 checks those pages by the file checks, the detector and axe-core alone. A function only an undrawn page carries is neither a cut at the judgement nor a removal at the gate.
+
+To act on:
+
+- Nothing in an installed app's files. A redesign that wants the audit to open the running app names `walk`.
+
 ## [kaizn 0.115.0] - 2026-11-08
 
 Work that needs no taste leaves the session that decides. In the same redesign, reads, builds, git and browser calls took about 68% of the main model's tokens, and the main session read 252 screenshots, each re-read by every later call.

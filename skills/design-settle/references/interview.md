@@ -99,6 +99,7 @@ Will install:
 
 - Refused → hand over the commands for the user to run, then wait. Nothing to install → in Full, say so in one line — with what leaves, where UI exists — and continue without the stop: a removal is authorized at the Step 6 gate, never here.
 - **Install nothing outside the block**; something extra → ask again. The font is the one exception (`ratify.md`).
+- **One line under the block sizes the `/design-system` route**: `Design-system route : minimal` — the tokens and each production component rendered once, recommended because every later session reads less — or `full` — every variant and state, and the archetype cards (`pass.md`, The `/design-system` route). The reply changes it; shown with nothing to install, it holds until the pass. Fix the drift runs no install gate, so its Step 6 gate carries the line.
 - **Where UI exists, the block also says what leaves** — removed in the pass, never here — and every approved package is appended to `handover.md`'s UI stack line before the first frame, because the frames are drawn against that line.
 
 Approved and installed → `frames.md`.

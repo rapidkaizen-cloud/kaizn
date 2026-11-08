@@ -18,13 +18,13 @@ Before you start: `impeccable`, `frontend-design` and `ui-ux-pro-max` are instal
 3. **Read the first block.** It prints what it found: the documents, whether `DESIGN.md` is written, how many UI components exist, the platform, the design material present, and the flow it will follow.
 4. **Answer the non-visual dialogs**, or in Fast cancel the lines you disagree with.
 5. **Pick a direction on screen.** It draws two to four direction frames and you choose.
-6. **Approve the canvas once.** Every page is built in production-grade code on a canvas; your approval promotes it into the app.
+6. **Approve the canvas once.** Every page is built in production-grade code on a canvas — above 12 pages, the proving page and one page per kind; your approval promotes it into the app, and the pass builds the rest on the pages you approved.
 7. **Start a new session when it asks, twice** — before the pages are promoted and before they are checked. Run `/kaizn:design-settle` again and choose to continue; it costs far less than one long session.
 
 ## Where UI already exists
 
-- **You are asked the scope first**, where the app has more than one page group: the whole app, or the groups this run redraws. Every page in scope is read, drawn, promoted and checked, so a large app is redesigned one group at a time.
-- **The existing UI is audited next**, and today's look is one of the candidates.
+- **You are asked the scope first**, where the app has more than one page group: the whole app, or the groups this run redraws. Every page in scope is read, drawn, promoted and checked, so a large app is redesigned one group at a time; above 12 pages only one page per kind is drawn.
+- **The existing UI is audited next**, from its source, and today's look is one of the candidates. Name `walk` at invocation or in your scope reply to have the audit open the running app too.
 - **Where `DESIGN.md` is already written**, you are also offered a fix of the drift only, instead of a redesign.
 - **Removals are shown at a gate** before anything is taken out.
 

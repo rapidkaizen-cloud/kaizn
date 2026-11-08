@@ -6,6 +6,8 @@ You are handed the repo root, the scope, and the account that signs in, which yo
 
 ## What you open
 
+**Where you are told the walk was not asked, open nothing**: start no app and no browser, take no screenshot, write `Walked` as `none — not asked`, and read every item and pair `from source` (How each part is read).
+
 - **The routes under `## Routes for the walk` in `.design-audit/audit.md`** — read that section alone, by its heading: one of each kind of page inside the scope, and one of each kind outside it. A route that will not open is named in your report with why, and another of its kind is opened from the router where one exists.
 - **The app** is started by the Proof profile's Run line in `docs/product.md`, or by the repo's own dev command where it has none — unless you are told it is already running.
 - **The browser** is the one skill `build-flow` Section 5 drives every browser step in — read that rule alone.
