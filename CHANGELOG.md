@@ -2,6 +2,20 @@
 
 All notable changes to the `kaizn` plugin — named `raizen-norms` until 0.106.0, and `raizen-hub` until 0.70.0 merged it in — newest first. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versions before these are in `git log`.
 
+## [kaizn 0.115.0] - 2026-11-08
+
+Work that needs no taste leaves the session that decides. In the same redesign, reads, builds, git and browser calls took about 68% of the main model's tokens, and the main session read 252 screenshots, each re-read by every later call.
+
+### Changed
+
+- `design-settle` hands every search across the repo, every build, lint and test run, and each page's promotion in the pass to a subagent on a cheaper model, one page after another; the session keeps every deviation, rework and stop.
+- Every screenshot is taken by a subagent that reads it and reports the defects with their paths. The session opens only the flagged ones, and you are handed every path.
+- Frame and canvas rounds are captured at the desktop width alone. The lowest width joins for a screen the render scan flags there, in the refine round, and once you approve the canvas: every page is then shown at it for one more verdict.
+
+To act on:
+
+- Nothing in an installed app's files.
+
 ## [kaizn 0.114.0] - 2026-11-08
 
 A session stops growing where it costs most. In one redesign of a real app the context averaged 249k tokens over 1,914 calls and reading it back was 55% of the cost; the context note spoke only at a commit, and `design-settle` commits once, at the close, so the note never came. Messages sent after a pause rewrote 1.59M tokens of expired cache.

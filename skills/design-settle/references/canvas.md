@@ -4,7 +4,7 @@ One temporary route — **every page of the app, redesigned** — where every sh
 
 ## The chosen frame is carried in, never redrawn from nothing
 
-Rename it to its real page's name, then **refactor** it: raw values into canvas variables under production token names, held to `ratify.md`'s five rules (read that section now), controls into the shared set, data into the contract-shaped fixtures file, every state drawn, the three scans run. **Prove the refactor on screen before any other page is drawn**: capture it at both widths beside the picked frame's captures, taken after its last change — pixel diff where a tool exists, side by side otherwise — and fix any visible difference now, whichever side reads better. Change only by addition, plus the correction attached to the pick. A departure large enough that the page no longer reads as the picked frame is a line at the judgement, never a silent redraw.
+Rename it to its real page's name, then **refactor** it: raw values into canvas variables under production token names, held to `ratify.md`'s five rules (read that section now), controls into the shared set, data into the contract-shaped fixtures file, every state drawn, the three scans run. **Prove the refactor on screen before any other page is drawn**: capture it at the desktop width beside the picked frame's capture, taken after its last change — pixel diff where a tool exists, side by side otherwise — and fix any visible difference now, whichever side reads better. Change only by addition, plus the correction attached to the pick. A departure large enough that the page no longer reads as the picked frame is a line at the judgement, never a silent redraw.
 
 ## The design plan — narrated, not gated
 
@@ -107,7 +107,7 @@ Numbers, dates, thousands separators, and currency follow the app's locale per `
 
 ## Judging
 
-Capture every round as `frames.md` rules — two widths, inside its device.
+Capture every round as `frames.md` rules — the desktop width, inside its device. **A verdict that approves adds the lowest supported width**: every page captured at it and put to one more verdict, none recommended — approve at this width too · rework it, a correction round — before Step 6.
 
 **The platform is proven, not assumed — as a list.** Off the web, put the canvas beside one real native application — the picked frame's source where it is one, else one named here — and list the differences: window chrome, navigation shape, control size and radius, icon family, type, accent. Settle each as a **departure** with its one-line reason or a **correction round**. "It looks native" is not an output. **The same list runs on any platform when the picked frame was drawn to a stressed reference**: density, colour temperature, type character, motion budget, shell shape, how a recurring control is rendered. Where the reference is not a product, list what can be measured — colour, type character, material, a marker or shape — and name the rows that could not be written.
 
