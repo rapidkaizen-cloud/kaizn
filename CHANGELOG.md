@@ -2,6 +2,19 @@
 
 All notable changes to the `kaizn` plugin — named `raizen-norms` until 0.106.0, and `raizen-hub` until 0.70.0 merged it in — newest first. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versions before these are in `git log`.
 
+## [kaizn 0.118.0] - 2026-11-08
+
+A session names the model it runs on and the agent it hands writing to. In one redesign of a real app, a revision another model took over was rejected and redone for $12, and 8 of 12 canvas runs by another agent were fix runs, together twice the tokens of the briefs they fixed, because the checks that decide a round ran only after the writer reported.
+
+### Added
+
+- `design-settle` Step 0: a `Model` row. On a model other than Opus you are asked once, in Fast too: stop and run on Opus (recommended), or continue.
+- `build-flow` `references/delegate.md`: rules for work written by another agent — an `External writer : <agent · model · quota left>` line before the first brief, a brief written to a file that names files and line ranges and ends with the step's scan as commands the writer runs clean before reporting, a review by a subagent on a cheaper model, and two runs per brief at most. `build-flow` Section 5, `design-settle`'s canvas rounds and its pass point to it.
+
+To act on:
+
+- Nothing in an installed app's files.
+
 ## [kaizn 0.117.0] - 2026-11-08
 
 Step 8 checks the app the user gets. In one redesign of a desktop app the checks ran on a mock of its backend in a browser: five layout defects and about twelve bugs passed them, and the user first saw the real window after the whole pass, where most of the revisions began.

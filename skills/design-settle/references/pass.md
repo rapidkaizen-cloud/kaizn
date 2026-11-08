@@ -1,6 +1,6 @@
 # The pass — Step 7: every page, across sessions where it must
 
-**The approved canvas is the specification.** Drawn elements land as drawn; undrawn ones, and prose it left out, do not. A difference the session would prefer is refused, not asked. **The UI code is the pass's to rewrite — the behavior is not**: queries and mutations, guards, route paths, and every action's outcome stay unchanged, except the work the gate ordered. No unrelated fixes.
+**The approved canvas is the specification.** Drawn elements land as drawn; undrawn ones, and prose it left out, do not. A difference the session would prefer is refused, not asked. A page handed to an agent outside this session is briefed and reviewed by `build-flow`'s `references/delegate.md`. **The UI code is the pass's to rewrite — the behavior is not**: queries and mutations, guards, route paths, and every action's outcome stay unchanged, except the work the gate ordered. No unrelated fixes.
 
 ## Before the first file moves
 

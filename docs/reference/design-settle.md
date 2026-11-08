@@ -14,7 +14,7 @@ Running it settles how the app looks — a direction picked on screen from 2–4
 
 ## What happens
 
-Step 0 reads two facts, whether UI components exist and whether `DESIGN.md` is written, and prints a block from `Skill build` to `Flow`. **Fast or Full** changes who answers the dialogs, never which steps run.
+Step 0 reads two facts, whether UI components exist and whether `DESIGN.md` is written, and prints a block from `Skill build` to `Flow`, naming the model the session runs on. A canvas round or a page handed to another agent to write — Antigravity, for one — follows `build-flow`'s rules for another writer: an `External writer` line, a brief ending in the round's scans as commands, a review by a cheaper subagent, two runs at most. **Fast or Full** changes who answers the dialogs, never which steps run.
 
 | UI components | `DESIGN.md` | What switches on |
 |---|---|---|
@@ -45,6 +45,7 @@ Where UI exists, the drawing session never sees the existing look: only the audi
 
 | Question | What your answer decides |
 |---|---|
+| The model, when the session does not run on Opus — asked in Fast too | Stop and run the skill on Opus (recommended), or continue on this model. The skill is proven on Opus; on other models whole steps were dropped |
 | Fast or Full, neither marked recommended | Fast answers every dialog with its recommendation and the direction question with `Decide for me`, shown as cancellable lines above the install gate — where UI exists, the direction line says that cancelling it offers `Keep — today's look`; the frames, pick and every check still run |
 | The scope, where UI exists and the app has more than one page group — a chat stop, in Fast too | The whole app, or the page groups you name. Every page in scope is read, drawn, promoted and checked. With a narrower scope the tokens and the shared chrome still change for every page, the stack is kept, and each group left out becomes one `docs/queue.md` line |
 | The account for the audit, where the app has a sign-in and the session holds none | Create one (recommended; a login and a role row written to your app's database), wait for one you supply, or walk signed out — every route behind the sign-in is then measured from source. Asked in Fast too |

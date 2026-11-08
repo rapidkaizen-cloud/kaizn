@@ -75,6 +75,7 @@ Fast skips no step: the search, the frames and the pick, every scan and floor, t
 
 ```
 Skill build     : [kaizn x.y.z — read from this plugin's own .claude-plugin/plugin.json]
+Model           : [the model this session runs on, as the host names it — proven on Opus]
 Documents       : [docs/ form / legacy PRD.md / legacy PRD.md, off-shape / none]
 DESIGN.md       : [written / absent / product without UI — written or absent from its presence
                    alone; product without UI from the Surface row naming a CLI or a service
@@ -114,6 +115,8 @@ Flow            : reading + Fast or Full (+ scope, then audit in two subagents, 
 ```
 
 **Print the block on every invocation**, before any work beyond the reads that fill it — one turn of parallel reads. A Required `Design material` absence, or a `missing` Native build, is asked right after the block (Step 1); a stale `Skill build` is shown, not blocked on.
+
+**A `Model` other than Opus is asked once through AskUserQuestion, right after the block, in Fast too** — stop and run this skill on Opus, recommended, or continue — because on other models whole steps of this skill were dropped, and one redesign another model took over was redone.
 
 **Re-entry is a gate, never an inference.** When `Leftover` is not `none`, one mandatory AskUserQuestion follows the block, before any other work, however obvious the state looks:
 
