@@ -52,7 +52,7 @@ A rule marked *UI exists* or *`DESIGN.md` written* runs only under that fact; an
 
 **Not decided by the user → `[needs verification]`.**
 
-**Every question goes through AskUserQuestion, never prose**, in auto mode too — recommendation first and marked "(Recommended)", each option's consequence in its description, everything needed inside the dialog, up to four per call, every label in the words the user uses and never this skill's (*ratify*, *seam*, *archetype*, *departure*, *escalate*). Two questions mark no recommendation: Fast or Full, and the verdict on a round — the session does not grade its own drawing. The chat stops are the exceptions, each ending the turn and waiting for a reply: the scope (Step 1), the install gate, the one-line package approvals (font, linter), the Step 6 gate and its REPAIR list, the Step 8 deletion.
+**Every question goes through AskUserQuestion, never prose**, in auto mode too — recommendation first and marked "(Recommended)", each option's consequence in its description, everything needed inside the dialog, up to four per call, every label in the words the user uses and never this skill's (*ratify*, *seam*, *archetype*, *departure*, *escalate*). Two questions mark no recommendation: Fast or Full, and the verdict on a round — the session does not grade its own drawing. The chat stops are the exceptions, each ending the turn and waiting for a reply: the scope (Step 1), the install gate, the one-line package approvals (font, linter), the Step 6 gate and its REPAIR list, the proving page on a shell or desktop Surface's own window (`pass.md`), the Step 8 deletion.
 
 **Nothing the user did not choose is silent**: every value decided beyond the picked frame surfaces as one cancellable line with its basis (`interview.md`, What the designer settles).
 
@@ -90,6 +90,8 @@ Register        : [first visit / tenth use / both, per page group — from the R
 Platform        : [from the Surface row, else from the manifest and platform files — web, or the
                    platform found; a non-web value routes every browser-named check to that
                    Surface's Proof profile line, or to the platform's own tooling where none is written]
+Native build    : [n/a — web / ready / missing — <tool> — on a Surface that ships a binary, each
+                   tool its build command needs found on this machine, never by running the build]
 Primary role    : [from the Roles, else from the roles the code enforces, else asked at Step 1]
 Design material : [impeccable · frontend-design · ui-ux-pro-max present/absent — Required ·
                    Playwright MCP present/absent, from the session's tool list — Required ·
@@ -111,7 +113,7 @@ Flow            : reading + Fast or Full (+ scope, then audit in two subagents, 
                   → pass → verify → close
 ```
 
-**Print the block on every invocation**, before any work beyond the reads that fill it — one turn of parallel reads. A Required `Design material` absence is asked right after the block (Step 1); a stale `Skill build` is shown, not blocked on.
+**Print the block on every invocation**, before any work beyond the reads that fill it — one turn of parallel reads. A Required `Design material` absence, or a `missing` Native build, is asked right after the block (Step 1); a stale `Skill build` is shown, not blocked on.
 
 **Re-entry is a gate, never an inference.** When `Leftover` is not `none`, one mandatory AskUserQuestion follows the block, before any other work, however obvious the state looks:
 
@@ -129,7 +131,7 @@ Documents missing, or a legacy `PRD.md` off-shape → **not a stop**: say so in 
 
 **Ask for correction through AskUserQuestion, the full sentence inside the question field itself**, Fast or Full in the same call. Its options are the reading as written, first and recommended, then up to three others, each the reading with one slot changed — a slot the sources left open or in conflict first, else the one the reading rests on least; any other correction arrives under Other. Nothing after this runs before it is answered: no dialog, no search, no frame.
 
-**One Required install absent is asked through AskUserQuestion, never merely reported**, naming what is lost — `impeccable`'s ban list, display-face and convergence calibrations, the Operate register, every later detector count; `frontend-design`'s direction method and restraint; `ui-ux-pro-max`'s UX floor, every later UX-floor check, and its frame ingredients; the Playwright MCP's page between browser steps, so every step runs as its own script, signed in again — with continue-without or stop-to-install (the README's install lines); continuing is recommended where installing is unavailable here. The answer rides every canvas round and the ratification report as its own line. An Optional skill absent is only shown in the row.
+**One Required install absent, or a `missing` Native build, is asked through AskUserQuestion, never merely reported**, naming what is lost — `impeccable`'s ban list, display-face and convergence calibrations, the Operate register, every later detector count; `frontend-design`'s direction method and restraint; `ui-ux-pro-max`'s UX floor, every later UX-floor check, and its frame ingredients; the Playwright MCP's page between browser steps, so every step runs as its own script, signed in again; the native build's every check `verify.md` runs on the built app — with continue-without or stop-to-install (the README's install lines); continuing is recommended where installing is unavailable here. The answer rides every canvas round and the ratification report as its own line. An Optional skill absent is only shown in the row.
 
 ### The audit — where UI exists
 
