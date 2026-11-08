@@ -2,6 +2,38 @@
 
 All notable changes to the `kaizn` plugin — named `raizen-norms` until 0.106.0, and `raizen-hub` until 0.70.0 merged it in — newest first. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versions before these are in `git log`.
 
+## [kaizn 0.118.0] - 2026-11-08
+
+A session names the model it runs on and the agent it hands writing to. In one redesign of a real app, a revision another model took over was rejected and redone for $12, and 8 of 12 canvas runs by another agent were fix runs, together twice the tokens of the briefs they fixed, because the checks that decide a round ran only after the writer reported.
+
+### Added
+
+- `design-settle` Step 0: a `Model` row. On a model other than Opus you are asked once, in Fast too: stop and run on Opus (recommended), or continue.
+- `build-flow` `references/delegate.md`: rules for work written by another agent — an `External writer : <agent · model · quota left>` line before the first brief, a brief written to a file that names files and line ranges and ends with the step's scan as commands the writer runs clean before reporting, a review by a subagent on a cheaper model, and two runs per brief at most. `build-flow` Section 5, `design-settle`'s canvas rounds and its pass point to it.
+
+To act on:
+
+- Nothing in an installed app's files.
+
+## [kaizn 0.117.0] - 2026-11-08
+
+Step 8 checks the app the user gets. In one redesign of a desktop app the checks ran on a mock of its backend in a browser: five layout defects and about twelve bugs passed them, and the user first saw the real window after the whole pass, where most of the revisions began.
+
+### Added
+
+- `scripts/verify_pages.js`: one run checks every promoted page at both widths — console errors, fonts loaded, axe-core serious and critical, text under its contrast floor, reduced motion, a page wider than its width — and prints one row per page and width, so only the rows marked `FAIL` or `n/v` are read. On the web it opens the dev server in headless Chrome; given `--app`, it launches the app's own build with its webview's debugging port open, WebView2 or Electron, and attaches to it.
+- `design-settle` Step 0: a `Native build` row — on a Surface that ships a binary, whether this machine has each tool its build command needs. A missing tool is asked like a Required install.
+- `design-settle` Step 7: on a shell or desktop Surface, a chat stop once the proving page is promoted — the app launched, and you asked to look at that page in its own window before the next page moves.
+
+### Changed
+
+- `design-settle` Step 8: the rendered and driven checks, function parity and the seeded walk run on the dev server for the web, on the app's own build for Tauri or Electron on Windows, and on the Proof profile line elsewhere, else `not verified`. A mock, or the frontend in a browser, serves the canvas alone.
+- `build-flow` Section 5: `connectOverCDP` is allowed to the webview of the app's own build that the same step launched, and nowhere else.
+
+To act on:
+
+- Nothing in an installed app's files. A desktop app needs its build toolchain on the machine before Step 8; the Step 0 row names what is missing.
+
 ## [kaizn 0.116.0] - 2026-11-08
 
 Three smaller cuts to `design-settle`. In the same redesign the `/design-system` route ran to 3,043 lines — 29% of the redesign's code — in an app with one operator, and later sessions read it again.

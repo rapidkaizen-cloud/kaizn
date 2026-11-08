@@ -57,7 +57,7 @@ The input is the **user's feature list** plus what the documents hold. The canva
 
 ### Three scans before each round is shown
 
-A round that fails any is not ready to show. Report the scan with the round as a short list of what it caught and fixed.
+A round that fails any is not ready to show. Report the scan with the round as a short list of what it caught and fixed. A round handed to an agent outside this session is briefed and reviewed by `build-flow`'s `references/delegate.md`, these scans its brief's last part.
 
 1. **Imports.** Every control maps to a library component, the canvas's own shared set (*own components*), or a named hand-rolled line; every engine import comes from the declared stack.
 2. **The render** — `frames.md`'s render scan, on every round.
