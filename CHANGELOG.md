@@ -2,6 +2,19 @@
 
 All notable changes to the `kaizn` plugin — named `raizen-norms` until 0.106.0, and `raizen-hub` until 0.70.0 merged it in — newest first. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versions before these are in `git log`.
 
+## [kaizn 0.119.0] - 2026-11-08
+
+A redesign of a real app on a Pro plan took 8 of its 5-hour windows, and part of what each call carried was the machine's own setup: 56k–67k tokens before any work, and an ECC hook refusing 172 writes and commands, each one more call at the full context.
+
+### Added
+
+- `design-settle` prints a `Quota` row at Step 0 and again at the close: the `used` lines of `claude -p "/usage" --strict-mcp-config`, a local command with no model call, on Claude Code only.
+- `docs/guide/pro-plan.md`: measuring what a session starts with, turning off unused plugins, MCP servers and claude.ai connectors, turning off ECC's GateGuard, running one session per account during a redesign, and reading the quota.
+
+To act on:
+
+- Nothing in an installed app's files. On a Pro plan, follow `docs/guide/pro-plan.md` once per machine.
+
 ## [kaizn 0.118.0] - 2026-11-08
 
 A session names the model it runs on and the agent it hands writing to. In one redesign of a real app, a revision another model took over was rejected and redone for $12, and 8 of 12 canvas runs by another agent were fix runs, together twice the tokens of the briefs they fixed, because the checks that decide a round ran only after the writer reported.

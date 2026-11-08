@@ -71,6 +71,7 @@ Every check leaves something the user can inspect. **A check here or in Step 7 t
 
 One block, a line nothing fills left out:
 
+- the quota, read again as Step 0 reads it, beside the `Quota` row of the run's first Step 0;
 - the detector's numbers — Step 8's count, beside the audit's where UI existed — and every hit left standing with its one-line justification;
 - every `review-animations` refusal, UX-floor don't and linter warning left standing, with its line;
 - the `DESIGN.md` lines that changed, where there was an old one · the decision records written;

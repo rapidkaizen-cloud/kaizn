@@ -2,7 +2,7 @@
 
 `design-settle` alone, on an app that already has a look or on one that has none yet.
 
-Before you start: `impeccable`, `frontend-design` and `ui-ux-pro-max` are installed ([Install](../start/install.md)), and a browser MCP server is connected.
+Before you start: `impeccable`, `frontend-design` and `ui-ux-pro-max` are installed ([Install](../start/install.md)), and a browser MCP server is connected. On a Pro plan, first [Run on a Pro plan](pro-plan.md).
 
 ## Steps
 
@@ -15,7 +15,7 @@ Before you start: `impeccable`, `frontend-design` and `ui-ux-pro-max` are instal
    | Fast | The skill's own recommendation, shown as one block you cancel line by line | The same, unchanged |
 
    `/kaizn:design-settle fast` skips the question.
-3. **Read the first block.** It prints what it found: the documents, whether `DESIGN.md` is written, how many UI components exist, the platform, the design material present, and the flow it will follow.
+3. **Read the first block.** It prints what it found: the documents, whether `DESIGN.md` is written, how many UI components exist, the platform, the design material present, the quota used, and the flow it will follow.
 4. **Answer the non-visual dialogs**, or in Fast cancel the lines you disagree with.
 5. **Pick a direction on screen.** It draws two to four direction frames and you choose.
 6. **Approve the canvas once.** Every page is built in production-grade code on a canvas — above 12 pages, the proving page and one page per kind; your approval promotes it into the app, and the pass builds the rest on the pages you approved.

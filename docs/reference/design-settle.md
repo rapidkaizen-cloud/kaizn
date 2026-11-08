@@ -14,7 +14,7 @@ Running it settles how the app looks — a direction picked on screen from 2–4
 
 ## What happens
 
-Step 0 reads two facts, whether UI components exist and whether `DESIGN.md` is written, and prints a block from `Skill build` to `Flow`, naming the model the session runs on. A canvas round or a page handed to another agent to write — Antigravity, for one — follows `build-flow`'s rules for another writer: an `External writer` line, a brief ending in the round's scans as commands, a review by a cheaper subagent, two runs at most. **Fast or Full** changes who answers the dialogs, never which steps run.
+Step 0 reads two facts, whether UI components exist and whether `DESIGN.md` is written, and prints a block from `Skill build` to `Flow`, naming the model the session runs on. Its `Quota` row is what `/usage` reports used of your plan's window and week, read on Claude Code by a local command; the close prints it again beside it. A canvas round or a page handed to another agent to write — Antigravity, for one — follows `build-flow`'s rules for another writer: an `External writer` line, a brief ending in the round's scans as commands, a review by a cheaper subagent, two runs at most. **Fast or Full** changes who answers the dialogs, never which steps run.
 
 | UI components | `DESIGN.md` | What switches on |
 |---|---|---|

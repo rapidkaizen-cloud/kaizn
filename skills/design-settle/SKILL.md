@@ -77,6 +77,8 @@ Fast skips no step: the search, the frames and the pick, every scan and floor, t
 ```
 Skill build     : [kaizn x.y.z — read from this plugin's own .claude-plugin/plugin.json]
 Model           : [the model this session runs on, as the host names it — proven on Opus]
+Quota           : [the `used` lines `claude -p "/usage" --strict-mcp-config` prints, run with the
+                   reads — on Claude Code only; `not read — <host>` on any other host]
 Documents       : [docs/ form / legacy PRD.md / legacy PRD.md, off-shape / none]
 DESIGN.md       : [written / absent / product without UI — written or absent from its presence
                    alone; product without UI from the Surface row naming a CLI or a service

@@ -29,6 +29,7 @@ New here: [Overview](start/overview.md), then [Install](start/install.md), then 
 | [Start a new app](guide/new-app.md) | From an empty directory to the first page built |
 | [Bring in an existing app](guide/existing-app.md) | Document it, migrate a root `PRD.md`, audit it against the rules, or rework its decisions |
 | [Redesign the look](guide/redesign.md) | `design-settle` alone: Fast or Full, the frames, the canvas, and what changes where UI exists |
+| [Run on a Pro plan](guide/pro-plan.md) | What a session starts with, the plugins, servers and connectors to turn off, GateGuard, one session per account, and reading the quota |
 | [Update the plugin](guide/update.md) | Getting a new version onto a machine, and checking which one a session runs |
 | [Run on Antigravity](guide/antigravity.md) | Requirements, the one command, the companion skills, how to check it loaded, updating, and what a headless run must be allowed |
 | [Maintain app repos](guide/maintain-app-repos.md) | Old sections in an app's `CLAUDE.md`, a root `PRD.md`, a shadowing `.mcp.json` |
